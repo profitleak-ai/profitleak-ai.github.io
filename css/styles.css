@@ -2212,3 +2212,6 @@ th.num, td.num { text-align: right; }
 .pay-opts a:hover { border-color: var(--primary); background: var(--primary-soft); }
 .trial-card .pay-opts a { color: #fff; background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.28); }
 .trial-card .pay-opts a:hover { border-color: #f5c93c; background: rgba(255,255,255,.13); }
+
+/* email signup for bonus sessions (v1.11) */
+.trial-email { border-top: 1.5px dashed var(--border); padding-top: 16px; margin-bottom: 14px; }

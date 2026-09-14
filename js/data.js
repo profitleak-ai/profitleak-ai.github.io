@@ -184,13 +184,32 @@
         t.lastActive = now; writeTrial(t); markSession();
         this.active = true; return true;
       }
-      this.active = false; return false;        /* the one free session is over */
+      if (t.extraSessions > 0) {                /* email reward (v1.11): consume one bonus session */
+        t.extraSessions -= 1;
+        t.lastActive = now;
+        writeTrial(t); markSession();
+        this.active = true; return true;
+      }
+      this.active = false; return false;        /* the free sessions are over */
     },
     isLocked: function () { return !Plan.isPro() && !this.active; },
     heartbeat: function () {
       if (this.isLocked()) return;
       var t = readTrial();
       if (t && t.startedAt) { t.lastActive = Date.now(); writeTrial(t); }
+    },
+    /* email signup (v1.11): grant bonus sessions and open one now */
+    grantEmailSessions: function (email, n) {
+      var t = readTrial() || {};
+      t.email = email;
+      t.extraSessions = (t.extraSessions || 0) + (n || 0);
+      if (!t.startedAt) t.startedAt = Date.now();
+      writeTrial(t);
+      return this.evaluate();
+    },
+    getEmail: function () {
+      var t = readTrial();
+      return (t && t.email) || '';
     },
     /* test/dev hook: simulate time passing + a fresh browser session */
     _age: function (ms) {

@@ -15,6 +15,7 @@
   var License = window.PL_LICENSE; // paid license layer (v1.8)
   var Trial = window.PL_TRIAL;     // one-session free trial gate (v1.9)
   var CHECKOUT = 'https://profitleak.netlify.app/.netlify/functions/checkout-start?method='; // on-site checkout (v1.10)
+  var EMAIL_EP = 'https://profitleak.netlify.app/.netlify/functions/email-signup'; // bonus-sessions signup (v1.11)
 
   /* ---------------- tiny helpers ---------------- */
   function $(sel, root) { return (root || document).querySelector(sel); }
@@ -99,10 +100,11 @@
     var route = parseRoute();
     var isLanding = route.page === 'landing';
 
+    /* one-session free trial: the gate re-evaluates the session FIRST
+       (it may have ended since the last render); only then refresh it */
+    var gated = !isLanding && trialGateEngaged();
+    if (gated) { showTrialPaywall(); return; }
     if (Trial) Trial.heartbeat();
-
-    /* one-session free trial: app pages require an active session or a license */
-    if (!isLanding && trialGateEngaged()) { showTrialPaywall(); return; }
     hideTrialPaywall();
 
     $('#view-landing').hidden = !isLanding;
@@ -1407,7 +1409,9 @@
      active. Offers the buy link + instant license activation.
      ============================================================= */
   function trialGateEngaged() {
-    return !!(Trial && License && License.isConfigured() && Trial.isLocked());
+    if (!Trial || !License || !License.isConfigured()) return false;
+    Trial.evaluate(); /* refresh: the session may have ended since the last render */
+    return Trial.isLocked();
   }
 
   function showTrialPaywall() {
@@ -1437,6 +1441,42 @@
       var el = $(s); return el && !el.hidden;
     });
     if (!anyOpen) document.body.classList.remove('modal-open');
+  }
+
+  /* email signup: 2 extra free sessions (v1.11) */
+  function trialEmailFlow() {
+    var input = $('#trial-email-input');
+    var btn = $('#trial-email-btn');
+    var err = $('#trial-email-error');
+    if (!input || !btn) return;
+    if (err) { err.hidden = true; }
+    var email = input.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      if (err) { err.textContent = 'Please enter a valid email address.'; err.hidden = false; }
+      input.focus();
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = '\u2026';
+    fetch(EMAIL_EP, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      btn.disabled = false;
+      btn.textContent = 'Send';
+      if (d && d.success && Trial) {
+        Trial.grantEmailSessions(email, d.extraSessions || 2);
+        toast('2 extra free sessions unlocked \u2713');
+        render();
+      } else {
+        if (err) { err.textContent = (d && d.reason) || 'Something went wrong \u2014 please try again.'; err.hidden = false; }
+      }
+    }).catch(function () {
+      btn.disabled = false;
+      btn.textContent = 'Send';
+      if (err) { err.textContent = 'Connection problem \u2014 please try again.'; err.hidden = false; }
+    });
   }
 
   function trialActivateFlow() {
@@ -1752,6 +1792,13 @@
       trialActivateBtn.addEventListener('click', trialActivateFlow);
       $('#trial-license-input').addEventListener('keydown', function (e) {
         if (e.key === 'Enter') trialActivateFlow();
+      });
+    }
+    var trialEmailBtn = $('#trial-email-btn');
+    if (trialEmailBtn) {
+      trialEmailBtn.addEventListener('click', trialEmailFlow);
+      $('#trial-email-input').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') trialEmailFlow();
       });
     }
 
