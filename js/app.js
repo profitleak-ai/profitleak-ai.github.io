@@ -14,6 +14,7 @@
   var Report = window.PL_REPORT;
   var License = window.PL_LICENSE; // paid license layer (v1.8)
   var Trial = window.PL_TRIAL;     // one-session free trial gate (v1.9)
+  var CHECKOUT = 'https://profitleak.netlify.app/.netlify/functions/checkout-start?method='; // on-site checkout (v1.10)
 
   /* ---------------- tiny helpers ---------------- */
   function $(sel, root) { return (root || document).querySelector(sel); }
@@ -1333,7 +1334,11 @@
         '<button type="button" class="link-btn" data-action="license-remove">Remove license</button></div>';
     } else if (License && License.isConfigured()) {
       proBtn = '<a class="btn btn-light btn-lg" href="' + esc(License.buyUrl()) + '" target="_blank" rel="noopener">Buy Pro \u2014 $19 one-time</a>' +
-        '<p class="price-note">Secure checkout via Gumroad \u00B7 license key delivered instantly by email</p>';
+        '<p class="price-note">Gumroad checkout \u00B7 license key delivered instantly by email</p>' +
+        '<div class="pay-opts">' +
+          '<a href="' + CHECKOUT + 'paypal" target="_blank" rel="noopener">PayPal \u00B7 Visa \u00B7 Mastercard</a>' +
+          '<a href="' + CHECKOUT + 'crypto" target="_blank" rel="noopener">Crypto \u2014 BTC, USDT &amp; 100+</a>' +
+        '</div>';
     } else {
       proBtn = '<button type="button" class="btn btn-light btn-lg" data-action="upgrade">Upgrade to Pro \u2014 $19 one-time</button>' +
         '<p class="price-note">One-time payment \u00B7 secure checkout via Gumroad</p>';
@@ -1371,7 +1376,7 @@
           licenseBox +
         '</div>' +
       '</div>' +
-      '<p class="pricing-trust">One-time payment \u00B7 Refunds handled via Gumroad \u00B7 Your data never leaves your browser</p>';
+      '<p class="pricing-trust">One-time payment \u00B7 Card, PayPal &amp; crypto on site \u00B7 Refunds via Gumroad \u00B7 Your data never leaves your browser</p>';
   }
 
   /* ---------- paid license activation (v1.8) ---------- */
@@ -1410,6 +1415,9 @@
     if (!ov) return;
     var buy = $('#trial-buy');
     if (buy && License && License.buyUrl) buy.href = License.buyUrl();
+    var ppo = $('#trial-paypal'), cpo = $('#trial-crypto');
+    if (ppo) ppo.href = CHECKOUT + 'paypal';
+    if (cpo) cpo.href = CHECKOUT + 'crypto';
     var n = state.products.length;
     $('#trial-text').textContent = n > 0
       ? 'You explored ProfitLeak AI with your free session. Your ' + n +
@@ -1462,7 +1470,7 @@
   function showProComingSoon() {
     confirmDialog({
       title: 'Get Pro \u2014 $19 one-time \uD83D\uDE80',
-      message: 'Pro includes unlimited products, the What-If Simulator, cost ranking, profit goals and marketplace integrations. Secure checkout on Gumroad \u2014 your license key arrives by email within minutes and activates right here on the Pricing page.',
+      message: 'Pro includes unlimited products, the What-If Simulator, cost ranking, profit goals and marketplace integrations. Pay with card, PayPal or crypto right here \u2014 or via Gumroad. Your license key activates on this Pricing page.',
       confirmText: 'Continue to checkout',
       cancelText: 'Not now'
     }).then(function (ok) {

@@ -109,6 +109,28 @@
     });
   }
 
+  /* ---------- site checkout keys (PL-…) ----------
+     Keys bought through the on-site checkout (PayPal / card /
+     crypto) are HMAC-signed and verified by our Netlify endpoint. */
+  var SITE_VERIFY_URL = 'https://profitleak.netlify.app/.netlify/functions/license-verify';
+  function verifyWithSite(key) {
+    return fetch(SITE_VERIFY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key: key })
+    }).then(function (res) {
+      if (!res.ok) {
+        return { valid: false, retry: false, reason: 'Could not reach the license server (HTTP ' + res.status + '). Please try again in a moment.' };
+      }
+      return res.json().then(function (d) {
+        if (d && d.success) return { valid: true, email: d.email || '' };
+        return { valid: false, retry: false, reason: 'This license key was not recognized. Double-check the code you received after payment.' };
+      });
+    }).catch(function () {
+      return { valid: false, retry: false, reason: 'Activation needs an internet connection. Check your connection and try again.' };
+    });
+  }
+
   /* ---------- multi-store verification ----------
      A key that exists on any listing activates. Only plain
      \"not recognized\" rejections fall through to the next listing;
@@ -144,6 +166,16 @@
       return Promise.resolve({
         ok: false,
         reason: 'That code looks too short \u2014 copy the complete license key from your purchase email.'
+      });
+    }
+    /* PL-… keys come from the on-site checkout (PayPal / crypto) */
+    if (key.indexOf('PL-') === 0) {
+      return verifyWithSite(key).then(function (r) {
+        if (!r.valid) return { ok: false, reason: r.reason };
+        state.license = { key: key, email: r.email, activatedAt: new Date().toISOString() };
+        writeLicense(state.license);
+        notify();
+        return { ok: true, license: getLicense() };
       });
     }
     return verifyAgainstStores(key).then(function (r) {
