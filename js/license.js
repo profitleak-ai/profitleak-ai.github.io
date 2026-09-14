@@ -14,7 +14,7 @@
   /* ==== STORE CONNECTION ===========================================
      These two constants connect the app to your Gumroad product.
      They are filled in when the store goes live. Until then the
-     license box stays hidden and the app keeps its free-preview
+     license box stays hidden and Pro stays available only
      upgrade flow, so nothing on the live site ever looks broken.
      ================================================================= */
   var GUMROAD_PRODUCT_ID = '_tMI22ClXjG_kUeB9tu37Q==';  // live listing (international)

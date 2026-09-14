@@ -82,9 +82,9 @@
 
   /* =============================================================
      PLAN (FREE / PRO) — monetization layer (v1.4)
-     No authentication, no payments: the plan is a simple local
-     flag. Default: FREE (up to 3 products). PRO can be activated
-     as a free preview until the paid launch ("coming soon").
+     No authentication: the plan is a simple local flag.
+     Default: FREE (up to 3 products). PRO comes exclusively from
+     a verified Gumroad license (see js/license.js).
      ============================================================= */
   var PLAN_KEY = 'profitleak.plan.v1';
   var FREE_PRODUCT_LIMIT = 3;
@@ -92,9 +92,9 @@
 
   var memoryPlan = 'free';
 
-  /* Pro can also come from a paid license (see js/license.js).
-     The license layer reports its state here; the free-preview
-     flag above stays completely independent. */
+  /* Pro comes from a paid license (see js/license.js).
+     The license layer reports its state here. Any pre-launch
+     preview flag left in storage is cleared below. */
   var licenseActive = false;
 
   function readPlan() {
@@ -124,6 +124,11 @@
       return Math.max(0, FREE_PRODUCT_LIMIT - currentCount);
     }
   };
+
+  /* The pre-launch free preview ended when the store opened.
+     A leftover preview flag is cleared on load; licensed users
+     keep Pro via licenseActive (set by app.js at boot). */
+  if (readPlan() === 'pro') writePlan('free');
 
   /* ---------- Sanitize products loaded from storage ---------- */
   function num(v, fallback) {
