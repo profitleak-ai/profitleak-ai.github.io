@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ProfitLeak AI — See Your True Product Profit</title>
+<meta name="description" content="ProfitLeak AI reveals the hidden costs eating your product profits: advertising, shipping, fees, discounts and returns. See your TRUE profit on every product.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%234f46e5'/%3E%3Cpath d='M12 5l4.9 4.9a6.9 6.9 0 1 1-9.8 0z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="canonical" href="https://profitleak-ai.github.io/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ProfitLeak AI">
+<meta property="og:title" content="ProfitLeak AI — True Profit Calculator for E-commerce Sellers">
+<meta property="og:description" content="See your TRUE profit per product. All 6 costs tracked: COGS, ads, shipping, fees, discounts, returns. Instant diagnosis, PDF reports, zero signup.">
+<meta property="og:url" content="https://profitleak-ai.github.io/">
+<meta property="og:image" content="https://profitleak-ai.github.io/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ProfitLeak AI — True Profit Calculator for E-commerce Sellers">
+<meta name="twitter:description" content="See your TRUE profit per product. All 6 costs tracked. Instant diagnosis, zero signup.">
+<meta name="twitter:image" content="https://profitleak-ai.github.io/og-cover.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ProfitLeak AI",
+  "url": "https://profitleak-ai.github.io/",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Any (web browser)",
+  "description": "True profit calculator for e-commerce sellers. Tracks all 6 costs — product cost, ad spend, shipping, platform fees, discounts and returns — and diagnoses exactly which one is eating your margin.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+    "description": "Free for up to 3 products with full diagnosis. Pro: $19 one-time, lifetime license."
+  }
+}
+</script>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- Shared SVG gradient definitions for the logo -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="plg" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6366f1"/>
+      <stop offset="1" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- ================================================================
+     LANDING PAGE
+================================================================= -->
+<div id="view-landing">
+
+  <nav class="landing-nav">
+    <div class="landing-nav-inner">
+      <a class="brand" href="#/" aria-label="ProfitLeak AI — home">
+        <svg class="brand-mark" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect width="24" height="24" rx="7" fill="url(#plg)"/><path d="M12 5.2l4.7 4.7a6.65 6.65 0 1 1-9.4 0z" fill="#fff"/></svg>
+        <span class="brand-name">ProfitLeak&nbsp;<span class="brand-ai">AI</span></span>
+      </a>
+      <div class="landing-nav-right">
+        <a class="landing-nav-link" href="#/pricing">Pricing</a>
+        <a class="btn btn-primary" href="#/dashboard">Analyze My Products</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-glow hero-glow-a" aria-hidden="true"></div>
+    <div class="hero-glow hero-glow-b" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <span class="hero-eyebrow">No signup · No setup · Your data stays in your browser</span>
+      <h1>You're making sales.<br>But are you <span class="accent">actually making money?</span></h1>
+      <p class="hero-sub">ProfitLeak AI reveals the hidden costs eating your product profits.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary btn-xl" href="#/dashboard">
+          Analyze My Products
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+
+      <!-- Real example, computed live by the app's own engine -->
+      <div class="hero-example" id="hero-example"></div>
+    </div>
+  </header>
+
+  <section class="benefits">
+    <div class="section-head">
+      <h2>Built for sellers who are tired of guessing</h2>
+      <p>Most dashboards show you revenue. ProfitLeak AI shows you what's left after every single cost.</p>
+    </div>
+    <div class="benefits-grid">
+
+      <div class="benefit-card">
+        <div class="benefit-icon benefit-icon-indigo">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/><path d="M8.5 11h5M11 8.5v5"/></svg>
+        </div>
+        <h3>Find hidden losses</h3>
+        <p>Advertising, shipping, fees, discounts and returns quietly eat your margin. See exactly which products are bleeding money — and how much.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon benefit-icon-emerald">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <h3>See your true profit</h3>
+        <p>Stop guessing with “price minus cost”. Get the real profit for every product, after every single expense — per sale and in total.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon benefit-icon-amber">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg>
+        </div>
+        <h3>Know what to change</h3>
+        <p>Clear, number-based recommendations: raise your price to break even, cut ads by 20%, or pause a product before the losses pile up.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="how">
+    <div class="section-head">
+      <h2>How it works</h2>
+      <p>Three steps. Two minutes. Zero spreadsheets.</p>
+    </div>
+    <div class="how-grid">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Enter your numbers</h3>
+        <p>Selling price, purchase cost, advertising, shipping, fees, discounts, returns and units sold.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>We calculate true profit</h3>
+        <p>Every cost is counted — per product, per sale, instantly. No spreadsheets, no guesswork.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Fix the leaks</h3>
+        <p>A clear status (🟢🟡🔴), a full cost breakdown, and specific recommendations based on <em>your</em> numbers.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-band">
+    <h2>Ready to find your profit leaks?</h2>
+    <p>Analyzing your first product takes about 30 seconds.</p>
+    <a class="btn btn-light btn-xl" href="#/dashboard">Analyze My Products</a>
+  </section>
+
+  <footer class="site-footer">
+    <p><strong>ProfitLeak AI</strong> · MVP v1 · Your data never leaves your browser.</p>
+    <p class="muted">Recommendations are generated from your own numbers. Thresholds are rules of thumb, not financial advice.</p>
+  </footer>
+</div>
+
+<!-- ================================================================
+     APP SHELL (dashboard · add/edit product · product analysis)
+================================================================= -->
+<div id="view-app" hidden>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#/" aria-label="ProfitLeak AI — home">
+        <svg class="brand-mark" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><rect width="24" height="24" rx="7" fill="url(#plg)"/><path d="M12 5.2l4.7 4.7a6.65 6.65 0 1 1-9.4 0z" fill="#fff"/></svg>
+        <span class="brand-name">ProfitLeak&nbsp;<span class="brand-ai">AI</span></span>
+      </a>
+      <nav class="topbar-nav" aria-label="Main">
+        <a class="nav-link" href="#/dashboard" data-nav="dashboard">Dashboard</a>
+        <a class="nav-link" href="#/pricing" data-nav="pricing">Pricing</a>
+        <a class="btn btn-primary btn-sm" href="#/add">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          Add Product
+        </a>
+        <span id="plan-nav"></span>
+      </nav>
+    </div>
+  </header>
+
+  <div class="storage-banner" id="storage-banner" hidden>
+    ℹ️ <strong>Preview mode:</strong> changes won't be saved in this embedded preview. Open the <em>live preview</em> link or download the app file — then everything saves automatically in your browser.
+  </div>
+
+  <main class="app-main">
+
+    <!-- ============ DASHBOARD ============ -->
+    <section id="page-dashboard" class="page" hidden>
+      <div class="page-head">
+        <div>
+          <h1>Dashboard</h1>
+          <p class="page-sub">Your true profitability — after advertising, shipping, fees, discounts and returns.</p>
+        </div>
+        <div class="page-actions">
+          <a class="btn btn-ghost" href="#/report">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/></svg>
+            Generate Report
+          </a>
+          <a class="btn btn-primary" href="#/add">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            Add Product
+          </a>
+        </div>
+      </div>
+
+      <div id="plan-banner"></div>
+      <div class="kpi-grid" id="kpi-grid"></div>
+      <div class="alerts" id="alerts"></div>
+
+      <div class="charts-grid">
+        <div class="card chart-card">
+          <h2 class="card-title">True profit by product</h2>
+          <p class="card-sub">Green bars make money · red bars lose it. Click a bar for the full analysis.</p>
+          <div id="chart-profit"></div>
+        </div>
+        <div class="card chart-card">
+          <h2 class="card-title">Where your money goes</h2>
+          <p class="card-sub">All costs across your products, combined.</p>
+          <div id="chart-costs"></div>
+        </div>
+      </div>
+
+      <div class="card table-card">
+        <div class="table-head">
+          <div>
+            <h2 class="card-title">Your products</h2>
+            <p class="card-sub">Click a column to sort · click a row for the full analysis.</p>
+          </div>
+          <div class="table-tools">
+            <button class="btn btn-ghost btn-sm" type="button" data-action="export-csv">Export CSV</button>
+            <button class="btn btn-ghost btn-sm" type="button" data-action="import-csv">Import CSV</button>
+            <button class="btn btn-ghost btn-sm" type="button" data-action="csv-template" title="Download an example CSV with the correct column names">CSV template</button>
+            <button class="btn btn-ghost btn-sm" type="button" data-action="load-samples">Try Demo Data</button>
+            <button class="btn btn-ghost btn-sm" type="button" data-action="clear-demo" id="btn-clear-demo" hidden>Clear Demo Data</button>
+            <button class="btn btn-ghost btn-sm danger-text" type="button" data-action="clear-all">Clear all</button>
+            <input type="file" id="csv-file" accept=".csv,text/csv" hidden>
+          </div>
+        </div>
+        <div class="table-filters" id="table-filters"></div>
+        <div class="table-responsive" id="table-wrap"></div>
+      </div>
+    </section>
+
+    <!-- ============ ADD / EDIT PRODUCT ============ -->
+    <section id="page-form" class="page" hidden>
+      <div class="page-head">
+        <div>
+          <h1 id="form-title">Add product</h1>
+          <p class="page-sub" id="form-subtitle">Enter your product's numbers. Fields marked “per sale” are the cost for one single order.</p>
+        </div>
+        <div class="page-actions">
+          <a class="btn btn-ghost" href="#/dashboard">← Back to dashboard</a>
+        </div>
+      </div>
+
+      <div id="form-upsell" class="card upsell-card" hidden></div>
+
+      <div class="form-layout">
+        <form id="product-form" class="card form-card" novalidate autocomplete="off">
+          <div class="form-grid">
+
+            <div class="field field-full" data-field="name">
+              <label for="f-name">Product name <span class="req" aria-hidden="true">*</span></label>
+              <input id="f-name" name="name" type="text" maxlength="60" placeholder="e.g. Wireless Earbuds Pro">
+              <p class="field-hint">A clear name so you recognize it later.</p>
+              <p class="field-error" data-error="name" role="alert"></p>
+            </div>
+
+            <div class="field" data-field="sellingPrice">
+              <label for="f-price">Selling price <span class="per">$ / unit</span></label>
+              <input id="f-price" name="sellingPrice" type="number" min="0.01" step="any" inputmode="decimal" placeholder="49.99">
+              <p class="field-hint">What the customer pays for one unit, before discounts.</p>
+              <p class="field-error" data-error="sellingPrice" role="alert"></p>
+            </div>
+
+            <div class="field" data-field="unitsSold">
+              <label for="f-units">Units sold <span class="per">count</span></label>
+              <input id="f-units" name="unitsSold" type="number" min="1" step="1" inputmode="numeric" placeholder="100">
+              <p class="field-hint">How many you sold in your chosen period (e.g. last 30 days).</p>
+              <p class="field-error" data-error="unitsSold" role="alert"></p>
+            </div>
+
+            <div class="field" data-field="purchaseCost">
+              <label for="f-purchase">Purchase cost <span class="per">$ / unit</span></label>
+              <input id="f-purchase" name="purchaseCost" type="number" min="0" step="any" inputmode="decimal" placeholder="0.00">
+              <p class="field-hint">What you pay your supplier for one unit.</p>
+              <p class="field-error" data-error="purchaseCost" role="alert"></p>
+            </div>
+
+            <div class="field" data-field="adCostPerSale">
+              <label for="f-ad">Advertising cost <span class="per">$ / sale</span></label>
+              <input id="f-ad" name="adCostPerSale" type="number" min="0" step="any" inputmode="decimal" placeholder="0.00">
+              <p class="field-hint">Total ad spend ÷ number of sales. Enter 0 if none.</p>
+              <p class="field-error" data-error="adCostPerSale" role="alert"></p>
+            </div>
+
+            <div class="field" data-field="shippingCost">
+              <label for="f-ship">Shipping cost <span class="per">$ / sale</span></label>
+              <input id="f-ship" name="shippingCost" type="number" min="0" step="any" inputmode="decimal" placeholder="0.00">
+              <p class="field-hint">What one order costs <em>you</em> to ship (not the customer).</p>
+              <p class="field-error" data-error="shippingCost" role="alert"></p>
+            </div>
+
+            <div class="field" data-field="platformFees">
+              <label for="f-fees">Platform / payment fees <span class="per">$ / sale</span></label>
+              <input id="f-fees" name="platformFees" type="number" min="0" step="any" inputmode="decimal" placeholder="0.00">
+              <p class="field-hint">Marketplace or payment-processor fee per order.</p>
+              <p class="field-error" data-error="platformFees" role="alert"></p>
+            </div>
+
+            <div class="field" data-field="discountPerSale">
+              <label for="f-discount">Discount <span class="per">$ / sale</span></label>
+              <input id="f-discount" name="discountPerSale" type="number" min="0" step="any" inputmode="decimal" placeholder="0.00">
+              <p class="field-hint">Average discount given per order (coupons, sales). Enter 0 if none.</p>
+              <p class="field-error" data-error="discountPerSale" role="alert"></p>
+            </div>
+
+            <div class="field" data-field="returnCostPerSale">
+              <label for="f-returns">Return / refund cost <span class="per">$ / sale</span></label>
+              <input id="f-returns" name="returnCostPerSale" type="number" min="0" step="any" inputmode="decimal" placeholder="0.00">
+              <p class="field-hint">Refunds and return shipping you absorb, per order on average.</p>
+              <p class="field-error" data-error="returnCostPerSale" role="alert"></p>
+            </div>
+
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-lg" id="form-submit">Save product</button>
+            <a class="btn btn-ghost" href="#/dashboard">Cancel</a>
+          </div>
+          <p class="form-note">💡 Tip: use numbers from the same period — for example, the last 30 days — so your totals match.</p>
+        </form>
+
+        <aside class="live-preview card" id="live-preview" aria-live="polite">
+          <div class="lp-head">
+            <span class="pulse-dot" aria-hidden="true"></span>
+            <h2>Live calculation</h2>
+          </div>
+          <p class="lp-hint">Updates as you type.</p>
+          <div class="lp-rows" id="lp-rows"></div>
+          <div class="lp-status" id="lp-status"></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ PRODUCT ANALYSIS ============ -->
+    <section id="page-analysis" class="page" hidden>
+      <div id="analysis-head"></div>
+      <div class="analysis-stats" id="analysis-stats"></div>
+      <div id="diagnosis-section"></div>
+      <div class="analysis-grid">
+        <div class="card">
+          <h2 class="card-title">The numbers</h2>
+          <div class="table-responsive" id="analysis-numbers"></div>
+        </div>
+        <div class="card">
+          <h2 class="card-title">What's inside one sale</h2>
+          <p class="card-sub">Your selling price, taken apart piece by piece.</p>
+          <div id="analysis-bar"></div>
+        </div>
+      </div>
+      <div class="analysis-grid-2">
+        <div class="card">
+          <h2 class="card-title">Where are you losing money?</h2>
+          <div class="findings" id="analysis-issues"></div>
+        </div>
+        <div class="card">
+          <h2 class="card-title">What should you change?</h2>
+          <ol class="recs" id="analysis-recs"></ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PRICING ============ -->
+    <section id="page-pricing" class="page" hidden>
+      <div class="page-head">
+        <div>
+          <h1>Simple pricing</h1>
+          <p class="page-sub">Start free. Upgrade when you&rsquo;re serious about profit.</p>
+        </div>
+        <div class="page-actions">
+          <a class="btn btn-ghost" href="#/dashboard">&#8592; Back to dashboard</a>
+        </div>
+      </div>
+      <div id="pricing-body"></div>
+    </section>
+
+    <!-- ============ PROFIT REPORT ============ -->
+    <section id="page-report" class="page" hidden>
+      <div class="report-toolbar">
+        <a class="btn btn-ghost" href="#/dashboard">&#8592; Back to dashboard</a>
+        <div class="report-toolbar-right">
+          <span class="report-hint">Opens the print dialog &mdash; choose &ldquo;Save as PDF&rdquo; to download</span>
+          <button class="btn btn-primary" id="report-print" type="button">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10V4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v6"/><path d="M7 15h10v6H7z"/></svg>
+            Download Report
+          </button>
+        </div>
+      </div>
+      <div id="report-body"></div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ================================================================
+     CONFIRM DIALOG + TOASTS
+================================================================= -->
+<div class="modal-overlay" id="modal-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <h3 class="modal-title" id="modal-title"></h3>
+    <p class="modal-message" id="modal-message"></p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="modal-cancel" type="button">Cancel</button>
+      <button class="btn btn-primary" id="modal-confirm" type="button">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="import-overlay" hidden>
+  <div class="modal import-modal" role="dialog" aria-modal="true" aria-labelledby="import-title">
+    <h3 class="modal-title" id="import-title">Import products from CSV</h3>
+    <div class="import-summary" id="import-summary"></div>
+    <div class="import-body" id="import-body"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="import-cancel" type="button">Cancel</button>
+      <button class="btn btn-primary" id="import-confirm" type="button">Import Products</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay welcome-overlay" id="welcome-overlay" hidden>
+  <div class="welcome-card" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+    <svg class="welcome-logo" viewBox="0 0 24 24" width="46" height="46" aria-hidden="true"><rect width="24" height="24" rx="7" fill="url(#plg)"/><path d="M12 5.2l4.7 4.7a6.65 6.65 0 1 1-9.4 0z" fill="#fff"/></svg>
+    <h2 id="welcome-title">Welcome to ProfitLeak AI</h2>
+    <p class="welcome-sub">Find out where your products are making money &mdash; and where they&rsquo;re losing it.</p>
+    <ol class="welcome-steps">
+      <li>
+        <span class="ws-num">1</span>
+        <div><strong>Add your products</strong><span>Enter your selling price and costs &mdash; it takes about 30 seconds.</span></div>
+      </li>
+      <li>
+        <span class="ws-num">2</span>
+        <div><strong>Analyze your true profit</strong><span>After advertising, shipping, fees, discounts and returns.</span></div>
+      </li>
+      <li>
+        <span class="ws-num">3</span>
+        <div><strong>Discover what you should change</strong><span>Clear recommendations based on your own numbers.</span></div>
+      </li>
+    </ol>
+    <div class="welcome-actions">
+      <button class="btn btn-primary btn-lg" id="welcome-start" type="button">Get Started</button>
+      <button class="btn btn-ghost btn-lg" id="welcome-demo" type="button">Try Demo Data</button>
+    </div>
+    <p class="welcome-note">Your data is stored only in your browser. No account needed.</p>
+  </div>
+</div>
+
+<div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+<script src="js/data.js"></script>
+<script src="js/calc.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/report.js"></script>
+<script src="js/license.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
