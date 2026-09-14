@@ -130,6 +130,82 @@
      keep Pro via licenseActive (set by app.js at boot). */
   if (readPlan() === 'pro') writePlan('free');
 
+  /* ==== FREE TRIAL — ONE SESSION (v1.9) ======================
+     The Free plan is a one-session trial: the visitor's first
+     session has full free access. When that session ends (all
+     tabs closed, or away for more than TRIAL_GRACE_MS), the app
+     asks for a Pro license (paywall in app.js). Licensed users
+     are never gated, and the gate only engages when the store
+     is connected (checked in app.js, so self-hosted builds of
+     this open-source app stay fully free).
+     ============================================================= */
+  var TRIAL_KEY = 'profitleak.trial.v1';
+  var TRIAL_SESSION_KEY = 'profitleak.trial.session.v1';
+  var TRIAL_GRACE_MS = 30 * 60 * 1000; /* back within 30 min = same sitting */
+
+  var memoryTrial = null;    /* fallback when localStorage is blocked */
+  var memorySession = false; /* fallback when sessionStorage is blocked */
+
+  function readTrial() {
+    if (persistent) {
+      try {
+        var raw = localStorage.getItem(TRIAL_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) { return memoryTrial; }
+    }
+    return memoryTrial;
+  }
+  function writeTrial(t) {
+    memoryTrial = t;
+    if (!persistent) return;
+    try { localStorage.setItem(TRIAL_KEY, JSON.stringify(t)); } catch (e) { /* ignore */ }
+  }
+  function hasSessionMarker() {
+    try { return sessionStorage.getItem(TRIAL_SESSION_KEY) === '1'; } catch (e) { return memorySession; }
+  }
+  function markSession() {
+    memorySession = true;
+    try { sessionStorage.setItem(TRIAL_SESSION_KEY, '1'); } catch (e) { /* ignore */ }
+  }
+
+  var Trial = {
+    active: true, /* set properly by evaluate() at boot */
+    evaluate: function () {
+      if (Plan.isPro()) return true; /* licensed: open, without touching the trial state */
+      var now = Date.now();
+      var t = readTrial();
+      if (!t || !t.startedAt) {                 /* first ever visit: start the free session */
+        writeTrial({ startedAt: now, lastActive: now });
+        markSession();
+        this.active = true; return true;
+      }
+      var resume = t.lastActive && (now - t.lastActive) < TRIAL_GRACE_MS;
+      if (hasSessionMarker() || resume) {       /* same sitting: tab still open, or quick return */
+        t.lastActive = now; writeTrial(t); markSession();
+        this.active = true; return true;
+      }
+      this.active = false; return false;        /* the one free session is over */
+    },
+    isLocked: function () { return !Plan.isPro() && !this.active; },
+    heartbeat: function () {
+      if (this.isLocked()) return;
+      var t = readTrial();
+      if (t && t.startedAt) { t.lastActive = Date.now(); writeTrial(t); }
+    },
+    /* test/dev hook: simulate time passing + a fresh browser session */
+    _age: function (ms) {
+      memorySession = false;
+      try { sessionStorage.removeItem(TRIAL_SESSION_KEY); } catch (e) { /* ignore */ }
+      var t = readTrial();
+      if (t) { t.lastActive -= ms; writeTrial(t); }
+    },
+    _reset: function () {
+      memoryTrial = null; memorySession = false; this.active = false;
+      try { localStorage.removeItem(TRIAL_KEY); } catch (e) { /* ignore */ }
+      try { sessionStorage.removeItem(TRIAL_SESSION_KEY); } catch (e) { /* ignore */ }
+    }
+  };
+
   /* ---------- Sanitize products loaded from storage ---------- */
   function num(v, fallback) {
     var n = Number(v);
@@ -393,10 +469,11 @@
   global.PL_STORE = Store;
   global.PL_CSV = CSV;
   global.PL_PLAN = Plan;
+  global.PL_TRIAL = Trial;
 
   /* Node.js export (used by the automated tests) */
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { Store: Store, SAMPLE_PRODUCTS: SAMPLE_PRODUCTS, CSV: CSV, Plan: Plan };
+    module.exports = { Store: Store, SAMPLE_PRODUCTS: SAMPLE_PRODUCTS, CSV: CSV, Plan: Plan, Trial: Trial };
   }
 
 })(typeof window !== 'undefined' ? window : globalThis);

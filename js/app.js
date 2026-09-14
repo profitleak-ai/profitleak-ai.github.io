@@ -13,6 +13,7 @@
   var Plan = window.PL_PLAN;
   var Report = window.PL_REPORT;
   var License = window.PL_LICENSE; // paid license layer (v1.8)
+  var Trial = window.PL_TRIAL;     // one-session free trial gate (v1.9)
 
   /* ---------------- tiny helpers ---------------- */
   function $(sel, root) { return (root || document).querySelector(sel); }
@@ -96,6 +97,12 @@
   function render() {
     var route = parseRoute();
     var isLanding = route.page === 'landing';
+
+    if (Trial) Trial.heartbeat();
+
+    /* one-session free trial: app pages require an active session or a license */
+    if (!isLanding && trialGateEngaged()) { showTrialPaywall(); return; }
+    hideTrialPaywall();
 
     $('#view-landing').hidden = !isLanding;
     $('#view-app').hidden = isLanding;
@@ -1288,7 +1295,7 @@
     var pro = Plan.isPro();
 
     var freeFeats = [
-      ['check', 'Up to 3 products'],
+      ['check', 'One full free session (up to 3 products)'],
       ['check', 'True profit calculator \u2014 every cost counted'],
       ['check', 'Basic profit diagnosis \u2014 biggest leak + action'],
       ['check', 'Dashboard, product table & status filters'],
@@ -1350,7 +1357,7 @@
         '<div class="price-card">' +
           '<div class="price-name">FREE</div>' +
           '<div class="price-value">$0</div>' +
-          '<p class="price-tag">For getting started</p>' +
+          '<p class="price-tag">Your first session \u2014 free</p>' +
           featList(freeFeats) +
           '<div class="price-actions">' + freeBtn + '</div>' +
         '</div>' +
@@ -1380,6 +1387,69 @@
       btn.disabled = false;
       btn.textContent = 'Activate';
       if (r.ok) {
+        toast('Pro activated \u2014 welcome aboard, and thank you! \uD83C\uDF89');
+        render();
+      } else {
+        if (err) { err.textContent = r.reason; err.hidden = false; }
+        input.focus();
+      }
+    });
+  }
+
+  /* =============================================================
+     FREE-TRIAL PAYWALL (v1.9)
+     Shown when the one free session is over and no license is
+     active. Offers the buy link + instant license activation.
+     ============================================================= */
+  function trialGateEngaged() {
+    return !!(Trial && License && License.isConfigured() && Trial.isLocked());
+  }
+
+  function showTrialPaywall() {
+    var ov = $('#trial-overlay');
+    if (!ov) return;
+    var buy = $('#trial-buy');
+    if (buy && License && License.buyUrl) buy.href = License.buyUrl();
+    var n = state.products.length;
+    $('#trial-text').textContent = n > 0
+      ? 'You explored ProfitLeak AI with your free session. Your ' + n +
+        (n === 1 ? ' product' : ' products') + ' and every calculation are saved in this browser \u2014 ready the moment you activate Pro.'
+      : 'You explored ProfitLeak AI with your free session. Activate Pro to keep analyzing your true profit \u2014 every feature, unlimited products, lifetime license.';
+    ov.hidden = false;
+    document.body.classList.add('modal-open');
+    var wo = $('#welcome-overlay');
+    if (wo) wo.hidden = true;
+  }
+
+  function hideTrialPaywall() {
+    var ov = $('#trial-overlay');
+    if (!ov || ov.hidden) return;
+    ov.hidden = true;
+    var anyOpen = ['#modal-overlay', '#import-overlay', '#welcome-overlay'].some(function (s) {
+      var el = $(s); return el && !el.hidden;
+    });
+    if (!anyOpen) document.body.classList.remove('modal-open');
+  }
+
+  function trialActivateFlow() {
+    var input = $('#trial-license-input');
+    var btn = $('#trial-activate-btn');
+    var err = $('#trial-license-error');
+    if (!input || !btn || !License || !License.isConfigured()) return;
+    if (err) { err.hidden = true; }
+    var key = input.value.trim();
+    if (!key) {
+      if (err) { err.textContent = 'Paste the license key from your purchase email first.'; err.hidden = false; }
+      input.focus();
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'Verifying\u2026';
+    License.activate(key).then(function (r) {
+      btn.disabled = false;
+      btn.textContent = 'Activate';
+      if (r.ok) {
+        if (Trial) Trial.evaluate(); /* licensed users are never gated */
         toast('Pro activated \u2014 welcome aboard, and thank you! \uD83C\uDF89');
         render();
       } else {
@@ -1509,6 +1579,7 @@
      GLOBAL EVENTS (delegation)
      ============================================================= */
   function onGlobalClick(e) {
+    if (Trial) Trial.heartbeat();
     /* plain-language metric help (works on touch + desktop) */
     var helpEl = e.target.closest ? e.target.closest('[data-help]') : null;
     if (helpEl) {
@@ -1584,6 +1655,7 @@
      FIRST-TIME WELCOME
      ============================================================= */
   function maybeShowWelcome() {
+    if (trialGateEngaged()) return; /* the paywall replaces the welcome for locked visitors */
     if (Store.isOnboarded() || state.products.length) {
       if (!Store.isOnboarded()) Store.markOnboarded(); // returning user with data: skip
       return;
@@ -1640,8 +1712,12 @@
       });
     }
 
+    /* one-session free trial (v1.9) */
+    if (Trial) Trial.evaluate();
+
     $('#product-form').addEventListener('submit', onFormSubmit);
     $('#product-form').addEventListener('input', function (e) {
+      if (Trial) Trial.heartbeat();
       var field = e.target.closest('.field');
       if (field && field.classList.contains('has-error')) {
         field.classList.remove('has-error');
@@ -1662,6 +1738,14 @@
     $('#import-overlay').addEventListener('click', function (e) {
       if (e.target === e.currentTarget) closeImportPreview();
     });
+
+    var trialActivateBtn = $('#trial-activate-btn');
+    if (trialActivateBtn) {
+      trialActivateBtn.addEventListener('click', trialActivateFlow);
+      $('#trial-license-input').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') trialActivateFlow();
+      });
+    }
 
     document.addEventListener('click', onGlobalClick);
     document.addEventListener('keydown', onGlobalKeydown);

@@ -2181,3 +2181,24 @@ th.num, td.num { text-align: right; }
   .free-banner { flex-direction: column; align-items: flex-start; }
   .landing-nav-right { gap: 12px; }
 }
+
+
+/* ================================================================
+   FREE-TRIAL PAYWALL (v1.9) — one-session free plan
+================================================================ */
+.trial-overlay { position: fixed; inset: 0; z-index: 120; display: flex;
+  align-items: center; justify-content: center; padding: 24px;
+  background: rgba(4, 6, 20, 0.94); overflow-y: auto; }
+.trial-overlay[hidden] { display: none; }
+.trial-card { width: 100%; max-width: 540px; background: var(--surface);
+  border: 1.5px solid var(--border); border-radius: 18px; padding: 34px 30px 26px;
+  text-align: center; box-shadow: var(--shadow-lg); }
+.trial-icon { font-size: 40px; line-height: 1; margin-bottom: 12px; }
+.trial-card h2 { font-size: 24px; margin: 0 0 10px; color: var(--text); }
+.trial-text { font-size: 14.5px; line-height: 1.6; color: var(--text-muted); margin: 0 0 20px; }
+.trial-actions { display: flex; justify-content: center; margin-bottom: 10px; }
+.trial-note { font-size: 12px; color: var(--text-muted); margin: 0 0 20px; }
+.trial-license { border-top: 1.5px dashed var(--border); padding-top: 18px; margin-bottom: 16px; }
+.trial-license .license-row input { background: var(--surface-2); }
+.trial-safe { font-size: 12px; color: var(--text-muted); margin: 0; }
+@media (max-width: 520px) { .trial-card { padding: 26px 18px 20px; } }

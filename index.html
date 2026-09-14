@@ -30,7 +30,7 @@
     "@type": "Offer",
     "price": "0",
     "priceCurrency": "USD",
-    "description": "Free for up to 3 products with full diagnosis. Pro: $19 one-time, lifetime license."
+    "description": "Free to try \u2014 one full session with complete diagnosis. Pro: $19 one-time, lifetime license."
   }
 }
 </script>
@@ -376,7 +376,7 @@
       <div class="page-head">
         <div>
           <h1>Simple pricing</h1>
-          <p class="page-sub">Start free. Upgrade when you&rsquo;re serious about profit.</p>
+          <p class="page-sub">First session free. Upgrade when you&rsquo;re serious about profit.</p>
         </div>
         <div class="page-actions">
           <a class="btn btn-ghost" href="#/dashboard">&#8592; Back to dashboard</a>
@@ -453,6 +453,28 @@
       <button class="btn btn-ghost btn-lg" id="welcome-demo" type="button">Try Demo Data</button>
     </div>
     <p class="welcome-note">Your data is stored only in your browser. No account needed.</p>
+  </div>
+</div>
+
+<!-- ============ FREE TRIAL ENDED — LICENSE PAYWALL (v1.9) ============ -->
+<div class="trial-overlay" id="trial-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="trial-title">
+  <div class="trial-card">
+    <div class="trial-icon" aria-hidden="true">&#128274;</div>
+    <h2 id="trial-title">Your free session has ended</h2>
+    <p class="trial-text" id="trial-text"></p>
+    <div class="trial-actions">
+      <a class="btn btn-gold btn-lg" id="trial-buy" href="#" target="_blank" rel="noopener">Buy Pro &mdash; $19 one-time</a>
+    </div>
+    <p class="trial-note">Instant email delivery &middot; Lifetime license &middot; Secure checkout by Gumroad</p>
+    <div class="trial-license">
+      <div class="license-title">Already bought? Activate your license</div>
+      <div class="license-row">
+        <input id="trial-license-input" type="text" placeholder="Paste the license key from your purchase email" aria-label="License key" autocomplete="off">
+        <button class="btn btn-primary btn-sm" type="button" id="trial-activate-btn">Activate</button>
+      </div>
+      <div class="license-error" id="trial-license-error" hidden></div>
+    </div>
+    <p class="trial-safe">Your data stays in this browser &mdash; everything will be waiting for you right after activation.</p>
   </div>
 </div>
 
