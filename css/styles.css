@@ -2279,3 +2279,8 @@ th.num, td.num { text-align: right; }
 .wa-phone:hover { text-decoration: underline; }
 .pub-err { margin-top: 12px; font-size: 13.5px; font-weight: 700; color: #dc2626; }
 @media (max-width: 760px) { .wa-actions { white-space: normal; } }
+
+
+/* ============ NUMBERED TABLE + WHATSAPP BOX CONTROLS (v1.14) ============ */
+.wa-num-cell { color: var(--text-muted); font-weight: 700; width: 36px; }
+.wa-box .license-row .icon-btn { flex: 0 0 auto; }

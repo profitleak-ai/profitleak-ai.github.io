@@ -1571,19 +1571,20 @@
     var lic = (License && License.getLicense()) ? License.getLicense().key : '';
     var links = wa.links || {};
 
-    var rows = state.products.map(function (p) {
+    var rows = state.products.map(function (p, i) {
       var l = links[p.id];
       return '<tr>' +
+        '<td class="wa-num-cell">' + (i + 1) + '</td>' +
         '<td><b>' + esc(p.name) + '</b></td>' +
         '<td>' + fmtMoney(p.sellingPrice) + '</td>' +
         '<td>' + (l ? '<span class="badge badge-green">\u2713 order link</span>' : '<span class="badge">not linked</span>') + '</td>' +
         '<td class="wa-actions">' +
           (l
             ? '<button type="button" class="btn btn-ghost btn-sm" data-wa-copy="' + esc(waLink(l.code)) + '">Copy link</button> ' +
-              '<a class="btn btn-ghost btn-sm" href="' + esc(waLink(l.code)) + '" target="_blank" rel="noopener">View</a> ' +
-              '<button type="button" class="icon-btn" data-wa-edit="' + esc(p.id) + '" title="Edit order page (name, price)" aria-label="Edit order page">' + SVG_GEAR + '</button>' +
-              '<button type="button" class="icon-btn icon-danger" data-wa-del="' + esc(p.id) + '" title="Delete order link" aria-label="Delete order link">' + SVG_TRASH + '</button>'
-            : '<button type="button" class="btn btn-primary btn-sm" data-wa-create="' + esc(p.id) + '">Create order link</button>') +
+              '<a class="btn btn-ghost btn-sm" href="' + esc(waLink(l.code)) + '" target="_blank" rel="noopener">View</a> '
+            : '<button type="button" class="btn btn-primary btn-sm" data-wa-create="' + esc(p.id) + '">Create order link</button> ') +
+          '<button type="button" class="icon-btn" data-wa-edit="' + esc(p.id) + '" title="Edit product (name, price)' + (l ? ' and its order page' : '') + '" aria-label="Edit product">' + SVG_GEAR + '</button>' +
+          '<button type="button" class="icon-btn icon-danger" data-wa-del="' + esc(p.id) + '" title="Delete this product' + (l ? ' and its order link' : '') + '" aria-label="Delete product">' + SVG_TRASH + '</button>' +
         '</td></tr>';
     }).join('');
 
@@ -1594,9 +1595,10 @@
           '<div class="license-row">' +
             '<input id="wa-number" type="tel" placeholder="+212 6XX XXX XXX" value="' + esc(wa.whatsapp || '') + '" aria-label="WhatsApp number">' +
             '<button class="btn btn-primary btn-sm" type="button" id="wa-save">Save</button>' +
+            '<button type="button" class="icon-btn icon-danger" id="wa-clear" title="Remove the saved number from this device" aria-label="Remove number">' + SVG_TRASH + '</button>' +
           '</div>' +
           '<div class="license-error" id="wa-error" hidden></div>' +
-          '<p class="wa-hint">Include the country code. Customers see this only when they order \u2014 your chat stays private.</p>' +
+          '<p class="wa-hint">Include the country code. Saving updates the number on <b>every order page you created</b>. Customers see it only when they order.</p>' +
         '</div>' +
         '<div class="wa-box">' +
           '<div class="license-title">Your store link (for your bio)</div>' +
@@ -1608,7 +1610,7 @@
         '</div>' +
       '</div>' +
       (state.products.length
-        ? '<div class="card-table-wrap"><table class="table"><thead><tr><th>Product</th><th>Price</th><th>Order page</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+        ? '<div class="card-table-wrap"><table class="table"><thead><tr><th>#</th><th>Product</th><th>Price</th><th>Order page</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>'
         : '<p class="wa-hint">Add a product first \u2014 then create its WhatsApp order link here.</p>') +
       '<div class="wa-feed-head"><h2>Recent sales</h2>' +
         '<button type="button" class="btn btn-ghost btn-sm" id="wa-refresh">Refresh</button></div>' +
@@ -1621,7 +1623,42 @@
       if (digits.length < 8) { err.textContent = 'Enter a valid number with the country code (e.g. +212 6XX XXX XXX).'; err.hidden = false; return; }
       err.hidden = true;
       var d = waData(); d.whatsapp = digits; waSave(d);
-      toast('WhatsApp number saved \u2713');
+      var hasLinks = d.links && Object.keys(d.links).length > 0;
+      var btn = $('#wa-save');
+      if (lic && hasLinks) {
+        btn.disabled = true;
+        fetch(STORE_MANAGE_EP, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ license: lic, action: 'wa', whatsapp: digits })
+        }).then(function (r) { return r.json(); }).then(function (res) {
+          btn.disabled = false;
+          if (res && res.success) toast('Number updated on all your order pages \u2713');
+          else toast('Saved \u2014 but the order pages could not update. Try again.');
+        }).catch(function () {
+          btn.disabled = false;
+          toast('Saved \u2014 connection problem updating the order pages.');
+        });
+      } else {
+        toast('WhatsApp number saved \u2713');
+      }
+    });
+    var clearBtn = $('#wa-clear');
+    if (clearBtn) clearBtn.addEventListener('click', function () {
+      var d = waData();
+      if (!d.whatsapp) return;
+      confirmDialog({
+        title: 'Remove your WhatsApp number?',
+        message: 'The number is removed from this device. Your order links keep using it until you save a new one.',
+        confirmText: 'Remove',
+        danger: true
+      }).then(function (ok) {
+        if (!ok) return;
+        delete d.whatsapp;
+        waSave(d);
+        renderOrdersPage();
+        toast('Number removed \u2014 enter a new one any time.');
+      });
     });
     var storeCopy = $('#wa-store-copy');
     if (storeCopy) storeCopy.addEventListener('click', function () { waCopy(SITE_URL + '/#/s/' + waData().store); });
@@ -1638,29 +1675,61 @@
         var pid = b.getAttribute('data-wa-edit');
         var l = (waData().links || {})[pid];
         var tr = b.closest ? b.closest('tr') : null;
-        if (!l || !tr) return;
+        if (!tr) return;
         closeWaEdit();
         var p = state.products.find(function (x) { return x.id === pid; });
         if (!p) return;
         var er = document.createElement('tr');
         er.className = 'wa-edit-row';
-        er.innerHTML = '<td colspan="4"><div class="wa-edit">' +
-          '<input id="wa-e-name" type="text" maxlength="80" value="' + esc(p.name) + '" aria-label="Name on the order page">' +
-          '<input id="wa-e-price" type="number" min="1" step="any" value="' + esc(p.sellingPrice) + '" aria-label="Price on the order page">' +
+        er.innerHTML = '<td colspan="5"><div class="wa-edit">' +
+          '<input id="wa-e-name" type="text" maxlength="80" value="' + esc(p.name) + '" aria-label="Product name">' +
+          '<input id="wa-e-price" type="number" min="1" step="any" value="' + esc(p.sellingPrice) + '" aria-label="Price">' +
           '<button type="button" class="btn btn-primary btn-sm" id="wa-e-save">Save</button>' +
           '<button type="button" class="btn btn-ghost btn-sm" id="wa-e-cancel">Cancel</button>' +
-          '</div><div class="wa-hint">What customers see on ' + esc(waLink(l.code)) + '</div></td>';
+          (l ? '<button type="button" class="btn btn-ghost btn-sm danger-text" id="wa-e-unlink">Remove link only</button>' : '') +
+          '</div><div class="wa-hint">' + (l ? 'Updates your product AND the public order page ' + esc(waLink(l.code)) : 'Updates your product in this app.') + '</div></td>';
         tr.parentNode.insertBefore(er, tr.nextSibling);
-        $('#wa-e-save').addEventListener('click', function () { waSaveEdit(pid, lic, l.code); });
+        $('#wa-e-save').addEventListener('click', function () { waSaveEdit(pid, lic, l ? l.code : null); });
         $('#wa-e-cancel').addEventListener('click', function () { closeWaEdit(); });
+        var un = $('#wa-e-unlink');
+        if (un) un.addEventListener('click', function () { closeWaEdit(); waDeleteLink(pid, lic, l.code); });
       });
     });
     $$('[data-wa-del]').forEach(function (b) {
       b.addEventListener('click', function () {
         var pid = b.getAttribute('data-wa-del');
         var l = (waData().links || {})[pid];
-        if (!l) return;
-        waDeleteLink(pid, lic, l.code);
+        var p = state.products.find(function (x) { return x.id === pid; });
+        if (!p) return;
+        confirmDialog({
+          title: 'Delete \u201C' + p.name + '\u201D?',
+          message: l
+            ? 'This removes the product and its order link. The public order page will stop working.'
+            : 'This removes the product from your app.',
+          confirmText: 'Delete',
+          danger: true
+        }).then(function (ok) {
+          if (!ok) return;
+          var finish = function () {
+            var wd = waData();
+            if (wd.links) delete wd.links[pid];
+            waSave(wd);
+            state.products = state.products.filter(function (x) { return x.id !== pid; });
+            persist();
+            toast('\u201C' + esc(p.name) + '\u201D deleted \u2713');
+            renderOrdersPage();
+          };
+          if (l) {
+            fetch(STORE_MANAGE_EP, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ license: lic, action: 'delete', code: l.code })
+            }).then(function (r) { return r.json(); }).then(function (d) {
+              if (d && d.success) finish();
+              else toast((d && d.reason) || 'Could not delete \u2014 try again.');
+            }).catch(function () { toast('Connection problem \u2014 try again.'); });
+          } else finish();
+        });
       });
     });
     waRefreshFeed(lic);
@@ -1676,6 +1745,16 @@
     var price = Number(($('#wa-e-price') && $('#wa-e-price').value) || 0);
     if (!name) { toast('The name cannot be empty.'); return; }
     if (!(price > 0)) { toast('Enter a valid price.'); return; }
+    var applyLocal = function () {
+      var p = state.products.find(function (x) { return x.id === pid; });
+      if (p) { p.name = name; p.sellingPrice = price; persist(); }
+    };
+    if (!code) {
+      applyLocal();
+      toast('Product updated \u2713');
+      renderOrdersPage();
+      return;
+    }
     var btn = $('#wa-e-save');
     if (btn) btn.disabled = true;
     fetch(STORE_MANAGE_EP, {
@@ -1699,7 +1778,18 @@
   }
 
   function waDeleteLink(pid, lic, code) {
-    if (!window.confirm('Delete this order link?\nThe public order page will stop working.\n' + waLink(code))) return;
+    confirmDialog({
+      title: 'Remove this order link?',
+      message: 'The public order page will stop working. Your product stays in your app.',
+      confirmText: 'Remove link',
+      danger: true
+    }).then(function (ok) {
+      if (!ok) return;
+      waDeleteLinkNow(pid, lic, code);
+    });
+  }
+
+  function waDeleteLinkNow(pid, lic, code) {
     fetch(STORE_MANAGE_EP, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1709,7 +1799,7 @@
         var wd = waData();
         if (wd.links) delete wd.links[pid];
         waSave(wd);
-        toast('Order link deleted \u2713');
+        toast('Order link removed \u2014 product kept \u2713');
         renderOrdersPage();
       } else {
         toast((d && d.reason) || 'Could not delete \u2014 try again.');
