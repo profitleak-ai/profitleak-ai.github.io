@@ -116,15 +116,23 @@
       $('#view-landing').hidden = true;
       $('#view-app').hidden = true;
       $('#view-public').hidden = false;
+      hideTrialPaywall(); /* customers are never gated — even mid-popup */
       renderPublicPage(route);
       return;
     }
     $('#view-public').hidden = true;
 
     /* one-session free trial: the gate re-evaluates the session FIRST
-       (it may have ended since the last render); only then refresh it */
-    var gated = !isLanding && trialGateEngaged();
-    if (gated) { showTrialPaywall(); return; }
+       (it may have ended since the last render); only then refresh it.
+       v1.17: the popup shows on EVERY page for a locked visitor —
+       including the landing page, so nobody misses the email offer
+       just because they opened the site root. */
+    var gated = trialGateEngaged();
+    if (gated) {
+      if (isLanding) { $('#view-app').hidden = true; $('#view-landing').hidden = false; }
+      showTrialPaywall();
+      return;
+    }
     if (Trial) Trial.heartbeat();
     hideTrialPaywall();
 
