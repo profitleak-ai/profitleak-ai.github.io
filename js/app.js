@@ -16,6 +16,11 @@
   var Trial = window.PL_TRIAL;     // one-session free trial gate (v1.9)
   var CHECKOUT = 'https://profitleak.netlify.app/.netlify/functions/checkout-start?method='; // on-site checkout (v1.10)
   var EMAIL_EP = 'https://profitleak.netlify.app/.netlify/functions/email-signup'; // bonus-sessions signup (v1.11)
+  var STORE_CREATE_EP = 'https://profitleak.netlify.app/.netlify/functions/store-create'; // WhatsApp order links (v1.12)
+  var STORE_DATA_EP = 'https://profitleak.netlify.app/.netlify/functions/store-data';
+  var STORE_ORDER_EP = 'https://profitleak.netlify.app/.netlify/functions/store-order';
+  var STORE_ORDERS_EP = 'https://profitleak.netlify.app/.netlify/functions/store-orders';
+  var SITE_URL = 'https://profitleak.netlify.app';
 
   /* ---------------- tiny helpers ---------------- */
   function $(sel, root) { return (root || document).querySelector(sel); }
@@ -90,6 +95,9 @@
     if (parts[0] === 'dashboard') return { page: 'dashboard' };
     if (parts[0] === 'pricing') return { page: 'pricing' };
     if (parts[0] === 'report') return { page: 'report' };
+    if (parts[0] === 'orders') return { page: 'orders' };
+    if (parts[0] === 'order') { var oId = safeDecode(parts[1]); return oId ? { page: 'order', id: oId } : { page: 'landing' }; }
+    if (parts[0] === 's') { var sId = safeDecode(parts[1]); return sId ? { page: 'store', id: sId } : { page: 'landing' }; }
     if (parts[0] === 'add') return { page: 'form', mode: 'add' };
     if (parts[0] === 'edit') { var eId = safeDecode(parts[1]); return eId ? { page: 'form', mode: 'edit', id: eId } : { page: 'dashboard' }; }
     if (parts[0] === 'product') { var aId = safeDecode(parts[1]); return aId ? { page: 'analysis', id: aId } : { page: 'dashboard' }; }
@@ -99,6 +107,18 @@
   function render() {
     var route = parseRoute();
     var isLanding = route.page === 'landing';
+
+    /* public order/store pages (v1.12): customer-facing, no app chrome,
+       never gated by the trial or the license paywall */
+    var isPublic = route.page === 'order' || route.page === 'store';
+    if (isPublic) {
+      $('#view-landing').hidden = true;
+      $('#view-app').hidden = true;
+      $('#view-public').hidden = false;
+      renderPublicPage(route);
+      return;
+    }
+    $('#view-public').hidden = true;
 
     /* one-session free trial: the gate re-evaluates the session FIRST
        (it may have ended since the last render); only then refresh it */
@@ -114,6 +134,7 @@
     $$('.page').forEach(function (s) { s.hidden = true; });
     $('[data-nav="dashboard"]').classList.toggle('active', route.page === 'dashboard');
     $('[data-nav="pricing"]').classList.toggle('active', route.page === 'pricing');
+    $('[data-nav="orders"]').classList.toggle('active', route.page === 'orders');
     renderPlanNav();
 
     if (isLanding) {
@@ -121,6 +142,9 @@
     } else if (route.page === 'dashboard') {
       $('#page-dashboard').hidden = false;
       renderDashboard();
+    } else if (route.page === 'orders') {
+      $('#page-orders').hidden = false;
+      renderOrdersPage();
     } else if (route.page === 'pricing') {
       $('#page-pricing').hidden = false;
       renderPricing();
@@ -1507,6 +1531,317 @@
     });
   }
 
+
+  /* =============================================================
+     WHATSAPP ORDERS (v1.12) — Pro sellers get public order pages:
+     the customer clicks from the ad, orders on the site, and the
+     sale lands here automatically (name, qty, revenue, true profit)
+     and updates the product numbers — no manual entry.
+     ============================================================= */
+  var WA_KEY = 'profitleak.wa.v1';
+  function waData() {
+    try { return JSON.parse(localStorage.getItem(WA_KEY)) || {}; } catch (e) { return {}; }
+  }
+  function waSave(d) {
+    try { localStorage.setItem(WA_KEY, JSON.stringify(d)); } catch (e) { /* ignore */ }
+  }
+  function waLink(code) { return SITE_URL + '/#/order/' + code; }
+  function waProductByCode(code) {
+    var wa = waData(), links = wa.links || {};
+    var pid = null;
+    Object.keys(links).forEach(function (k) { if (links[k] && links[k].code === code) pid = k; });
+    return pid ? state.products.find(function (p) { return p.id === pid; }) : null;
+  }
+
+  function renderOrdersPage() {
+    var host = $('#orders-body');
+    if (!host) return;
+    if (!Plan.isPro()) {
+      host.innerHTML = '<div class="wa-upsell">' +
+        '<div class="upsell-icon" aria-hidden="true">\uD83D\uDCF1</div>' +
+        '<h2>WhatsApp Orders is a Pro feature</h2>' +
+        '<p class="upsell-text">Share an order link in your ads \u2014 every sale lands here automatically, with its true profit, and updates your product numbers for you.</p>' +
+        '<div class="empty-actions"><a class="btn btn-primary btn-lg" href="#/pricing">Upgrade to Pro</a></div></div>';
+      return;
+    }
+    var wa = waData();
+    var lic = (License && License.getLicense()) ? License.getLicense().key : '';
+    var links = wa.links || {};
+
+    var rows = state.products.map(function (p) {
+      var l = links[p.id];
+      return '<tr>' +
+        '<td><b>' + esc(p.name) + '</b></td>' +
+        '<td>' + fmtMoney(p.sellingPrice) + '</td>' +
+        '<td>' + (l ? '<span class="badge badge-green">\u2713 order link</span>' : '<span class="badge">not linked</span>') + '</td>' +
+        '<td class="wa-actions">' +
+          (l
+            ? '<button type="button" class="btn btn-ghost btn-sm" data-wa-copy="' + esc(waLink(l.code)) + '">Copy link</button> ' +
+              '<a class="btn btn-ghost btn-sm" href="' + esc(waLink(l.code)) + '" target="_blank" rel="noopener">View</a>'
+            : '<button type="button" class="btn btn-primary btn-sm" data-wa-create="' + esc(p.id) + '">Create order link</button>') +
+        '</td></tr>';
+    }).join('');
+
+    host.innerHTML =
+      '<div class="wa-grid">' +
+        '<div class="wa-box">' +
+          '<div class="license-title">Your WhatsApp number (orders go here)</div>' +
+          '<div class="license-row">' +
+            '<input id="wa-number" type="tel" placeholder="+212 6XX XXX XXX" value="' + esc(wa.whatsapp || '') + '" aria-label="WhatsApp number">' +
+            '<button class="btn btn-primary btn-sm" type="button" id="wa-save">Save</button>' +
+          '</div>' +
+          '<div class="license-error" id="wa-error" hidden></div>' +
+          '<p class="wa-hint">Include the country code. Customers see this only when they order \u2014 your chat stays private.</p>' +
+        '</div>' +
+        '<div class="wa-box">' +
+          '<div class="license-title">Your store link (for your bio)</div>' +
+          (wa.store
+            ? '<div class="license-row"><input readonly value="' + esc(SITE_URL + '/#/s/' + wa.store) + '" aria-label="Store link">' +
+              '<button class="btn btn-primary btn-sm" type="button" id="wa-store-copy">Copy</button></div>' +
+              '<p class="wa-hint">One link with all your products \u2014 perfect for Instagram bio or WhatsApp status.</p>'
+            : '<p class="wa-hint">Create your first product order link and your store link appears here automatically.</p>') +
+        '</div>' +
+      '</div>' +
+      (state.products.length
+        ? '<div class="card-table-wrap"><table class="table"><thead><tr><th>Product</th><th>Price</th><th>Order page</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+        : '<p class="wa-hint">Add a product first \u2014 then create its WhatsApp order link here.</p>') +
+      '<div class="wa-feed-head"><h2>Recent sales</h2>' +
+        '<button type="button" class="btn btn-ghost btn-sm" id="wa-refresh">Refresh</button></div>' +
+      '<div id="wa-feed"><p class="wa-hint">Loading orders\u2026</p></div>';
+
+    $('#wa-save').addEventListener('click', function () {
+      var v = $('#wa-number').value.replace(/[^0-9+]/g, '');
+      var digits = v.replace(/[^0-9]/g, '');
+      var err = $('#wa-error');
+      if (digits.length < 8) { err.textContent = 'Enter a valid number with the country code (e.g. +212 6XX XXX XXX).'; err.hidden = false; return; }
+      err.hidden = true;
+      var d = waData(); d.whatsapp = digits; waSave(d);
+      toast('WhatsApp number saved \u2713');
+    });
+    var storeCopy = $('#wa-store-copy');
+    if (storeCopy) storeCopy.addEventListener('click', function () { waCopy(SITE_URL + '/#/s/' + waData().store); });
+    var refresh = $('#wa-refresh');
+    if (refresh) refresh.addEventListener('click', function () { waRefreshFeed(lic); });
+    $$('[data-wa-create]').forEach(function (b) {
+      b.addEventListener('click', function () { waCreateLink(b.getAttribute('data-wa-create'), lic, b); });
+    });
+    $$('[data-wa-copy]').forEach(function (b) {
+      b.addEventListener('click', function () { waCopy(b.getAttribute('data-wa-copy')); });
+    });
+    waRefreshFeed(lic);
+  }
+
+  function waCopy(text) {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text);
+        toast('Link copied \u2713'); return;
+      }
+    } catch (e) { /* fallback below */ }
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      toast('Link copied \u2713');
+    } catch (e) { toast('Copy failed \u2014 select the link manually.'); }
+  }
+
+  function waCreateLink(productId, lic, btn) {
+    var wa = waData();
+    var err = function (m) { toast(m); };
+    if (!lic) { err('Activate your Pro license first (Pricing page).'); return; }
+    if (!wa.whatsapp) { err('Save your WhatsApp number first.'); return; }
+    var p = state.products.find(function (x) { return x.id === productId; });
+    if (!p) return;
+    btn.disabled = true; btn.textContent = 'Creating\u2026';
+    fetch(STORE_CREATE_EP, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ license: lic, name: p.name, price: p.sellingPrice, whatsapp: wa.whatsapp })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (d && d.success) {
+        var w = waData();
+        w.links = w.links || {};
+        w.links[productId] = { code: d.code };
+        w.store = d.store || w.store;
+        waSave(w);
+        waCopy(waLink(d.code));
+        renderOrdersPage();
+      } else {
+        btn.disabled = false; btn.textContent = 'Create order link';
+        err((d && d.reason) || 'Could not create the link \u2014 try again.');
+      }
+    }).catch(function () {
+      btn.disabled = false; btn.textContent = 'Create order link';
+      err('Connection problem \u2014 try again.');
+    });
+  }
+
+  function waApplyOrders(orders) {
+    if (!orders || !orders.length) return 0;
+    var wa = waData();
+    var seen = wa.seen || [];
+    var links = wa.links || {};
+    var byCode = {};
+    Object.keys(links).forEach(function (pid) { if (links[pid]) byCode[links[pid].code] = pid; });
+    var applied = 0;
+    orders.forEach(function (o) {
+      if (seen.indexOf(o.oc) !== -1) return;
+      seen.push(o.oc);
+      var pid = byCode[o.lc];
+      var p = pid ? state.products.find(function (x) { return x.id === pid; }) : null;
+      if (p) { p.unitsSold = (Number(p.unitsSold) || 0) + (Number(o.qty) || 1); applied++; }
+    });
+    wa.seen = seen; waSave(wa);
+    if (applied) {
+      persist();
+      toast(applied + ' new WhatsApp sale' + (applied > 1 ? 's' : '') + ' applied \u2014 numbers updated \u2713');
+    }
+    return applied;
+  }
+
+  function waFeedRow(o) {
+    var p = waProductByCode(o.lc);
+    var revenue = (Number(o.price) || 0) * (Number(o.qty) || 1);
+    var cost = 0;
+    if (p) {
+      cost = (Number(p.purchaseCost) + Number(p.adCostPerSale) + Number(p.shippingCost) +
+        Number(p.platformFees) + Number(p.discountPerSale) + Number(p.returnCostPerSale)) * (Number(o.qty) || 1);
+    }
+    var profit = revenue - cost;
+    var when = String(o.at || '').replace('T', ' ').slice(0, 16);
+    return '<tr>' +
+      '<td>' + esc(when) + '</td>' +
+      '<td><b>' + esc(o.name || 'Customer') + '</b></td>' +
+      '<td>' + esc(o.p || '') + '</td>' +
+      '<td>\u00D7' + (Number(o.qty) || 1) + '</td>' +
+      '<td>' + fmtMoney(revenue) + '</td>' +
+      '<td class="' + (profit < 0 ? 'val-bad' : 'val-good') + '">' + (p ? fmtMoney(profit) : '\u2014') + '</td>' +
+      '</tr>';
+  }
+
+  function waRefreshFeed(lic) {
+    var feed = $('#wa-feed');
+    if (!feed) return;
+    var wa = waData();
+    var codes = Object.keys(wa.links || {}).map(function (k) { return wa.links[k].code; });
+    if (!lic || !codes.length) {
+      feed.innerHTML = '<p class="wa-hint">No order links yet \u2014 create one for a product above, share it in your ads, and sales will appear here automatically.</p>';
+      return;
+    }
+    fetch(STORE_ORDERS_EP, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ license: lic, codes: codes })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (!d || !d.success) {
+        feed.innerHTML = '<p class="wa-hint">Could not load orders right now \u2014 tap Refresh.</p>';
+        return;
+      }
+      waApplyOrders(d.orders);
+      if (!d.orders.length) {
+        feed.innerHTML = '<p class="wa-hint">No sales yet. Share your order link in your ads \u2014 every order will appear here automatically.</p>';
+        return;
+      }
+      feed.innerHTML = '<div class="card-table-wrap"><table class="table"><thead><tr>' +
+        '<th>Date</th><th>Buyer</th><th>Product</th><th>Qty</th><th>Revenue</th><th>True profit</th>' +
+        '</tr></thead><tbody>' + d.orders.map(waFeedRow).join('') + '</tbody></table></div>';
+    }).catch(function () {
+      feed.innerHTML = '<p class="wa-hint">Connection problem \u2014 tap Refresh.</p>';
+    });
+  }
+
+  /* silent auto-sync on boot: new orders apply themselves */
+  function waAutoSync() {
+    if (!Plan.isPro() || !License || !License.isActive()) return;
+    var wa = waData();
+    var codes = Object.keys(wa.links || {}).map(function (k) { return wa.links[k].code; });
+    if (!codes.length) return;
+    var lic = License.getLicense() ? License.getLicense().key : '';
+    if (!lic) return;
+    fetch(STORE_ORDERS_EP, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ license: lic, codes: codes })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (d && d.success && waApplyOrders(d.orders)) render();
+    }).catch(function () { /* silent */ });
+  }
+
+  /* ---------- public pages (customer side) ---------- */
+  function renderPublicPage(route) {
+    var host = $('#public-body');
+    if (!host) return;
+    host.innerHTML = '<div class="pub-loading">Loading\u2026</div>';
+    fetch(STORE_DATA_EP + '?code=' + encodeURIComponent(route.id))
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d || !d.success) {
+          host.innerHTML = pubShell('<h1>Order page not found</h1><p class="pub-sub">This link may be wrong or expired.</p>');
+          return;
+        }
+        if (d.type === 'store') {
+          var items = (d.products || []).map(function (p) {
+            return '<a class="pub-item" href="' + SITE_URL + '/#/order/' + esc(p.code) + '">' +
+              '<b>' + esc(p.name) + '</b><span>' + fmtMoney(p.price) + '</span></a>';
+          }).join('');
+          host.innerHTML = pubShell('<h1>Our products</h1>' +
+            '<p class="pub-sub">Tap a product to order on WhatsApp \u2014 pay on delivery.</p>' +
+            '<div class="pub-grid">' + (items || '<p class="pub-sub">No products yet.</p>') + '</div>');
+        } else {
+          host.innerHTML = pubShell(
+            '<h1>' + esc(d.name) + '</h1>' +
+            '<div class="pub-price">' + fmtMoney(d.price) + '</div>' +
+            '<p class="pub-sub">Order on WhatsApp \u00B7 \u0627\u0637\u0644\u0628 \u0639\u0628\u0631 \u0648\u0627\u062A\u0633\u0627\u0628 \u00B7 \u0627\u0644\u062F\u0641\u0639 \u0639\u0646\u062F \u0627\u0644\u0627\u0633\u062A\u0644\u0627\u0645</p>' +
+            '<label class="pub-label">Your name (optional)<input id="pub-name" type="text" maxlength="60" autocomplete="name"></label>' +
+            '<label class="pub-label">Quantity<input id="pub-qty" type="number" value="1" min="1" max="99"></label>' +
+            '<button type="button" class="pub-wa-btn" id="pub-order" data-code="' + esc(route.id) + '" data-price="' + Number(d.price) + '">\uD83D\uDFE2 Order via WhatsApp \u00B7 \u0627\u0637\u0644\u0628 \u0627\u0644\u0622\u0646</button>' +
+            '<div id="pub-done" hidden><p class="pub-ok">\u2713 Order sent \u2014 WhatsApp should open now.</p>' +
+            '<a id="pub-wa-link" class="pub-wa-btn" href="#" target="_blank" rel="noopener">Tap here if WhatsApp did not open</a></div>' +
+            '<p class="pub-note">Powered by ProfitLeak AI</p>');
+          $('#pub-order').addEventListener('click', function () { publicOrderSubmit(); });
+        }
+      })
+      .catch(function () {
+        host.innerHTML = pubShell('<h1>Connection problem</h1><p class="pub-sub">Check your internet and refresh.</p>');
+      });
+  }
+
+  function pubShell(inner) {
+    return '<div class="pub-card">' +
+      '<div class="pub-logo" aria-hidden="true"></div>' + inner + '</div>';
+  }
+
+  function publicOrderSubmit() {
+    var btn = $('#pub-order');
+    var code = btn.getAttribute('data-code');
+    var name = ($('#pub-name') && $('#pub-name').value || '').trim();
+    var qty = Math.min(99, Math.max(1, parseInt($('#pub-qty') && $('#pub-qty').value, 10) || 1));
+    btn.disabled = true; btn.textContent = 'Sending\u2026';
+    fetch(STORE_ORDER_EP, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: code, name: name, qty: qty })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (!d || !d.success) {
+        btn.disabled = false; btn.textContent = '\uD83D\uDFE2 Order via WhatsApp \u00B7 \u0627\u0637\u0644\u0628 \u0627\u0644\u0622\u0646';
+        return;
+      }
+      var msg = 'New order ' + d.orderCode +
+        '\nProduct: ' + d.product + ' \u00D7' + d.qty +
+        '\nTotal: $' + (Number(d.price) * d.qty).toFixed(2) +
+        (name ? '\nName: ' + name : '') +
+        '\n(from ProfitLeak order page)';
+      var url = 'https://wa.me/' + d.wa + '?text=' + encodeURIComponent(msg);
+      try { window.open(url, '_blank'); } catch (e) { /* link below */ }
+      $('#pub-done').hidden = false;
+      $('#pub-wa-link').href = url;
+      btn.textContent = '\u2713 Order sent';
+    }).catch(function () {
+      btn.disabled = false; btn.textContent = '\uD83D\uDFE2 Order via WhatsApp \u00B7 \u0627\u0637\u0644\u0628 \u0627\u0644\u0622\u0646';
+    });
+  }
+
   function showProComingSoon() {
     confirmDialog({
       title: 'Get Pro \u2014 $19 one-time \uD83D\uDE80',
@@ -1703,6 +2038,8 @@
      FIRST-TIME WELCOME
      ============================================================= */
   function maybeShowWelcome() {
+    var r0 = parseRoute();
+    if (r0.page === 'order' || r0.page === 'store') return; /* customer pages: no welcome */
     if (trialGateEngaged()) return; /* the paywall replaces the welcome for locked visitors */
     if (Store.isOnboarded() || state.products.length) {
       if (!Store.isOnboarded()) Store.markOnboarded(); // returning user with data: skip
@@ -1762,6 +2099,9 @@
 
     /* one-session free trial (v1.9) */
     if (Trial) Trial.evaluate();
+
+    /* WhatsApp orders (v1.12): new sales apply themselves on open */
+    setTimeout(function () { try { waAutoSync(); } catch (e) { /* never block boot */ } }, 900);
 
     $('#product-form').addEventListener('submit', onFormSubmit);
     $('#product-form').addEventListener('input', function (e) {

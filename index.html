@@ -168,6 +168,7 @@
       </a>
       <nav class="topbar-nav" aria-label="Main">
         <a class="nav-link" href="#/dashboard" data-nav="dashboard">Dashboard</a>
+        <a class="nav-link" href="#/orders" data-nav="orders">Orders</a>
         <a class="nav-link" href="#/pricing" data-nav="pricing">Pricing</a>
         <a class="btn btn-primary btn-sm" href="#/add">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -371,6 +372,15 @@
       </div>
     </section>
 
+    <!-- ============ WHATSAPP ORDERS (Pro) ============ -->
+    <section id="page-orders" class="page" hidden>
+      <div class="page-head">
+        <h1>WhatsApp Orders</h1>
+        <p class="page-sub">Sales from your WhatsApp order links appear here automatically \u2014 with every order\u2019s true profit.</p>
+      </div>
+      <div id="orders-body"></div>
+    </section>
+
     <!-- ============ PRICING ============ -->
     <section id="page-pricing" class="page" hidden>
       <div class="page-head">
@@ -457,6 +467,11 @@
 </div>
 
 <!-- ============ FREE TRIAL ENDED — LICENSE PAYWALL (v1.9) ============ -->
+<!-- ============ PUBLIC ORDER / STORE PAGES (no app chrome) ============ -->
+<div id="view-public" hidden>
+  <div id="public-body"></div>
+</div>
+
 <div class="trial-overlay" id="trial-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="trial-title">
   <div class="trial-card">
     <div class="trial-icon" aria-hidden="true">&#128274;</div>

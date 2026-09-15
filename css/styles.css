@@ -2215,3 +2215,49 @@ th.num, td.num { text-align: right; }
 
 /* email signup for bonus sessions (v1.11) */
 .trial-email { border-top: 1.5px dashed var(--border); padding-top: 16px; margin-bottom: 14px; }
+
+
+/* ============ WHATSAPP ORDERS + PUBLIC PAGES (v1.12) ============ */
+.wa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
+.wa-box { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 16px; }
+.wa-box .license-row input { flex: 1; min-width: 0; padding: 9px 11px; font-size: 16px;
+  border: 1.5px solid var(--border); border-radius: 10px; background: var(--surface-2); }
+.wa-hint { font-size: 12.5px; color: var(--text-muted); margin-top: 8px; line-height: 1.5; }
+.wa-actions { white-space: nowrap; text-align: right; }
+.wa-feed-head { display: flex; align-items: center; justify-content: space-between; margin: 22px 0 10px; }
+.wa-feed-head h2 { font-size: 18px; }
+.wa-upsell { text-align: center; padding: 46px 20px; background: var(--surface);
+  border: 1.5px solid var(--border); border-radius: 16px; }
+@media (max-width: 760px) { .wa-grid { grid-template-columns: 1fr; } }
+
+/* public order/store pages (customers — no app chrome) */
+#view-public { min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 24px; background: radial-gradient(ellipse at 50% 30%, #16163e 0%, #070716 60%); }
+#view-public[hidden] { display: none; }
+.pub-card { width: 100%; max-width: 460px; background: #fff; color: #0f172a;
+  border-radius: 20px; padding: 34px 28px; text-align: center; box-shadow: 0 18px 50px rgba(0,0,0,.45); }
+.pub-logo { width: 54px; height: 54px; margin: 0 auto 14px; border-radius: 13px;
+  background: linear-gradient(135deg, #4f46e5, #8b5cf6); position: relative; }
+.pub-logo::after { content: ''; position: absolute; inset: 16px; border-radius: 50% 50% 50% 0;
+  transform: rotate(45deg); background: #fff; }
+.pub-card h1 { font-size: 23px; margin: 4px 0 8px; }
+.pub-price { font-size: 34px; font-weight: 800; color: #4f46e5; margin: 8px 0 4px; }
+.pub-sub { font-size: 14px; color: #5b6b82; line-height: 1.6; margin-bottom: 14px; }
+.pub-label { display: block; text-align: left; font-size: 12.5px; font-weight: 700; color: #334155; margin: 12px 0 4px; }
+.pub-label input { width: 100%; padding: 12px 13px; font-size: 16px; border: 1.5px solid #e3e8f0;
+  border-radius: 12px; margin-top: 5px; }
+.pub-label input:focus { outline: none; border-color: #4f46e5; box-shadow: 0 0 0 3px #e0e7ff; }
+.pub-wa-btn { display: block; width: 100%; margin-top: 18px; padding: 15px; border: 0; border-radius: 14px;
+  background: #25D366; color: #fff; font-size: 16.5px; font-weight: 800; cursor: pointer;
+  text-decoration: none; text-align: center; }
+.pub-wa-btn:hover { background: #1fb958; }
+.pub-wa-btn[disabled] { opacity: .7; cursor: wait; }
+.pub-ok { font-size: 15px; font-weight: 700; color: #059669; margin: 14px 0 0; }
+.pub-note { font-size: 11.5px; color: #94a3b8; margin-top: 16px; }
+.pub-loading { color: #c7d2fe; font-size: 15px; }
+.pub-grid { display: grid; gap: 10px; margin-top: 12px; }
+.pub-item { display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  background: #f8fafc; border: 1.5px solid #e3e8f0; border-radius: 12px; padding: 13px 15px;
+  text-decoration: none; color: #0f172a; font-size: 15px; }
+.pub-item:hover { border-color: #4f46e5; }
+.pub-item span { font-weight: 800; color: #4f46e5; white-space: nowrap; }
