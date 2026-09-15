@@ -193,7 +193,14 @@
           writeTrial(t); markSession();
           this.active = true; return true;
         }
-        this.active = false; return false;      /* all free time used — email offer / paywall */
+        this.active = false;
+        t.done = true; writeTrial(t);           /* v1.20: permanently over — nothing revives it */
+        return false;
+      }
+      if (t.done) {                             /* v1.20: the free time was fully consumed —
+                                                    refresh (F5), Clear All or a live session
+                                                    marker can never bring it back */
+        this.active = false; return false;
       }
       if (hasSessionMarker()) {                 /* same sitting: refresh, or the tab never closed */
         t.lastActive = now; writeTrial(t); markSession();
@@ -205,7 +212,9 @@
         writeTrial(t); markSession();
         this.active = true; return true;
       }
-      this.active = false; return false;        /* the free sessions are over */
+      this.active = false;
+      t.done = true; writeTrial(t);             /* v1.20: permanently locked — paywall only */ 
+      return false;
     },
     isLocked: function () { return !Plan.isPro() && !this.active; },
     heartbeat: function () {
@@ -219,6 +228,7 @@
       t.email = email;
       t.extraSessions = (t.extraSessions || 0) + (n || 0);
       t.startedAt = Date.now();       /* fresh 20-minute window for the bonus sitting */
+      t.done = false;                 /* v1.20: a legitimate new offer clears the lock */
       writeTrial(t);
       memorySession = false;          /* open it by consuming one bonus — consistent for everyone */
       try { sessionStorage.removeItem(TRIAL_SESSION_KEY); } catch (e) { /* ignore */ }

@@ -1108,7 +1108,11 @@
       var snapshot = state.products.slice();
       state.products = [];
       persist();
+      try { Store.markOnboarded(); } catch (e) { /* never a new visitor again after clearing */ }
       render();
+      /* v1.20: for a locked visitor the payment popup pops right after clearing —
+         clearing data can never become a way back to free attempts */
+      if (trialGateEngaged()) showTrialPaywall();
       toast('All products cleared', {
         actionLabel: 'Undo',
         onAction: function () {
