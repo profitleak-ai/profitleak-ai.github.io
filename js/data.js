@@ -132,16 +132,19 @@
 
   /* ==== FREE TRIAL — ONE SESSION (v1.9) ======================
      The Free plan is a one-session trial: the visitor's first
-     session has full free access. When that session ends (all
-     tabs closed, or away for more than TRIAL_GRACE_MS), the app
-     asks for a Pro license (paywall in app.js). Licensed users
+     session has full free access. When that session ends (closed
+     the site for more than TRIAL_GRACE_MS), the app asks for an
+     email (2 bonus sessions) and then a Pro license (paywall in
+     app.js). Licensed users
      are never gated, and the gate only engages when the store
      is connected (checked in app.js, so self-hosted builds of
      this open-source app stay fully free).
      ============================================================= */
   var TRIAL_KEY = 'profitleak.trial.v1';
   var TRIAL_SESSION_KEY = 'profitleak.trial.session.v1';
-  var TRIAL_GRACE_MS = 30 * 60 * 1000; /* back within 30 min = same sitting */
+  var TRIAL_GRACE_MS = 60 * 1000; /* back within ~a minute = same sitting (refresh, second
+                                   tab while the first is active); anything longer ends the
+                                   free attempt and the email/paywall popup shows (v1.16) */
 
   var memoryTrial = null;    /* fallback when localStorage is blocked */
   var memorySession = false; /* fallback when sessionStorage is blocked */

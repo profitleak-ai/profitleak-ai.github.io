@@ -1448,10 +1448,19 @@
     if (ppo) ppo.href = CHECKOUT + 'paypal';
     if (cpo) cpo.href = CHECKOUT + 'crypto';
     var n = state.products.length;
-    $('#trial-text').textContent = n > 0
-      ? 'You explored ProfitLeak AI with your free session. Your ' + n +
-        (n === 1 ? ' product' : ' products') + ' and every calculation are saved in this browser \u2014 ready the moment you activate Pro.'
-      : 'You explored ProfitLeak AI with your free session. Activate Pro to keep analyzing your true profit \u2014 every feature, unlimited products, lifetime license.';
+    /* v1.16: once the visitor has used their email bonus, the popup is buy-only */
+    var usedEmail = (Trial && Trial.getEmail) ? Trial.getEmail() : '';
+    var emailBox = document.querySelector('.trial-email');
+    if (emailBox) emailBox.hidden = !!usedEmail;
+    $('#trial-text').textContent = usedEmail
+      ? (n > 0
+          ? 'You have used your free session and your 2 bonus sessions. Your ' + n +
+            (n === 1 ? ' product' : ' products') + ' and every calculation are saved in this browser \u2014 ready the moment you activate Pro.'
+          : 'You have used your free session and your 2 bonus sessions. Activate Pro to keep analyzing your true profit \u2014 every feature, unlimited products, lifetime license.')
+      : (n > 0
+          ? 'You explored ProfitLeak AI with your free session. Your ' + n +
+            (n === 1 ? ' product' : ' products') + ' and every calculation are saved in this browser \u2014 ready the moment you activate Pro.'
+          : 'You explored ProfitLeak AI with your free session. Activate Pro to keep analyzing your true profit \u2014 every feature, unlimited products, lifetime license.');
     ov.hidden = false;
     document.body.classList.add('modal-open');
     var wo = $('#welcome-overlay');
