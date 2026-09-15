@@ -1604,8 +1604,12 @@
           '<div class="license-title">Your store link (for your bio)</div>' +
           (wa.store
             ? '<div class="license-row"><input readonly value="' + esc(SITE_URL + '/#/s/' + wa.store) + '" aria-label="Store link">' +
-              '<button class="btn btn-primary btn-sm" type="button" id="wa-store-copy">Copy</button></div>' +
-              '<p class="wa-hint">One link with all your products \u2014 perfect for Instagram bio or WhatsApp status.</p>'
+              '<button class="btn btn-primary btn-sm" type="button" id="wa-store-copy">Copy</button>' +
+              '<a class="btn btn-ghost btn-sm" href="' + esc(SITE_URL + '/#/s/' + wa.store) + '" target="_blank" rel="noopener">View</a> ' +
+              '<button type="button" class="icon-btn" id="wa-store-edit" title="Edit store name (shown on your store page)" aria-label="Edit store">' + SVG_GEAR + '</button>' +
+              '<button type="button" class="icon-btn icon-danger" id="wa-store-del" title="Delete your store page" aria-label="Delete store">' + SVG_TRASH + '</button></div>' +
+              '<div id="wa-store-editor"></div>' +
+              '<p class="wa-hint">' + (wa.storeName ? '\u201C' + esc(wa.storeName) + '\u201D \u2014 ' : '') + 'One link with all your products \u2014 perfect for Instagram bio or WhatsApp status.</p>'
             : '<p class="wa-hint">Create your first product order link and your store link appears here automatically.</p>') +
         '</div>' +
       '</div>' +
@@ -1662,6 +1666,79 @@
     });
     var storeCopy = $('#wa-store-copy');
     if (storeCopy) storeCopy.addEventListener('click', function () { waCopy(SITE_URL + '/#/s/' + waData().store); });
+    var storeEdit = $('#wa-store-edit');
+    if (storeEdit) storeEdit.addEventListener('click', function () {
+      var host = $('#wa-store-editor');
+      if (!host) return;
+      if (host.innerHTML) { host.innerHTML = ''; return; }
+      host.innerHTML = '<div class="wa-edit">' +
+        '<input id="wa-s-name" type="text" maxlength="80" placeholder="Store name (e.g. Casablanca Gadgets)" aria-label="Store name">' +
+        '<button type="button" class="btn btn-primary btn-sm" id="wa-s-save">Save</button>' +
+        '<button type="button" class="btn btn-ghost btn-sm" id="wa-s-cancel">Cancel</button>' +
+        '</div><div class="wa-hint">This name appears as the title of your public store page. Leave it empty for the default.</div>';
+      var inp = $('#wa-s-name');
+      inp.value = waData().storeName || '';
+      fetch(STORE_DATA_EP + '?code=' + encodeURIComponent(waData().store))
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          if (d && d.success && d.type === 'store' && $('#wa-s-name')) $('#wa-s-name').value = d.name || '';
+        })
+        .catch(function () { /* keep the local value */ });
+      $('#wa-s-save').addEventListener('click', function () {
+        var name = String(($('#wa-s-name') && $('#wa-s-name').value) || '').trim();
+        var sbtn = $('#wa-s-save');
+        sbtn.disabled = true;
+        fetch(STORE_MANAGE_EP, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ license: lic, action: 'store-update', name: name })
+        }).then(function (r) { return r.json(); }).then(function (d) {
+          if (d && d.success) {
+            var wd = waData();
+            wd.storeName = name;
+            waSave(wd);
+            toast('Store name updated \u2713');
+            renderOrdersPage();
+          } else {
+            sbtn.disabled = false;
+            toast((d && d.reason) || 'Could not save \u2014 try again.');
+          }
+        }).catch(function () {
+          sbtn.disabled = false;
+          toast('Connection problem \u2014 try again.');
+        });
+      });
+      $('#wa-s-cancel').addEventListener('click', function () { host.innerHTML = ''; });
+    });
+    var storeDel = $('#wa-store-del');
+    if (storeDel) storeDel.addEventListener('click', function () {
+      confirmDialog({
+        title: 'Delete your store page?',
+        message: 'The store link will stop working. Your product order links are not affected.',
+        confirmText: 'Delete store',
+        danger: true
+      }).then(function (ok) {
+        if (!ok) return;
+        fetch(STORE_MANAGE_EP, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ license: lic, action: 'store-delete' })
+        }).then(function (r) { return r.json(); }).then(function (d) {
+          if (d && d.success) {
+            var wd = waData();
+            delete wd.store;
+            delete wd.storeName;
+            waSave(wd);
+            toast('Store page deleted \u2713');
+            renderOrdersPage();
+          } else {
+            toast((d && d.reason) || 'Could not delete \u2014 try again.');
+          }
+        }).catch(function () {
+          toast('Connection problem \u2014 try again.');
+        });
+      });
+    });
     var refresh = $('#wa-refresh');
     if (refresh) refresh.addEventListener('click', function () { waRefreshFeed(lic); });
     $$('[data-wa-create]').forEach(function (b) {
@@ -1964,7 +2041,7 @@
             return '<a class="pub-item" href="' + SITE_URL + '/#/order/' + esc(p.code) + '">' +
               '<b>' + esc(p.name) + '</b><span>' + fmtMoney(p.price) + '</span></a>';
           }).join('');
-          host.innerHTML = pubShell('<h1>Our products</h1>' +
+          host.innerHTML = pubShell('<h1>' + esc(d.name || 'Our products') + '</h1>' +
             '<p class="pub-sub">Tap a product to order on WhatsApp \u2014 pay on delivery.</p>' +
             '<div class="pub-grid">' + (items || '<p class="pub-sub">No products yet.</p>') + '</div>');
         } else {
