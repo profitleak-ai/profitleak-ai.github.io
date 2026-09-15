@@ -20,6 +20,7 @@
   var STORE_DATA_EP = 'https://profitleak.netlify.app/.netlify/functions/store-data';
   var STORE_ORDER_EP = 'https://profitleak.netlify.app/.netlify/functions/store-order';
   var STORE_ORDERS_EP = 'https://profitleak.netlify.app/.netlify/functions/store-orders';
+  var STORE_MANAGE_EP = 'https://profitleak.netlify.app/.netlify/functions/store-manage'; // edit/delete order links (v1.13)
   var SITE_URL = 'https://profitleak.netlify.app';
 
   /* ---------------- tiny helpers ---------------- */
@@ -1538,6 +1539,8 @@
      sale lands here automatically (name, qty, revenue, true profit)
      and updates the product numbers — no manual entry.
      ============================================================= */
+  var SVG_GEAR = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>';
+  var SVG_TRASH = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M6 6l1 14h10l1-14"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg>';
   var WA_KEY = 'profitleak.wa.v1';
   function waData() {
     try { return JSON.parse(localStorage.getItem(WA_KEY)) || {}; } catch (e) { return {}; }
@@ -1577,7 +1580,9 @@
         '<td class="wa-actions">' +
           (l
             ? '<button type="button" class="btn btn-ghost btn-sm" data-wa-copy="' + esc(waLink(l.code)) + '">Copy link</button> ' +
-              '<a class="btn btn-ghost btn-sm" href="' + esc(waLink(l.code)) + '" target="_blank" rel="noopener">View</a>'
+              '<a class="btn btn-ghost btn-sm" href="' + esc(waLink(l.code)) + '" target="_blank" rel="noopener">View</a> ' +
+              '<button type="button" class="icon-btn" data-wa-edit="' + esc(p.id) + '" title="Edit order page (name, price)" aria-label="Edit order page">' + SVG_GEAR + '</button>' +
+              '<button type="button" class="icon-btn icon-danger" data-wa-del="' + esc(p.id) + '" title="Delete order link" aria-label="Delete order link">' + SVG_TRASH + '</button>'
             : '<button type="button" class="btn btn-primary btn-sm" data-wa-create="' + esc(p.id) + '">Create order link</button>') +
         '</td></tr>';
     }).join('');
@@ -1628,7 +1633,90 @@
     $$('[data-wa-copy]').forEach(function (b) {
       b.addEventListener('click', function () { waCopy(b.getAttribute('data-wa-copy')); });
     });
+    $$('[data-wa-edit]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var pid = b.getAttribute('data-wa-edit');
+        var l = (waData().links || {})[pid];
+        var tr = b.closest ? b.closest('tr') : null;
+        if (!l || !tr) return;
+        closeWaEdit();
+        var p = state.products.find(function (x) { return x.id === pid; });
+        if (!p) return;
+        var er = document.createElement('tr');
+        er.className = 'wa-edit-row';
+        er.innerHTML = '<td colspan="4"><div class="wa-edit">' +
+          '<input id="wa-e-name" type="text" maxlength="80" value="' + esc(p.name) + '" aria-label="Name on the order page">' +
+          '<input id="wa-e-price" type="number" min="1" step="any" value="' + esc(p.sellingPrice) + '" aria-label="Price on the order page">' +
+          '<button type="button" class="btn btn-primary btn-sm" id="wa-e-save">Save</button>' +
+          '<button type="button" class="btn btn-ghost btn-sm" id="wa-e-cancel">Cancel</button>' +
+          '</div><div class="wa-hint">What customers see on ' + esc(waLink(l.code)) + '</div></td>';
+        tr.parentNode.insertBefore(er, tr.nextSibling);
+        $('#wa-e-save').addEventListener('click', function () { waSaveEdit(pid, lic, l.code); });
+        $('#wa-e-cancel').addEventListener('click', function () { closeWaEdit(); });
+      });
+    });
+    $$('[data-wa-del]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var pid = b.getAttribute('data-wa-del');
+        var l = (waData().links || {})[pid];
+        if (!l) return;
+        waDeleteLink(pid, lic, l.code);
+      });
+    });
     waRefreshFeed(lic);
+  }
+
+  function closeWaEdit() {
+    var er = $('.wa-edit-row');
+    if (er && er.parentNode) er.parentNode.removeChild(er);
+  }
+
+  function waSaveEdit(pid, lic, code) {
+    var name = String(($('#wa-e-name') && $('#wa-e-name').value) || '').trim();
+    var price = Number(($('#wa-e-price') && $('#wa-e-price').value) || 0);
+    if (!name) { toast('The name cannot be empty.'); return; }
+    if (!(price > 0)) { toast('Enter a valid price.'); return; }
+    var btn = $('#wa-e-save');
+    if (btn) btn.disabled = true;
+    fetch(STORE_MANAGE_EP, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ license: lic, action: 'update', code: code, name: name, price: price })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (d && d.success) {
+        var p = state.products.find(function (x) { return x.id === pid; });
+        if (p) { p.name = name; p.sellingPrice = price; persist(); }
+        toast('Order page updated \u2713');
+        renderOrdersPage();
+      } else {
+        if (btn) btn.disabled = false;
+        toast((d && d.reason) || 'Could not save \u2014 try again.');
+      }
+    }).catch(function () {
+      if (btn) btn.disabled = false;
+      toast('Connection problem \u2014 try again.');
+    });
+  }
+
+  function waDeleteLink(pid, lic, code) {
+    if (!window.confirm('Delete this order link?\nThe public order page will stop working.\n' + waLink(code))) return;
+    fetch(STORE_MANAGE_EP, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ license: lic, action: 'delete', code: code })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (d && d.success) {
+        var wd = waData();
+        if (wd.links) delete wd.links[pid];
+        waSave(wd);
+        toast('Order link deleted \u2713');
+        renderOrdersPage();
+      } else {
+        toast((d && d.reason) || 'Could not delete \u2014 try again.');
+      }
+    }).catch(function () {
+      toast('Connection problem \u2014 try again.');
+    });
   }
 
   function waCopy(text) {
@@ -1713,6 +1801,7 @@
     return '<tr>' +
       '<td>' + esc(when) + '</td>' +
       '<td><b>' + esc(o.name || 'Customer') + '</b></td>' +
+      '<td>' + (o.ph ? '<a class="wa-phone" href="https://wa.me/' + esc(o.ph) + '" target="_blank" rel="noopener">+' + esc(o.ph) + '</a>' : '\u2014') + '</td>' +
       '<td>' + esc(o.p || '') + '</td>' +
       '<td>\u00D7' + (Number(o.qty) || 1) + '</td>' +
       '<td>' + fmtMoney(revenue) + '</td>' +
@@ -1744,7 +1833,7 @@
         return;
       }
       feed.innerHTML = '<div class="card-table-wrap"><table class="table"><thead><tr>' +
-        '<th>Date</th><th>Buyer</th><th>Product</th><th>Qty</th><th>Revenue</th><th>True profit</th>' +
+        '<th>Date</th><th>Buyer</th><th>Phone</th><th>Product</th><th>Qty</th><th>Revenue</th><th>True profit</th>' +
         '</tr></thead><tbody>' + d.orders.map(waFeedRow).join('') + '</tbody></table></div>';
     }).catch(function () {
       feed.innerHTML = '<p class="wa-hint">Connection problem \u2014 tap Refresh.</p>';
@@ -1794,7 +1883,9 @@
             '<div class="pub-price">' + fmtMoney(d.price) + '</div>' +
             '<p class="pub-sub">Order on WhatsApp \u00B7 \u0627\u0637\u0644\u0628 \u0639\u0628\u0631 \u0648\u0627\u062A\u0633\u0627\u0628 \u00B7 \u0627\u0644\u062F\u0641\u0639 \u0639\u0646\u062F \u0627\u0644\u0627\u0633\u062A\u0644\u0627\u0645</p>' +
             '<label class="pub-label">Your name (optional)<input id="pub-name" type="text" maxlength="60" autocomplete="name"></label>' +
+            '<label class="pub-label">Your WhatsApp number \u00B7 \u0631\u0642\u0645 \u0648\u0627\u062A\u0633\u0627\u0628\u0643<input id="pub-phone" type="tel" inputmode="tel" maxlength="16" placeholder="06 XX XX XX XX" autocomplete="tel"></label>' +
             '<label class="pub-label">Quantity<input id="pub-qty" type="number" value="1" min="1" max="99"></label>' +
+            '<div id="pub-err" class="pub-err" hidden></div>' +
             '<button type="button" class="pub-wa-btn" id="pub-order" data-code="' + esc(route.id) + '" data-price="' + Number(d.price) + '">\uD83D\uDFE2 Order via WhatsApp \u00B7 \u0627\u0637\u0644\u0628 \u0627\u0644\u0622\u0646</button>' +
             '<div id="pub-done" hidden><p class="pub-ok">\u2713 Order sent \u2014 WhatsApp should open now.</p>' +
             '<a id="pub-wa-link" class="pub-wa-btn" href="#" target="_blank" rel="noopener">Tap here if WhatsApp did not open</a></div>' +
@@ -1817,20 +1908,29 @@
     var code = btn.getAttribute('data-code');
     var name = ($('#pub-name') && $('#pub-name').value || '').trim();
     var qty = Math.min(99, Math.max(1, parseInt($('#pub-qty') && $('#pub-qty').value, 10) || 1));
+    var phone = String(($('#pub-phone') && $('#pub-phone').value) || '').replace(/[^0-9]/g, '');
+    var err = $('#pub-err');
+    if (err) err.hidden = true;
+    if (phone.length < 8) {
+      if (err) { err.textContent = 'Enter your WhatsApp number \u00B7 \u0627\u0643\u062A\u0628 \u0631\u0642\u0645 \u0648\u0627\u062A\u0633\u0627\u0628\u0643'; err.hidden = false; }
+      return;
+    }
     btn.disabled = true; btn.textContent = 'Sending\u2026';
     fetch(STORE_ORDER_EP, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: code, name: name, qty: qty })
+      body: JSON.stringify({ code: code, name: name, qty: qty, phone: phone })
     }).then(function (r) { return r.json(); }).then(function (d) {
       if (!d || !d.success) {
         btn.disabled = false; btn.textContent = '\uD83D\uDFE2 Order via WhatsApp \u00B7 \u0627\u0637\u0644\u0628 \u0627\u0644\u0622\u0646';
+        if (err) { err.textContent = (d && d.reason) || 'Could not send \u2014 try again.'; err.hidden = false; }
         return;
       }
       var msg = 'New order ' + d.orderCode +
         '\nProduct: ' + d.product + ' \u00D7' + d.qty +
         '\nTotal: $' + (Number(d.price) * d.qty).toFixed(2) +
         (name ? '\nName: ' + name : '') +
+        '\nBuyer WhatsApp: +' + phone +
         '\n(from ProfitLeak order page)';
       var url = 'https://wa.me/' + d.wa + '?text=' + encodeURIComponent(msg);
       try { window.open(url, '_blank'); } catch (e) { /* link below */ }
