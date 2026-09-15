@@ -132,19 +132,23 @@
 
   /* ==== FREE TRIAL — ONE SESSION (v1.9) ======================
      The Free plan is a one-session trial: the visitor's first
-     session has full free access. When that session ends (closed
-     the site for more than TRIAL_GRACE_MS), the app asks for an
-     email (2 bonus sessions) and then a Pro license (paywall in
-     app.js). Licensed users
+     sitting has full free access. A sitting ends the moment the
+     visitor reopens the site (the session marker is gone) or after
+     TRIAL_SESSION_CAP_MS. Then the app asks for an email (2 bonus
+     sittings) and finally a Pro license (paywall in app.js). Licensed users
      are never gated, and the gate only engages when the store
      is connected (checked in app.js, so self-hosted builds of
      this open-source app stay fully free).
      ============================================================= */
   var TRIAL_KEY = 'profitleak.trial.v1';
   var TRIAL_SESSION_KEY = 'profitleak.trial.session.v1';
-  var TRIAL_GRACE_MS = 60 * 1000; /* back within ~a minute = same sitting (refresh, second
-                                   tab while the first is active); anything longer ends the
-                                   free attempt and the email/paywall popup shows (v1.16) */
+  /* v1.18: a free attempt = ONE sitting.
+     - Reopening the site (even seconds later, even a new tab) = a NEW sitting,
+       because the session marker lives only inside the open tab.
+     - A page refresh (F5) keeps the marker, so refreshing is never punished.
+     - Each sitting also ends after TRIAL_SESSION_CAP_MS, so a tab that stays
+       open forever cannot run past its free time. */
+  var TRIAL_SESSION_CAP_MS = 20 * 60 * 1000;
 
   var memoryTrial = null;    /* fallback when localStorage is blocked */
   var memorySession = false; /* fallback when sessionStorage is blocked */
@@ -182,14 +186,22 @@
         markSession();
         this.active = true; return true;
       }
-      var resume = t.lastActive && (now - t.lastActive) < TRIAL_GRACE_MS;
-      if (hasSessionMarker() || resume) {       /* same sitting: tab still open, or quick return */
+      if (now - t.startedAt > TRIAL_SESSION_CAP_MS) {  /* the sitting hit its 20-minute cap */
+        if (t.extraSessions > 0) {              /* earned bonus: the next sitting starts now */
+          t.extraSessions -= 1;
+          t.startedAt = now; t.lastActive = now;
+          writeTrial(t); markSession();
+          this.active = true; return true;
+        }
+        this.active = false; return false;      /* all free time used — email offer / paywall */
+      }
+      if (hasSessionMarker()) {                 /* same sitting: refresh, or the tab never closed */
         t.lastActive = now; writeTrial(t); markSession();
         this.active = true; return true;
       }
-      if (t.extraSessions > 0) {                /* email reward (v1.11): consume one bonus session */
+      if (t.extraSessions > 0) {                /* email reward (v1.11): consume one bonus sitting */
         t.extraSessions -= 1;
-        t.lastActive = now;
+        t.startedAt = now; t.lastActive = now;
         writeTrial(t); markSession();
         this.active = true; return true;
       }
@@ -206,8 +218,10 @@
       var t = readTrial() || {};
       t.email = email;
       t.extraSessions = (t.extraSessions || 0) + (n || 0);
-      if (!t.startedAt) t.startedAt = Date.now();
+      t.startedAt = Date.now();       /* fresh 20-minute window for the bonus sitting */
       writeTrial(t);
+      memorySession = false;          /* open it by consuming one bonus — consistent for everyone */
+      try { sessionStorage.removeItem(TRIAL_SESSION_KEY); } catch (e) { /* ignore */ }
       return this.evaluate();
     },
     getEmail: function () {
@@ -219,7 +233,7 @@
       memorySession = false;
       try { sessionStorage.removeItem(TRIAL_SESSION_KEY); } catch (e) { /* ignore */ }
       var t = readTrial();
-      if (t) { t.lastActive -= ms; writeTrial(t); }
+      if (t) { t.lastActive -= ms; if (t.startedAt) t.startedAt -= ms; writeTrial(t); }
     },
     _reset: function () {
       memoryTrial = null; memorySession = false; this.active = false;

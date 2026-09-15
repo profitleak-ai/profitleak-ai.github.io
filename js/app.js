@@ -2387,6 +2387,17 @@
     /* WhatsApp orders (v1.12): new sales apply themselves on open */
     setTimeout(function () { try { waAutoSync(); } catch (e) { /* never block boot */ } }, 900);
 
+    /* v1.18: enforce the 20-minute sitting cap — the popup appears even if
+       the visitor never navigates (render re-checks the gate) */
+    setInterval(function () {
+      try {
+        var rr = parseRoute();
+        if (rr.page === 'order' || rr.page === 'store') return; /* customers are never gated */
+        var ovl = $('#trial-overlay');
+        if (ovl && ovl.hidden && trialGateEngaged()) render();
+      } catch (e) { /* never break the app */ }
+    }, 30000);
+
     $('#product-form').addEventListener('submit', onFormSubmit);
     $('#product-form').addEventListener('input', function (e) {
       if (Trial) Trial.heartbeat();
