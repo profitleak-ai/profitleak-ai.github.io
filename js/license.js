@@ -47,7 +47,8 @@
       var obj = JSON.parse(raw);
       if (!obj || typeof obj.key !== 'string' || !obj.key) return null;
       return { key: obj.key, email: typeof obj.email === 'string' ? obj.email : '',
-               activatedAt: typeof obj.activatedAt === 'string' ? obj.activatedAt : '' };
+               activatedAt: typeof obj.activatedAt === 'string' ? obj.activatedAt : '',
+               expiresAt: typeof obj.expiresAt === 'string' ? obj.expiresAt : '' };
     } catch (e) {
       return null;
     }
@@ -123,7 +124,7 @@
         return { valid: false, retry: false, reason: 'Could not reach the license server (HTTP ' + res.status + '). Please try again in a moment.' };
       }
       return res.json().then(function (d) {
-        if (d && d.success) return { valid: true, email: d.email || '' };
+        if (d && d.success) return { valid: true, email: d.email || '', expiresAt: d.expiresAt || '' };
         return { valid: false, retry: false, reason: 'This license key was not recognized. Double-check the code you received after payment.' };
       });
     }).catch(function () {
@@ -168,11 +169,12 @@
         reason: 'That code looks too short \u2014 copy the complete license key from your purchase email.'
       });
     }
-    /* PL-… keys come from the on-site checkout (PayPal / crypto) */
-    if (key.indexOf('PL-') === 0) {
+    /* PL-… (lifetime) and PLS-… (subscription) keys come from the on-site checkout */
+    if (key.indexOf('PL-') === 0 || key.indexOf('PLS-') === 0) {
       return verifyWithSite(key).then(function (r) {
         if (!r.valid) return { ok: false, reason: r.reason };
-        state.license = { key: key, email: r.email, activatedAt: new Date().toISOString() };
+        state.license = { key: key, email: r.email, activatedAt: new Date().toISOString(),
+                          expiresAt: r.expiresAt || '' };
         writeLicense(state.license);
         notify();
         return { ok: true, license: getLicense() };
@@ -180,7 +182,9 @@
     }
     return verifyAgainstStores(key).then(function (r) {
       if (!r.valid) return { ok: false, reason: r.reason };
-      state.license = { key: key, email: r.email, activatedAt: new Date().toISOString() };
+      /* Gumroad purchases = one year of Pro (v1.21) */
+      var y = new Date(Date.now() + 365 * 24 * 3600 * 1000).toISOString();
+      state.license = { key: key, email: r.email, activatedAt: new Date().toISOString(), expiresAt: y };
       writeLicense(state.license);
       notify();
       return { ok: true, license: getLicense() };
@@ -202,7 +206,13 @@
       activatedAt: state.license.activatedAt
     } : null;
   }
-  function isActive() { return !!state.license; }
+  function isActive() {
+    if (!state.license) return false;
+    var exp = state.license.expiresAt;
+    if (!exp) return true; /* lifetime (grandfathered) */
+    var t = new Date(exp).getTime();
+    return isFinite(t) ? t > Date.now() : true;
+  }
   function isConfigured() { return !!GUMROAD_PRODUCT_ID; }
   function buyUrl() { return GUMROAD_PRODUCT_URL; }
 

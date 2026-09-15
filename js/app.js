@@ -15,6 +15,42 @@
   var License = window.PL_LICENSE; // paid license layer (v1.8)
   var Trial = window.PL_TRIAL;     // one-session free trial gate (v1.9)
   var CHECKOUT = 'https://profitleak.netlify.app/.netlify/functions/checkout-start?method='; // on-site checkout (v1.10)
+  var PLANS_EP = 'https://profitleak.netlify.app/.netlify/functions/license-plans'; // subscription plans (v1.21)
+  var REDEEM_EP = 'https://profitleak.netlify.app/.netlify/functions/redeem-code'; // promo codes (v1.21)
+  var PLANS_CACHE = null;
+  function fetchPlans() {
+    if (PLANS_CACHE) return Promise.resolve(PLANS_CACHE);
+    if (typeof fetch !== 'function') return Promise.resolve(null); /* very old browsers */
+    return fetch(PLANS_EP).then(function (r) { return r.json(); }).then(function (d) {
+      if (d && d.success && d.plans && d.plans.yearly) PLANS_CACHE = d;
+      return PLANS_CACHE;
+    }).catch(function () { return null; });
+  }
+  function applyPlanUI() {
+    var host = $('#pricing-body');
+    if (host && PLANS_CACHE && PLANS_CACHE.freeYear && !$('.freeyear-box') && !Plan.isPro()) {
+      var fy = PLANS_CACHE.freeYear;
+      host.insertAdjacentHTML('afterbegin',
+        '<div class="freeyear-box">\uD83C\uDF81 <b>Launch offer:</b> the first ' + fy.limit + ' sellers get their <b>first year FREE</b> \u2014 ' +
+        'enter the code <b style="user-select:all;">' + esc(fy.code) + '</b> in \u201CActivate your license\u201D below. ' +
+        (fy.remaining > 0 ? '<b>' + fy.remaining + ' of ' + fy.limit + ' left</b>' : 'All claimed!') + '</div>');
+    }
+    var tgl = $$('.plan-opt'), priceEl = $('#plan-price');
+    if (!tgl.length || !priceEl) return;
+    var sel = 'yearly';
+    function refresh() {
+      var p = PLANS_CACHE.plans[sel];
+      priceEl.textContent = (sel === 'yearly' ? '$' + p.price.toFixed(2) + ' / year' : '$' + p.price.toFixed(2) + ' / month');
+      $$('[data-pay]').forEach(function (a) {
+        a.href = CHECKOUT + a.getAttribute('data-pay') + '&plan=' + sel;
+      });
+      tgl.forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-plan') === sel); });
+    }
+    tgl.forEach(function (b) {
+      b.addEventListener('click', function () { sel = b.getAttribute('data-plan'); refresh(); });
+    });
+    refresh();
+  }
   var EMAIL_EP = 'https://profitleak.netlify.app/.netlify/functions/email-signup'; // bonus-sessions signup (v1.11)
   var STORE_CREATE_EP = 'https://profitleak.netlify.app/.netlify/functions/store-create'; // WhatsApp order links (v1.12)
   var STORE_DATA_EP = 'https://profitleak.netlify.app/.netlify/functions/store-data';
@@ -1335,6 +1371,11 @@
   }
 
   function renderPricing() {
+    var hadPlans = !!PLANS_CACHE;
+    if (!hadPlans) fetchPlans().then(function (d) {
+      if (d && parseRoute().page === 'pricing') render(); /* got plans \u2192 re-render with the new UI */
+    });
+    if (PLANS_CACHE) setTimeout(function () { try { applyPlanUI(); } catch (e) { /* cosmetic only */ } }, 0);
     var pro = Plan.isPro();
 
     var freeFeats = [
@@ -1372,8 +1413,19 @@
     var licensed = Plan.hasLicense();
     var proBtn;
     if (pro && licensed) {
+      var licInfo = License.getLicense();
       proBtn = '<div class="pro-active-box"><span class="badge badge-green">\u2713 Pro licensed \u2014 thank you!</span>' +
+        (licInfo && licInfo.expiresAt ? '<div class="price-note">Active until <b>' + esc(licInfo.expiresAt.slice(0, 10)) + '</b> \u2014 <a href="' + CHECKOUT + 'paypal&plan=yearly" target="_blank" rel="noopener">renew</a></div>' : '<div class="price-note">Lifetime license \u2014 early buyer, thank you!</div>') +
         '<button type="button" class="link-btn" data-action="license-remove">Remove license</button></div>';
+    } else if (!pro && PLANS_CACHE) {
+      proBtn = '<div class="plan-toggle" role="tablist">' +
+          '<button type="button" class="plan-opt" data-plan="monthly" role="tab">Monthly</button>' +
+          '<button type="button" class="plan-opt active" data-plan="yearly" role="tab">Yearly <span class="plan-save">best value</span></button>' +
+        '</div>' +
+        '<div class="plan-price" id="plan-price">$' + PLANS_CACHE.plans.yearly.price.toFixed(2) + ' / year</div>' +
+        '<a class="btn btn-light btn-lg" data-pay="paypal" href="' + CHECKOUT + 'paypal&plan=yearly" target="_blank" rel="noopener">Subscribe \u2014 PayPal \u00B7 Visa \u00B7 Mastercard</a>' +
+        '<a class="btn btn-ghost btn-lg" data-pay="crypto" href="' + CHECKOUT + 'crypto&plan=yearly" target="_blank" rel="noopener">Pay with Crypto \u2014 BTC, USDT &amp; 100+</a>' +
+        '<p class="price-note">No auto-charge \u2014 pay once per period, cancel by simply not renewing. Your data stays in your browser forever.</p>';
     } else if (License && License.isConfigured()) {
       proBtn = '<a class="btn btn-light btn-lg" href="' + esc(License.buyUrl()) + '" target="_blank" rel="noopener">Buy Pro \u2014 $19 one-time</a>' +
         '<p class="price-note">Gumroad checkout \u00B7 license key delivered instantly by email</p>' +
@@ -1428,6 +1480,16 @@
     var err = $('#license-error');
     if (!input || !btn) return;
     if (err) { err.hidden = true; }
+    if (input.value.trim().toUpperCase() === 'FREEYEAR') {
+      btn.disabled = true; btn.textContent = 'Checking\u2026';
+      fetch(REDEEM_EP, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: 'FREEYEAR' }) })
+        .then(function (r) { return r.json(); }).then(function (d) {
+          btn.disabled = false; btn.textContent = 'Activate';
+          if (d && d.success) { input.value = d.key; activateLicenseFlow(); }
+          else if (err) { err.textContent = (d && d.reason) || 'Code not available.'; err.hidden = false; }
+        }).catch(function () { btn.disabled = false; btn.textContent = 'Activate'; if (err) { err.textContent = 'Connection problem \u2014 try again.'; err.hidden = false; } });
+      return;
+    }
     btn.disabled = true;
     btn.textContent = 'Verifying\u2026';
     License.activate(input.value).then(function (r) {
@@ -1460,8 +1522,8 @@
     var buy = $('#trial-buy');
     if (buy && License && License.buyUrl) buy.href = License.buyUrl();
     var ppo = $('#trial-paypal'), cpo = $('#trial-crypto');
-    if (ppo) ppo.href = CHECKOUT + 'paypal';
-    if (cpo) cpo.href = CHECKOUT + 'crypto';
+    if (ppo) ppo.href = CHECKOUT + 'paypal&plan=yearly';
+    if (cpo) cpo.href = CHECKOUT + 'crypto&plan=yearly';
     var n = state.products.length;
     /* v1.16: once the visitor has used their email bonus, the popup is buy-only */
     var usedEmail = (Trial && Trial.getEmail) ? Trial.getEmail() : '';
@@ -1535,6 +1597,16 @@
     if (!input || !btn || !License || !License.isConfigured()) return;
     if (err) { err.hidden = true; }
     var key = input.value.trim();
+    if (key.toUpperCase() === 'FREEYEAR') {
+      btn.disabled = true; btn.textContent = 'Checking\u2026';
+      fetch(REDEEM_EP, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: 'FREEYEAR' }) })
+        .then(function (r) { return r.json(); }).then(function (d) {
+          btn.disabled = false; btn.textContent = 'Activate';
+          if (d && d.success) { input.value = d.key; trialActivateFlow(); }
+          else if (err) { err.textContent = (d && d.reason) || 'Code not available.'; err.hidden = false; }
+        }).catch(function () { btn.disabled = false; btn.textContent = 'Activate'; if (err) { err.textContent = 'Connection problem \u2014 try again.'; err.hidden = false; } });
+      return;
+    }
     if (!key) {
       if (err) { err.textContent = 'Paste the license key from your purchase email first.'; err.hidden = false; }
       input.focus();

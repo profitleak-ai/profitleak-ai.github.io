@@ -2284,3 +2284,15 @@ th.num, td.num { text-align: right; }
 /* ============ NUMBERED TABLE + WHATSAPP BOX CONTROLS (v1.14) ============ */
 .wa-num-cell { color: var(--text-muted); font-weight: 700; width: 36px; }
 .wa-box .license-row .icon-btn { flex: 0 0 auto; }
+
+
+/* ============ SUBSCRIPTION PLANS + FREE-YEAR PROMO (v1.21) ============ */
+.plan-toggle { display: flex; gap: 8px; justify-content: center; margin-bottom: 12px; }
+.plan-opt { flex: 1; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 10px;
+  background: var(--surface-2); color: var(--text-muted); font-weight: 700; cursor: pointer; }
+.plan-opt.active { border-color: var(--accent, #6366f1); color: var(--text); box-shadow: 0 0 0 3px rgba(99,102,241,.18); }
+.plan-save { display: inline-block; margin-inline-start: 6px; font-size: 10.5px; padding: 2px 6px;
+  border-radius: 999px; background: #16a34a; color: #fff; vertical-align: middle; }
+.plan-price { font-size: 30px; font-weight: 800; margin: 2px 0 12px; }
+.freeyear-box { margin-bottom: 16px; padding: 12px 14px; border: 1.5px dashed #16a34a;
+  border-radius: 12px; background: rgba(22,163,74,.08); font-size: 14px; line-height: 1.6; }
