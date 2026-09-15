@@ -1125,6 +1125,7 @@
      CSV EXPORT / IMPORT
      ============================================================= */
   function exportCsv() {
+    if (!requireProForFiles('CSV export')) return;
     if (!state.products.length) {
       toast('Add a product first \u2014 there is nothing to export yet.');
       return;
@@ -1144,6 +1145,7 @@
 
   /* Example file with the exact column names the importer expects */
   function downloadCsvTemplate() {
+    if (!requireProForFiles('The CSV template')) return;
     var template = CSV.toCsv([
       { name: 'Example: Wireless Earbuds', sellingPrice: 49.99, purchaseCost: 18.50,
         adCostPerSale: 6.00, shippingCost: 4.50, platformFees: 7.00,
@@ -1195,7 +1197,7 @@
           '<p>Your CSV needs a header row (the first line) with at least these columns:</p>' +
           '<p><strong>' + esc(res.missingColumns.join(' \u00B7 ')) + '</strong></p>' +
           '<p>Tip: download our template to see the exact column names \u2014 then paste your data underneath.</p>' +
-          '<button class="btn btn-ghost btn-sm" type="button" data-action="csv-template">Download CSV template</button>' +
+          '<button class="btn btn-ghost btn-sm" type="button" data-action="csv-template" title="Pro feature \u2014 upgrade to unlock">Download CSV template \uD83D\uDD12</button>' +
         '</div>';
       confirmBtn.disabled = true;
     } else if (!res.products.length) {
@@ -1276,6 +1278,7 @@
   }
 
   function onCsvFileChosen(e) {
+    if (!requireProForFiles('CSV import')) { e.target.value = ''; return; }
     var input = e.target;
     var file = input.files && input.files[0];
     input.value = ''; // allow re-choosing the same file
@@ -2126,6 +2129,22 @@
     });
   }
 
+  /* v1.19: file export / import / print are Pro-only — even during the
+     free trial sittings. The trial is for exploring the app; moving data
+     in and out is what buyers pay for. */
+  function requireProForFiles(featureName) {
+    if (Plan.isPro()) return true;
+    confirmDialog({
+      title: featureName + ' is a Pro feature \uD83D\uDD12',
+      message: 'Exporting, importing and printing your data is part of Pro. Everything you create in your free session stays saved in this browser \u2014 upgrade to move your data in and out, forever.',
+      confirmText: 'Upgrade to Pro \u2014 $19',
+      cancelText: 'Not now'
+    }).then(function (ok) {
+      if (ok) location.hash = '#/pricing';
+    });
+    return false;
+  }
+
   function showProComingSoon() {
     confirmDialog({
       title: 'Get Pro \u2014 $19 one-time \uD83D\uDE80',
@@ -2274,7 +2293,7 @@
       else if (act === 'clear-demo') { clearDemoFlow(); }
       else if (act === 'clear-all') { clearAllFlow(); }
       else if (act === 'export-csv') { exportCsv(); }
-      else if (act === 'import-csv') { $('#csv-file').click(); }
+      else if (act === 'import-csv') { if (requireProForFiles('CSV import')) $('#csv-file').click(); }
       else if (act === 'csv-template') { downloadCsvTemplate(); }
       else if (act === 'upgrade') { showProComingSoon(); }
       else if (act === 'license-activate') { activateLicenseFlow(); }
@@ -2413,6 +2432,7 @@
     $('#csv-file').addEventListener('change', onCsvFileChosen);
 
     $('#report-print').addEventListener('click', function () {
+      if (!requireProForFiles('Printing the report')) return;
       try { window.print(); } catch (e) { /* non-browser environments */ }
     });
 
