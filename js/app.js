@@ -540,7 +540,7 @@
           '<a class="btn btn-primary btn-lg" href="#/pricing">Upgrade to Pro</a>' +
           '<a class="btn btn-ghost" href="#/dashboard">Back to dashboard</a>' +
         '</div>' +
-        '<p class="upsell-note">Pro is $19 one-time \u2014 a lifetime license, no subscription.</p>';
+        '<p class="upsell-note">Pro is from $3.99/month \u2014 or $19.99/year. No auto-charge, cancel by not renewing.</p>';
       return;
     }
     layout.hidden = false;
@@ -1436,11 +1436,11 @@
       ['check', 'True profit calculator \u2014 every cost counted'],
       ['check', 'Basic profit diagnosis \u2014 biggest leak + action'],
       ['check', 'Dashboard, product table & status filters'],
-      ['check', 'CSV export & import'],
       ['check', 'Your data stays in your browser']
     ];
     var proFeats = [
       ['check', 'Unlimited products'],
+      ['check', 'PDF report export \u00B7 CSV import & export'],
       ['check', 'Advanced profit diagnosis'],
       ['check', 'What-if simulator \u2014 test any change safely'],
       ['check', 'Cost ranking \u2014 all six costs, biggest first'],
@@ -1475,20 +1475,21 @@
           '<button type="button" class="plan-opt" data-plan="monthly" role="tab">Monthly</button>' +
           '<button type="button" class="plan-opt active" data-plan="yearly" role="tab">Yearly <span class="plan-save">best value</span></button>' +
         '</div>' +
-        '<div class="plan-price" id="plan-price">$' + PLANS_CACHE.plans.yearly.price.toFixed(2) + ' / year</div>' +
         '<a class="btn btn-light btn-lg" data-pay="paypal" href="' + CHECKOUT + 'paypal&plan=yearly" target="_blank" rel="noopener">Subscribe \u2014 PayPal \u00B7 Visa \u00B7 Mastercard</a>' +
         '<a class="btn btn-ghost btn-lg" data-pay="crypto" href="' + CHECKOUT + 'crypto&plan=yearly" target="_blank" rel="noopener">Pay with Crypto \u2014 BTC, USDT &amp; 100+</a>' +
-        '<p class="price-note">No auto-charge \u2014 pay once per period, cancel by simply not renewing. Your data stays in your browser forever.</p>';
+        '<div class="pay-chips"><span>PayPal</span><span>Visa</span><span>Mastercard</span><span>BTC</span><span>USDT</span></div>' +
+        '<p class="price-note">Instant activation after payment \u2014 no codes. No auto-charge: pay once per period, cancel by not renewing. Your data stays in your browser forever.</p>';
     } else if (License && License.isConfigured()) {
-      proBtn = '<a class="btn btn-light btn-lg" href="' + esc(License.buyUrl()) + '" target="_blank" rel="noopener">Buy Pro \u2014 $19 one-time</a>' +
-        '<p class="price-note">Gumroad checkout \u00B7 license key delivered instantly by email</p>' +
-        '<div class="pay-opts">' +
-          '<a href="' + CHECKOUT + 'paypal" target="_blank" rel="noopener">PayPal \u00B7 Visa \u00B7 Mastercard</a>' +
-          '<a href="' + CHECKOUT + 'crypto" target="_blank" rel="noopener">Crypto \u2014 BTC, USDT &amp; 100+</a>' +
-        '</div>';
+      /* plans API unreachable (e.g. before the functions deploy) \u2014 on-site
+         checkout with the standard subscription prices, never Gumroad */
+      proBtn =
+        '<a class="btn btn-light btn-lg" data-pay="paypal" href="' + CHECKOUT + 'paypal&plan=yearly" target="_blank" rel="noopener">Subscribe \u2014 PayPal \u00B7 Visa \u00B7 Mastercard</a>' +
+        '<a class="btn btn-ghost btn-lg" data-pay="crypto" href="' + CHECKOUT + 'crypto&plan=yearly" target="_blank" rel="noopener">Pay with Crypto \u2014 BTC, USDT &amp; 100+</a>' +
+        '<p class="price-note">Prefer monthly? <a href="' + CHECKOUT + 'paypal&plan=monthly" target="_blank" rel="noopener">$3.99 / month</a> \u2014 same Pro features.<br>Instant activation after payment \u2014 no codes. No auto-charge: cancel by not renewing.</p>' +
+        '<div class="pay-chips"><span>PayPal</span><span>Visa</span><span>Mastercard</span><span>BTC</span><span>USDT</span></div>';
     } else {
-      proBtn = '<button type="button" class="btn btn-light btn-lg" data-action="upgrade">Upgrade to Pro \u2014 $19 one-time</button>' +
-        '<p class="price-note">One-time payment \u00B7 secure checkout via Gumroad</p>';
+      proBtn = '<button type="button" class="btn btn-light btn-lg" data-action="upgrade">Upgrade to Pro \u2014 from $3.99</button>' +
+        '<p class="price-note">Monthly or yearly \u00B7 instant activation \u00B7 secure checkout inside the site</p>';
     }
 
     /* activate-a-license box (only once the store is connected) */
@@ -1516,14 +1517,14 @@
         '<div class="price-card price-card-pro">' +
           '<div class="price-ribbon">Most popular</div>' +
           '<div class="price-name">PRO</div>' +
-          '<div class="price-value">$19<small> one-time</small></div>' +
+          '<div class="price-value" id="plan-price">$19.99<small> / year</small></div>' +
           '<p class="price-tag">For serious online sellers</p>' +
           featList(proFeats) +
           '<div class="price-actions">' + proBtn + '</div>' +
           licenseBox +
         '</div>' +
       '</div>' +
-      '<p class="pricing-trust">One-time payment \u00B7 Card, PayPal &amp; crypto on site \u00B7 Refunds via Gumroad \u00B7 Your data never leaves your browser</p>';
+      '<p class="pricing-trust">Instant activation \u2014 no license codes \u00B7 Card, PayPal &amp; crypto, all inside the site \u00B7 No auto-charge \u00B7 Your data never leaves your browser</p>';
   }
 
   /* ---------- paid license activation (v1.8) ---------- */
@@ -1573,9 +1574,9 @@
     var ov = $('#trial-overlay');
     if (!ov) return;
     var buy = $('#trial-buy');
-    if (buy && License && License.buyUrl) buy.href = License.buyUrl();
+    if (buy) buy.href = CHECKOUT + 'paypal&plan=yearly';
     var ppo = $('#trial-paypal'), cpo = $('#trial-crypto');
-    if (ppo) ppo.href = CHECKOUT + 'paypal&plan=yearly';
+    if (ppo) ppo.href = CHECKOUT + 'paypal&plan=monthly';
     if (cpo) cpo.href = CHECKOUT + 'crypto&plan=yearly';
     var n = state.products.length;
     /* v1.16: once the visitor has used their email bonus, the popup is buy-only */
@@ -1586,11 +1587,11 @@
       ? (n > 0
           ? 'You have used your free session and your 2 bonus sessions. Your ' + n +
             (n === 1 ? ' product' : ' products') + ' and every calculation are saved in this browser \u2014 ready the moment you activate Pro.'
-          : 'You have used your free session and your 2 bonus sessions. Activate Pro to keep analyzing your true profit \u2014 every feature, unlimited products, lifetime license.')
+          : 'You have used your free session and your 2 bonus sessions. Activate Pro to keep analyzing your true profit \u2014 every feature, unlimited products \u2014 from $3.99/month.')
       : (n > 0
           ? 'You explored ProfitLeak AI with your free session. Your ' + n +
             (n === 1 ? ' product' : ' products') + ' and every calculation are saved in this browser \u2014 ready the moment you activate Pro.'
-          : 'You explored ProfitLeak AI with your free session. Activate Pro to keep analyzing your true profit \u2014 every feature, unlimited products, lifetime license.');
+          : 'You explored ProfitLeak AI with your free session. Activate Pro to keep analyzing your true profit \u2014 every feature, unlimited products \u2014 from $3.99/month.');
     ov.hidden = false;
     document.body.classList.add('modal-open');
     var wo = $('#welcome-overlay');
@@ -2265,8 +2266,8 @@
     if (Plan.isPro()) return true;
     confirmDialog({
       title: featureName + ' is a Pro feature \uD83D\uDD12',
-      message: 'Exporting, importing and printing your data is part of Pro. Everything you create in your free session stays saved in this browser \u2014 upgrade to move your data in and out, forever.',
-      confirmText: 'Upgrade to Pro \u2014 $19',
+      message: 'PDF report export and CSV import/export are part of Pro. Everything you create in your free session stays saved in this browser \u2014 upgrade to move your reports and product files in and out, forever.',
+      confirmText: 'Upgrade \u2014 from $3.99/month',
       cancelText: 'Not now'
     }).then(function (ok) {
       if (ok) location.hash = '#/pricing';
@@ -2276,16 +2277,15 @@
 
   function showProComingSoon() {
     confirmDialog({
-      title: 'Get Pro \u2014 $19 one-time \uD83D\uDE80',
-      message: 'Pro includes unlimited products, the What-If Simulator, cost ranking, profit goals and marketplace integrations. Pay with card, PayPal or crypto right here \u2014 or via Gumroad. Your license key activates on this Pricing page.',
-      confirmText: 'Continue to checkout',
+      title: 'Go Pro \u2014 inside the app \uD83D\uDE80',
+      message: 'Pro unlocks unlimited products, the What-If Simulator, cost ranking, profit goals, PDF report export and CSV import/export. Pay securely inside the site \u2014 PayPal, card or crypto \u2014 and Pro activates instantly in this browser. From $3.99/month or $19.99/year, no auto-charge.',
+      confirmText: 'See Pro plans',
       cancelText: 'Not now'
     }).then(function (ok) {
-      if (!ok) return;
-      var url = License && License.buyUrl ? License.buyUrl() : '';
-      if (url) window.open(url, '_blank', 'noopener');
+      if (ok) location.hash = '#/pricing';
     });
   }
+
 
   /* =============================================================
      PROFIT REPORT
