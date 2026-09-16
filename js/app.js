@@ -183,14 +183,36 @@
       return String(o.v).slice(0, 30);
     } catch (e) { return ''; }
   }
+  var NTFY_TOPIC = 'profitleak-alerts-34d2c8377c'; /* owner alerts channel (v1.25) */
+  function notifyIntent(method, plan) {
+    try {
+      var last = 0;
+      try { last = Number(sessionStorage.getItem('profitleak.intent.v1')) || 0; } catch (e) { /* ok */ }
+      if (Date.now() - last < 60000) return; /* at most one alert per minute */
+      try { sessionStorage.setItem('profitleak.intent.v1', String(Date.now())); } catch (e) { /* ok */ }
+      var m = method === 'crypto' ? '\u0643\u0631\u064A\u0628\u062A\u0648' : 'PayPal';
+      var p = plan === 'monthly' ? '\u0634\u0647\u0631\u064A' : '\u0633\u0646\u0648\u064A';
+      var tag = refTag();
+      fetch('https://ntfy.sh/' + NTFY_TOPIC, { method: 'POST',
+        body: '\uD83D\uDD25 \u0634\u062E\u0635 \u064A\u0631\u064A\u062F Pro \u0627\u0644\u0622\u0646: ' + p + ' \u00B7 ' + m + (tag ? ' \u2014 \u0645\u0646 ' + tag : ' \u2014 \u0632\u064A\u0627\u0631\u0629 \u0645\u0628\u0627\u0634\u0631\u0629') })
+        .catch(function () { /* silent */ });
+    } catch (e) { /* never block a click */ }
+  }
   document.addEventListener('click', function (ev) {
     try {
       var a = ev.target && ev.target.closest ? ev.target.closest('a') : null;
       if (!a || !a.href) return;
-      var tag = refTag();
-      if (!tag) return;
-      if (a.href.indexOf(CHECKOUT) === 0 && a.href.indexOf('ref=') < 0) a.href += '&ref=' + encodeURIComponent(tag);
-      else if (a.href.indexOf('gumroad.com') >= 0 && a.href.indexOf('utm_source=') < 0) a.href += (a.href.indexOf('?') < 0 ? '?' : '&') + 'utm_source=' + encodeURIComponent(tag);
+      if (a.href.indexOf(CHECKOUT) === 0) {
+        var tag = refTag();
+        if (tag && a.href.indexOf('ref=') < 0) a.href += '&ref=' + encodeURIComponent(tag);
+        try {
+          var u = new URL(a.href);
+          notifyIntent(u.searchParams.get('method') || '', u.searchParams.get('plan') || '');
+        } catch (e2) { /* ignore */ }
+      } else if (a.href.indexOf('gumroad.com') >= 0 && a.href.indexOf('utm_source=') < 0) {
+        var tag2 = refTag();
+        if (tag2) a.href += (a.href.indexOf('?') < 0 ? '?' : '&') + 'utm_source=' + encodeURIComponent(tag2);
+      }
     } catch (e) { /* never block a click */ }
   }, true);
 
