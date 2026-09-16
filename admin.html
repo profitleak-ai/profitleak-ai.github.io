@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>ProfitLeak AI — Admin</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; margin: 0; }
+  body { min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    padding: 24px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: radial-gradient(ellipse at 50% 30%, #16163e 0%, #070716 60%); color: #fff; }
+  .card { width: 100%; max-width: 480px; background: #fff; color: #0f172a;
+    border-radius: 18px; padding: 32px 28px; box-shadow: 0 18px 50px rgba(0,0,0,.45); }
+  h1 { font-size: 20px; margin-bottom: 4px; }
+  .sub { font-size: 13px; color: #5b6b82; margin-bottom: 18px; line-height: 1.5; }
+  input { width: 100%; padding: 12px 14px; font-size: 16px; border: 1.5px solid #e3e8f0;
+    border-radius: 12px; margin-bottom: 12px; }
+  input:focus { outline: none; border-color: #4f46e5; box-shadow: 0 0 0 3px #e0e7ff; }
+  button { width: 100%; padding: 13px; border: 0; border-radius: 12px; background: #4f46e5;
+    color: #fff; font-size: 15px; font-weight: 700; cursor: pointer; }
+  button:disabled { opacity: .6; cursor: wait; }
+  .key { display: none; font: 700 19px ui-monospace, Menlo, monospace; background: #ecfdf5;
+    color: #065f46; border: 2px dashed #059669; border-radius: 12px; padding: 14px 10px;
+    margin-top: 14px; text-align: center; word-break: break-all; }
+  .err { display: none; font-size: 13px; color: #dc2626; margin-top: 10px; text-align: center; }
+  .hint { font-size: 11.5px; color: #94a3b8; margin-top: 16px; line-height: 1.6; }
+  .stats { font: 13px ui-monospace, Menlo, monospace; }
+  .stats b { font-size: 20px; }
+  .bignum { display: inline-block; margin: 4px 10px 4px 0; }
+  .tagrow { margin-top: 8px; }
+  .tag { display: inline-block; background: #eef2ff; color: #3730a3; border-radius: 999px;
+    padding: 3px 10px; margin: 2px 4px 2px 0; font-size: 12px; font-weight: 700; }
+  .note2 { font-size: 11.5px; color: #94a3b8; margin-top: 10px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>ProfitLeak AI — license generator</h1>
+  <p class="sub">Issue a Pro license key manually (e.g. a buyer paid via Binance Pay and sent you the proof). The key activates instantly in the app.</p>
+  <input id="pw" type="password" placeholder="Admin password" autocomplete="off">
+  <button id="go">Generate license key</button>
+  <div class="key" id="key"></div>
+  <div class="err" id="err"></div>
+  <p class="hint">Keep this page private. Each click issues one fresh key (PL-XXXX-XXXX-XXXX-XXXX). Send it to the buyer with: “Paste it in the app → Pricing → Activate”.</p>
+  <hr style="border:none;border-top:1.5px dashed #e3e8f0;margin:22px 0 18px;">
+  <h1 style="font-size:17px;">👥 Site visitors</h1>
+  <p class="sub">Who visited: how many, from which site or campaign, which country. One count per visitor sitting.</p>
+  <button id="visits" style="background:#7c3aed;margin-bottom:10px;">Load visitor stats</button>
+  <div id="visitstats" class="stats" style="display:none;background:#f8fafc;border:1.5px solid #e3e8f0;border-radius:12px;padding:14px;max-height:260px;overflow:auto;text-align:left;"></div>
+  <div class="err" id="visiterr"></div>
+  <hr style="border:none;border-top:1.5px dashed #e3e8f0;margin:22px 0 18px;">
+  <h1 style="font-size:17px;">Collected signup emails</h1>
+  <p class="sub">Visitors who asked for the 2 extra free sessions — your marketing list.</p>
+  <button id="mails" style="background:#059669;margin-bottom:10px;">Load email list</button>
+  <div id="maillist" style="display:none;font:12.5px ui-monospace,Menlo,monospace;background:#f8fafc;border:1.5px solid #e3e8f0;border-radius:12px;padding:12px;max-height:220px;overflow:auto;text-align:left;word-break:break-all;"></div>
+  <div class="err" id="mailerr"></div>
+</div>
+<script>
+const API = 'https://profitleak.netlify.app/.netlify/functions';
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+$('#go').addEventListener('click', async () => {
+  $('#go').disabled = true; $('#go').textContent = 'Generating…';
+  $('#key').style.display = 'none'; $('#err').style.display = 'none';
+  try {
+    const r = await fetch(API + '/admin-keys', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: $('#pw').value })
+    });
+    const d = await r.json();
+    if (d.success) {
+      $('#key').textContent = d.key; $('#key').style.display = 'block';
+      navigator.clipboard && navigator.clipboard.writeText(d.key);
+    } else {
+      $('#err').textContent = d.reason === 'wrong password' ? 'Wrong password.' : 'Failed: ' + (d.reason || r.status);
+      $('#err').style.display = 'block';
+    }
+  } catch (e) {
+    $('#err').textContent = 'Network error — try again.'; $('#err').style.display = 'block';
+  }
+  $('#go').disabled = false; $('#go').textContent = 'Generate license key';
+});
+$('#pw').addEventListener('keydown', e => { if (e.key === 'Enter') $('#go').click(); });
+
+/* ---- visitor stats: first-party API → live-counter fallback ---- */
+const abacusGet = async k => {
+  try { const r = await fetch('https://abacus.jasoncameron.dev/get/profitleak/' + k); if (!r.ok) return 0; const d = await r.json(); return d.value || 0; }
+  catch (e) { return 0; }
+};
+$('#visits').addEventListener('click', async () => {
+  $('#visitstats').style.display = 'none'; $('#visiterr').style.display = 'none';
+  $('#visits').disabled = true; $('#visits').textContent = 'Loading…';
+  let html = '';
+  try {
+    const r = await fetch(API + '/admin-visits', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: $('#pw').value })
+    });
+    if (!r.ok) throw new Error('not deployed');
+    const d = await r.json();
+    if (!d.success) { $('#visiterr').textContent = 'Wrong password.'; $('#visiterr').style.display = 'block'; }
+    else {
+      const s = d.stats;
+      const tags = arr => arr.map(x => '<span class="tag">' + esc(x.k) + ' × ' + x.n + '</span>').join('') || '<span class="note2">(none yet)</span>';
+      const recent = s.recent.slice(0, 12).map(v =>
+        '· ' + esc(String(v.t || '').slice(0, 16)).replace('T', ' ') + ' — ' +
+        esc(v.ref ? v.ref.replace(/^https?:\/\//, '').slice(0, 34) : '(direct)') +
+        (v.cc ? ' [' + esc(v.cc) + ']' : '') +
+        (v.s ? ' {' + esc(v.s) + '}' : '')).join('<br>');
+      html = '<span class="bignum"><b>' + s.total + '</b> total</span>' +
+             '<span class="bignum"><b style="color:#059669">' + s.today + '</b> today</span>' +
+             '<span class="bignum"><b>' + s.last7 + '</b> last 7 days</span>' +
+             '<div class="tagrow"><b>From:</b> ' + tags(s.topReferrers) + '</div>' +
+             '<div class="tagrow"><b>Countries:</b> ' + tags(s.countries) + '</div>' +
+             '<div class="tagrow" style="margin-top:10px;"><b>Recent:</b><br>' + (recent || '(none yet)') + '</div>';
+    }
+  } catch (e) {
+    /* the first-party API is not deployed yet — live counters meanwhile */
+    const all = await abacusGet('all');
+    const today = await abacusGet('d-' + new Date().toISOString().slice(0, 10));
+    html = '<span class="bignum"><b>' + all + '</b> total</span>' +
+           '<span class="bignum"><b style="color:#059669">' + today + '</b> today</span>' +
+           '<div class="note2">Live counters (working now). Full breakdown — sources, countries, recent visits — activates when the Netlify API deploy is unblocked.</div>';
+  }
+  if (html) { $('#visitstats').innerHTML = html; $('#visitstats').style.display = 'block'; }
+  $('#visits').disabled = false; $('#visits').textContent = 'Load visitor stats';
+});
+
+$('#mails').addEventListener('click', async () => {
+  $('#maillist').style.display = 'none'; $('#mailerr').style.display = 'none';
+  $('#mails').disabled = true; $('#mails').textContent = 'Loading…';
+  try {
+    const r = await fetch(API + '/admin-emails', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: $('#pw').value })
+    });
+    const d = await r.json();
+    if (!d.success) { $('#mailerr').textContent = 'Wrong password.'; $('#mailerr').style.display = 'block'; }
+    else if (!d.count) { $('#maillist').textContent = d.note || 'No signups yet.'; $('#maillist').style.display = 'block'; }
+    else {
+      $('#maillist').innerHTML = '<b>' + d.count + ' email(s):</b><br>' +
+        d.emails.map(e => esc(e.email) + ' <span style="color:#94a3b8">(' + esc(String(e.at||'').slice(0,10)) + ')</span>').join('<br>');
+      $('#maillist').style.display = 'block';
+    }
+  } catch (e) { $('#mailerr').textContent = 'Network error — until the API update deploys, open the full admin at profitleak.netlify.app/admin.html'; $('#mailerr').style.display = 'block'; }
+  $('#mails').disabled = false; $('#mails').textContent = 'Load email list';
+});
+</script>
+</body>
+</html>

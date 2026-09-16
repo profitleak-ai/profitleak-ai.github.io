@@ -141,6 +141,35 @@
     return { page: 'landing' };
   }
 
+  /* visitor analytics (v1.22): one beacon per browser sitting. First-party
+     endpoint when the API is deployed; a no-signup live counter meanwhile. */
+  var VISIT_EP = 'https://profitleak.netlify.app/.netlify/functions/visit-log';
+  function logVisit() {
+    try {
+      if (sessionStorage.getItem('profitleak.visit.v1')) return;
+      sessionStorage.setItem('profitleak.visit.v1', '1');
+    } catch (e) { /* private mode: once per page load */ }
+    var src = '';
+    try { src = (new URLSearchParams(location.search).get('ref') || ''); } catch (e) { /* ignore */ }
+    var payload = JSON.stringify({
+      ref: (document.referrer || '').slice(0, 120),
+      lang: (navigator.language || '').slice(0, 8),
+      path: (location.hash || '#/').slice(0, 40),
+      src: src.slice(0, 30)
+    });
+    var counter = function () {
+      try {
+        fetch('https://abacus.jasoncameron.dev/hit/profitleak/all').catch(function () { /* silent */ });
+        fetch('https://abacus.jasoncameron.dev/hit/profitleak/d-' + new Date().toISOString().slice(0, 10)).catch(function () { /* silent */ });
+      } catch (e) { /* silent */ }
+    };
+    try {
+      fetch(VISIT_EP, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
+        .then(function (r) { if (!r.ok) counter(); })
+        .catch(counter);
+    } catch (e) { counter(); }
+  }
+
   function render() {
     var route = parseRoute();
     var isLanding = route.page === 'landing';
@@ -2481,6 +2510,9 @@
 
     /* WhatsApp orders (v1.12): new sales apply themselves on open */
     setTimeout(function () { try { waAutoSync(); } catch (e) { /* never block boot */ } }, 900);
+
+    /* visitor analytics (v1.22): fire-and-forget, never blocks the app */
+    try { logVisit(); } catch (e) { /* never block boot */ }
 
     /* v1.18: enforce the 20-minute sitting cap — the popup appears even if
        the visitor never navigates (render re-checks the gate) */
