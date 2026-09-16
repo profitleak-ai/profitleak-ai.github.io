@@ -51,6 +51,12 @@
   <div id="visitstats" class="stats" style="display:none;background:#f8fafc;border:1.5px solid #e3e8f0;border-radius:12px;padding:14px;max-height:260px;overflow:auto;text-align:left;"></div>
   <div class="err" id="visiterr"></div>
   <hr style="border:none;border-top:1.5px dashed #e3e8f0;margin:22px 0 18px;">
+  <h1 style="font-size:17px;">💰 Buyers</h1>
+  <p class="sub">Who bought Pro and how they paid — PayPal/card, crypto, Gumroad, FREEYEAR. Campaign tags show which platform brought each buyer.</p>
+  <button id="buys" style="background:#b45309;margin-bottom:10px;">Load buyers</button>
+  <div id="buystats" class="stats" style="display:none;background:#f8fafc;border:1.5px solid #e3e8f0;border-radius:12px;padding:14px;max-height:300px;overflow:auto;text-align:left;"></div>
+  <div class="err" id="buyerr"></div>
+  <hr style="border:none;border-top:1.5px dashed #e3e8f0;margin:22px 0 18px;">
   <h1 style="font-size:17px;">Collected signup emails</h1>
   <p class="sub">Visitors who asked for the 2 extra free sessions — your marketing list.</p>
   <button id="mails" style="background:#059669;margin-bottom:10px;">Load email list</button>
@@ -126,6 +132,54 @@ $('#visits').addEventListener('click', async () => {
   }
   if (html) { $('#visitstats').innerHTML = html; $('#visitstats').style.display = 'block'; }
   $('#visits').disabled = false; $('#visits').textContent = 'Load visitor stats';
+});
+
+/* ---- buyers: who bought, how they paid, which campaign brought them ---- */
+$('#buys').addEventListener('click', async () => {
+  $('#buystats').style.display = 'none'; $('#buyerr').style.display = 'none';
+  $('#buys').disabled = true; $('#buys').textContent = 'Loading…';
+  let html = '';
+  try {
+    const r = await fetch(API + '/admin-purchases', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: $('#pw').value })
+    });
+    if (!r.ok) throw new Error('not deployed');
+    const d = await r.json();
+    if (!d.success) { $('#buyerr').textContent = 'Wrong password.'; $('#buyerr').style.display = 'block'; }
+    else {
+      const s = d.stats, g = d.gumroad || { count: 0, sales: [], revenue: 0 };
+      const METHOD = { paypal: 'PayPal·Card', crypto: 'Crypto', freeyear: 'FREEYEAR', manual: 'Manual' };
+      const mtags = arr => arr.map(x => '<span class="tag">' + esc(METHOD[x.k] || x.k) + ' × ' + x.n + '</span>').join('') || '<span class="note2">(none yet)</span>';
+      const tags = arr => arr.map(x => '<span class="tag">' + esc(x.k) + ' × ' + x.n + '</span>').join('') || '<span class="note2">(none yet)</span>';
+      const rows = s.recent.slice(0, 12).map(p =>
+        '· ' + esc(String(p.t || '').slice(0, 16)).replace('T', ' ') + ' — ' + esc(METHOD[p.m] || p.m || '?') +
+        (p.p ? ' · ' + esc(p.p) : '') + (p.a ? ' · $' + p.a : '') +
+        (p.e ? ' · ' + esc(p.e) : '') + (p.cc ? ' [' + esc(p.cc) + ']' : '') +
+        (p.ref ? ' {' + esc(p.ref) + '}' : '')).join('<br>');
+      const grow = (g.sales || []).slice(0, 10).map(x =>
+        '· ' + esc(String(x.t || '').slice(0, 16)).replace('T', ' ') + ' — $' + x.a +
+        (x.e ? ' · ' + esc(x.e) : '') + (x.n ? ' · ' + esc(x.n) : '') +
+        (x.offer ? ' [' + esc(x.offer) + ']' : '') + (x.ref ? ' ←' + esc(String(x.ref).slice(0, 30)) : '')).join('<br>');
+      html = '<b>On-site payments</b><br>' +
+        '<span class="bignum"><b>' + s.total + '</b> sales</span>' +
+        '<span class="bignum"><b style="color:#059669">$' + s.revenue + '</b> revenue</span>' +
+        '<span class="bignum"><b>' + s.today + '</b> today</span>' +
+        '<span class="bignum"><b>' + s.buyers + '</b> buyer emails</span>' +
+        '<div class="tagrow"><b>How they paid:</b> ' + mtags(s.byMethod) + '</div>' +
+        '<div class="tagrow"><b>Plans:</b> ' + tags(s.byPlan) + '</div>' +
+        '<div class="tagrow"><b>Campaign that brought them:</b> ' + tags(s.byRef) + '</div>' +
+        '<div class="tagrow" style="margin-top:10px;"><b>Recent buyers:</b><br>' + (rows || '(no on-site sales yet)') + '</div>' +
+        (g.count
+          ? '<div class="tagrow" style="margin-top:12px;"><b>Gumroad — ' + g.count + ' sale(s) · $' + g.revenue + '</b><br>' + (grow || '') + '</div>'
+          : '<div class="note2" style="margin-top:12px;">Gumroad: no sales pulled (or none yet).</div>');
+    }
+  } catch (e) {
+    $('#buyerr').textContent = 'Buyer analytics activates with the Netlify API deploy. Gumroad buyers are already visible today: gumroad.com → Analytics → Sales.';
+    $('#buyerr').style.display = 'block';
+  }
+  if (html) { $('#buystats').innerHTML = html; $('#buystats').style.display = 'block'; }
+  $('#buys').disabled = false; $('#buys').textContent = 'Load buyers';
 });
 
 $('#mails').addEventListener('click', async () => {

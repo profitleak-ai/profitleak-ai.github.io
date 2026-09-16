@@ -42,7 +42,7 @@
       var p = PLANS_CACHE.plans[sel];
       priceEl.textContent = (sel === 'yearly' ? '$' + p.price.toFixed(2) + ' / year' : '$' + p.price.toFixed(2) + ' / month');
       $$('[data-pay]').forEach(function (a) {
-        a.href = CHECKOUT + a.getAttribute('data-pay') + '&plan=' + sel;
+        a.href = CHECKOUT + a.getAttribute('data-pay') + '&plan=' + sel + (refTag() ? '&ref=' + encodeURIComponent(refTag()) : '');
       });
       tgl.forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-plan') === sel); });
     }
@@ -151,6 +151,7 @@
     } catch (e) { /* private mode: once per page load */ }
     var src = '';
     try { src = (new URLSearchParams(location.search).get('ref') || ''); } catch (e) { /* ignore */ }
+    if (src) { try { localStorage.setItem('profitleak.ref.v1', JSON.stringify({ v: src.slice(0, 30), t: Date.now() })); } catch (e) { /* ignore */ } }
     var payload = JSON.stringify({
       ref: (document.referrer || '').slice(0, 120),
       lang: (navigator.language || '').slice(0, 8),
@@ -169,6 +170,29 @@
         .catch(counter);
     } catch (e) { counter(); }
   }
+
+  /* v1.23: buyer attribution — remember the campaign tag (?ref=tiktok …) for
+     30 days and attach it to every buy link, so the admin panel shows which
+     platform brought each buyer. */
+  function refTag() {
+    try {
+      var raw = localStorage.getItem('profitleak.ref.v1');
+      if (!raw) return '';
+      var o = JSON.parse(raw);
+      if (!o || !o.v || Date.now() - (o.t || 0) > 30 * 864e5) return '';
+      return String(o.v).slice(0, 30);
+    } catch (e) { return ''; }
+  }
+  document.addEventListener('click', function (ev) {
+    try {
+      var a = ev.target && ev.target.closest ? ev.target.closest('a') : null;
+      if (!a || !a.href) return;
+      var tag = refTag();
+      if (!tag) return;
+      if (a.href.indexOf(CHECKOUT) === 0 && a.href.indexOf('ref=') < 0) a.href += '&ref=' + encodeURIComponent(tag);
+      else if (a.href.indexOf('gumroad.com') >= 0 && a.href.indexOf('utm_source=') < 0) a.href += (a.href.indexOf('?') < 0 ? '?' : '&') + 'utm_source=' + encodeURIComponent(tag);
+    } catch (e) { /* never block a click */ }
+  }, true);
 
   function render() {
     var route = parseRoute();
@@ -1511,7 +1535,7 @@
     if (err) { err.hidden = true; }
     if (input.value.trim().toUpperCase() === 'FREEYEAR') {
       btn.disabled = true; btn.textContent = 'Checking\u2026';
-      fetch(REDEEM_EP, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: 'FREEYEAR' }) })
+      fetch(REDEEM_EP, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: 'FREEYEAR', ref: refTag() }) })
         .then(function (r) { return r.json(); }).then(function (d) {
           btn.disabled = false; btn.textContent = 'Activate';
           if (d && d.success) { input.value = d.key; activateLicenseFlow(); }
@@ -1628,7 +1652,7 @@
     var key = input.value.trim();
     if (key.toUpperCase() === 'FREEYEAR') {
       btn.disabled = true; btn.textContent = 'Checking\u2026';
-      fetch(REDEEM_EP, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: 'FREEYEAR' }) })
+      fetch(REDEEM_EP, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: 'FREEYEAR', ref: refTag() }) })
         .then(function (r) { return r.json(); }).then(function (d) {
           btn.disabled = false; btn.textContent = 'Activate';
           if (d && d.success) { input.value = d.key; trialActivateFlow(); }
