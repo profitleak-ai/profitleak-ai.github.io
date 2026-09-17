@@ -216,6 +216,23 @@
     } catch (e) { /* never block a click */ }
   }, true);
 
+  /* v1.26: buyers returning from checkout land with ?key=PLS-\u2026 in the URL
+     (cross-domain instant activation) \u2014 apply it silently, then clean the bar. */
+  function tryUrlKeyActivation() {
+    try {
+      var m = (location.search || '').match(/[?&]key=([A-Za-z0-9-]{8,60})/);
+      if (!m || !License || !License.activate) return;
+      var key = m[1];
+      try { history.replaceState(null, '', location.pathname + (location.hash || '')); } catch (e2) { /* ignore */ }
+      if (License.isActive && License.isActive()) return;
+      License.activate(key).then(function (r) {
+        try {
+          if (r && r.ok) { toast('Pro activated \u2014 thank you! \uD83C\uDF89'); render(); }
+        } catch (e3) { /* ignore */ }
+      }).catch(function () { /* bad key \u2014 the Pricing page still accepts pasting */ });
+    } catch (e) { /* never block boot */ }
+  }
+
   function render() {
     var route = parseRoute();
     var isLanding = route.page === 'landing';
@@ -2553,6 +2570,9 @@
 
     /* one-session free trial (v1.9) */
     if (Trial) Trial.evaluate();
+
+    /* v1.26: returning from checkout with ?key= \u2192 instant activation */
+    try { tryUrlKeyActivation(); } catch (e) { /* never block boot */ }
 
     /* WhatsApp orders (v1.12): new sales apply themselves on open */
     setTimeout(function () { try { waAutoSync(); } catch (e) { /* never block boot */ } }, 900);
