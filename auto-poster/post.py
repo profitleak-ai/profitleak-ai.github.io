@@ -76,6 +76,56 @@ def strip_md(s):
     return s.replace("**", "").replace("▪️", "-").replace("🔻", "")
 
 
+# ───────────── نص ريديت اليدوي: صيغة إنسان، قيمة أولًا، بلا إعلان مباشر ─────────────
+OP_AR = [
+    "كنت كنخدم على تحليل أرباح متجر صغير هاد الأيام، وطلعات لي حاجة بقات فبالي:",
+    "شي حد سولني مؤخرًا على كيفاش يحسب الربح الحقيقي ديالو — هاد الجواب خدمتو مع بزاف:",
+    "من الأخطاء لي كنشوفها بزاف عند البائعين الصغار:",
+    "وقفت على هاد النقطة وأنا كنراجع أرقام متجر ديال واحد صاحبي:",
+]
+OP_EN = [
+    "Was helping a friend audit his small store's numbers last week and this came up:",
+    "I keep seeing the same mistake with small ecommerce sellers, so here it is:",
+    "Sharing something that changed how I look at product margins:",
+    "A lot of sellers I talk to calculate profit the wrong way. Breakdown:",
+]
+CL_AR = [
+    "\n\nسؤال للنقاش: نتوما كيفاش كتحسبو الربح ديالكم؟ واش كتدخلو الرجوع والتوصيل فالحساب؟",
+    "\n\nإلى شي واحد عندو تجربة مع هادشي يتفضل — كنعرف بزاف ديال البائعين كيكتاشفو هادشي متأخر.",
+]
+CL_EN = [
+    "\n\nCurious how you all do this: do you factor returns and shipping into your margin, or just cost vs price?",
+    "\n\nIf anyone has dealt with this, would love to hear how you handled it.",
+]
+SUBS_EN = ["r/smallbusiness", "r/ecommerce", "r/Entrepreneur", "r/sideproject", "r/juststart"]
+SUBS_AR = ["r/Morocco", "r/Maroc"]
+
+
+def reddit_text(p):
+    ar = p.get("lang", "ar") == "ar"
+    # إزالة أي سطر دعائي/رابط من المتن — ريديت يعاقب الإعلان المباشر
+    lines = [l.strip() for l in strip_md(p["body"]).split("\n")
+             if l.strip() and not l.strip().endswith(":") and "http" not in l]
+    body = "\n\n".join(lines)
+    opener = (OP_AR if ar else OP_EN)[(p["id"] * 5) % len(OP_AR if ar else OP_EN)]
+    closer = (CL_AR if ar else CL_EN)[(p["id"] * 3) % len(CL_AR if ar else CL_EN)]
+    soft = (("\n\nملاحظة: بنيت حاسبة مجانية بسيطة لهاد الحساب (بلا تسجيل ولا إيميل): " + link("reddit") +
+             " — شاركتها غير لأنها كتفيد، ماشي إشهار.")
+            if ar else
+            ("\n\nPS: I built a small free calculator for this (no signup, no email): " + link("reddit") +
+             " — sharing because it helps, not promoting."))
+    return f"{opener}\n\n{body}{closer}{soft}"
+
+
+def reddit_suggestion(p):
+    ar = p.get("lang", "ar") == "ar"
+    subs = SUBS_AR if ar else SUBS_EN
+    sub = subs[p["id"] % len(subs)]
+    return (f"{sub} — اقرأي القوانين أولًا، وانشري كقصة شخصية لا كإعلان (1-2 مرات أسبوعيًا كحد أقصى)"
+            if ar else
+            f"{sub} — read the rules first, post as a personal story not an ad (max 1-2x/week)")
+
+
 def render(p, platform):
     t, b, cta = p["title"], p["body"], p["cta"]
     tags = " ".join(("#" + h.strip().lstrip("#").strip()) for h in p.get("hashtags", []))
@@ -91,7 +141,7 @@ def render(p, platform):
     if platform == "whatsapp":
         return f"{t}\n\n{b.splitlines()[0]}\n👉 {url}"
     if platform == "reddit":
-        return f"{t}\n\n{strip_md(b)}\n\n{cta}: {url}"
+        return reddit_text(p)
     if platform == "pinterest":
         desc = strip_md(b).replace("\n", " ")
         return (t[:95], f"{desc} — {cta}. {url}"[:480])
@@ -108,7 +158,8 @@ def to_ntfy(p, media):
     body = (
         f"📘 فيسبوك:\n{render(p,'facebook')}\n\n📸 انستغرام:\n{render(p,'instagram')}\n\n"
         f"🎵 تيكتوك:\n{render(p,'tiktok')}\n\n🟢 واتساب:\n{render(p,'whatsapp')}\n\n"
-        f"📌 بينتوريست:\n{p['title'][:95]}\n\n🔗 ريديت:\n{render(p,'reddit')[:300]}"
+        f"🔗 ريديت (نشر يدوي 1-2 مرة/أسبوع):\n{render(p,'reddit')}\n\n"
+        f"📍 اقتراح المجتمع اليوم: {reddit_suggestion(p)}"
     )
     headers = {"Title": f"ProfitLeak - Daily Post #{p['id']} ({SLOT})", "Tags": "calendar,rocket",
                "Actions": json.dumps([{"action": "view", "label": "Open site", "url": link(SLOT)}])}
