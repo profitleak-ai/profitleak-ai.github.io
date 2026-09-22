@@ -13,9 +13,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: تثبيت حزم الوسائط (لأول دفعة)
+        run: pip install --quiet Pillow imageio-ffmpeg fonttools
       - name: فحص حالة التطبيق
         env:
+          SITE: https://profitleakaii.qd.je
+          SLOT: morning
           NTFY_TOPIC: profitleak-alerts-34d2c8377c
           PINTEREST_TOKEN: ${{ secrets.PINTEREST_TOKEN }}
+          PINTEREST_BOARD_ID: ${{ secrets.PINTEREST_BOARD_ID }}
           PINTEREST_BOARD_NAME: ProfitLeak AI
         run: python3 auto-poster/watch_pinterest.py
