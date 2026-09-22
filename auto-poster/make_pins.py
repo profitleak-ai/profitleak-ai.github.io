@@ -1,64 +1,65 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-يولّد صورة بينتوريست عمودية (1000×1500) لكل منشور في التقويم.
-تصميم: خلفية تقنية داكنة + عنوان عريض + بطاقة أرقام + زر نداء + الرابط.
+يولّد صورة بينتوريست احترافية عمودية (1000×1500) لكل منشور.
+• العربية تُرسم عبر HarfBuzz (Raqm) — الترتيب والتشكيل صحيحان 100% (لا انعكاس).
+• تصميم: خلفية تقنية داكنة + شعار + عنوان عريض + بطاقة أرقام + نتيجة ذهبية + زر نداء.
 """
-import json, os, sys, re
-from PIL import Image, ImageDraw, ImageFont
-import arabic_reshaper
-from bidi.algorithm import get_display
+import json, os, re, math
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
+from fontTools.ttLib import TTFont
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(os.path.dirname(HERE), "pinterest-pins")
 os.makedirs(OUT, exist_ok=True)
-AR_FONT = "/home/user/arabic-bold.ttf"
-EN_FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+_LOCAL_AR = "/home/user/arabic-bold.ttf"
+_LOCAL_EN = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+AR = os.environ.get("AR_FONT") or (_LOCAL_AR if os.path.exists(_LOCAL_AR) else os.path.join(HERE, "fonts", "arabic-bold.ttf"))
+EN = os.environ.get("EN_FONT") or (_LOCAL_EN if os.path.exists(_LOCAL_EN) else os.path.join(HERE, "fonts", "latin-bold.ttf"))
 
 W, H = 1000, 1500
-GOLD = (255, 201, 77)
+GOLD = (255, 199, 70)
+GOLD_D = (214, 158, 30)
 WHITE = (255, 255, 255)
-MUTED = (160, 172, 200)
-TEAL = (45, 212, 191)
-BG_TOP = (10, 15, 30)
-BG_BOT = (22, 33, 62)
-
+MUTED = (150, 164, 194)
+CARD = (17, 26, 47)
+CARD_EDGE = (58, 76, 116)
 
 _CMAPS = {}
 
 
-def cmap_of(path):
-    if path not in _CMAPS:
-        from fontTools.ttLib import TTFont
-        _CMAPS[path] = TTFont(path, fontNumber=0).getBestCmap()
-    return _CMAPS[path]
+def cmap_of(p):
+    if p not in _CMAPS:
+        _CMAPS[p] = TTFont(p, fontNumber=0).getBestCmap()
+    return _CMAPS[p]
 
 
 def clean(txt, path):
-    """يحذف أي محرف ليس له رسم في الخط (إيموجي/رموز) لمنع المربّعات الفارغة"""
     cm = cmap_of(path)
     return re.sub(r"\s+", " ", "".join(c for c in txt if ord(c) < 128 or ord(c) in cm)).strip()
 
 
-def fix(txt, arabic):
-    txt = clean(txt, AR_FONT if arabic else EN_FONT)
-    if not arabic:
-        return txt
-    try:
-        return get_display(arabic_reshaper.reshape(txt))
-    except Exception:
-        return txt
+def font(sz, ar):
+    return ImageFont.truetype(AR if ar else EN, sz)
 
 
-def font(size, arabic):
-    return ImageFont.truetype(AR_FONT if arabic else EN_FONT, size)
+def kw(ar):
+    return {"direction": "rtl", "language": "ar"} if ar else {}
 
 
-def wrap(draw, txt, f, max_w):
+def tw(d, txt, f, ar):
+    return d.textlength(txt, font=f, **kw(ar))
+
+
+def draw(d, txt, x, y, f, fill, ar):
+    d.text((x, y), txt, font=f, fill=fill, anchor=("ra" if ar else "la"), **kw(ar))
+
+
+def wrap(d, txt, f, ar, max_w):
     words, lines, cur = txt.split(" "), [], ""
     for w in words:
         t = (cur + " " + w).strip()
-        if draw.textlength(t, font=f) <= max_w or not cur:
+        if tw(d, t, f, ar) <= max_w or not cur:
             cur = t
         else:
             lines.append(cur)
@@ -68,99 +69,134 @@ def wrap(draw, txt, f, max_w):
     return lines
 
 
-def fit_lines(draw, txt, arabic, max_w, start=76, min_s=44, max_lines=5):
+def fit(d, txt, ar, max_w, start=82, min_s=46, max_lines=4):
     for s in range(start, min_s - 1, -4):
-        f = font(s, arabic)
-        ls = wrap(draw, txt, f, max_w)
+        f = font(s, ar)
+        ls = wrap(d, txt, f, ar, max_w)
         if len(ls) <= max_lines:
             return ls, f
     return ls, f
 
 
-def gradient():
-    img = Image.new("RGB", (W, H), BG_TOP)
+def background():
+    img = Image.new("RGB", (W, H), (8, 12, 26))
     d = ImageDraw.Draw(img)
     for y in range(H):
         r = y / H
-        d.line([(0, y), (W, y)], fill=tuple(int(BG_TOP[i] + (BG_BOT[i] - BG_TOP[i]) * r) for i in range(3)))
-    # شبكة تقنية خفيفة
+        d.line([(0, y), (W, y)], fill=(int(9 + 13 * r), int(13 + 20 * r), int(26 + 36 * r)))
+    # هالة ضوء علوية
+    glow = Image.new("RGB", (W, H), (0, 0, 0))
+    gd = ImageDraw.Draw(glow)
+    gd.ellipse([-250, -420, 620, 380], fill=(28, 44, 92))
+    gd.ellipse([520, 1080, 1180, 1660], fill=(20, 32, 70))
+    glow = glow.filter(ImageFilter.GaussianBlur(150))
+    img = Image.blend(img, Image.blend(img, glow, 0.55), 0.85)
+    d = ImageDraw.Draw(img)
     for x in range(0, W, 100):
-        d.line([(x, 0), (x, H)], fill=(255, 255, 255, 12), width=1)
+        d.line([(x, 0), (x, H)], fill=(255, 255, 255, 10), width=1)
     for y in range(0, H, 100):
-        d.line([(0, y), (W, y)], fill=(255, 255, 255, 8), width=1)
+        d.line([(0, y), (W, y)], fill=(255, 255, 255, 7), width=1)
     return img
 
 
-def chart_icon(d, cx, cy, s=1.0):
-    """أعمدة تنازلية + سهم هابط = تسرّب الأرباح"""
-    bars = [(0, 120, TEAL), (70, 90, (90, 200, 245)), (140, 60, GOLD), (210, 30, (255, 120, 120))]
-    for dx, h, col in bars:
-        x = cx - 130 * s + dx * s
-        d.rounded_rectangle([x, cy - h * s, x + 44 * s, cy + 30 * s], radius=8, fill=col)
+def shadow(d, box, radius=28, off=8):
+    x0, y0, x1, y1 = box
+    d.rounded_rectangle([x0, y0 + off, x1, y1 + off], radius=radius, fill=(4, 7, 16))
+
+
+def logo(d, x, y, s=1.0):
+    """علامة: مربع ذهبي + أعمدة تنازلية"""
+    d.rounded_rectangle([x, y, x + 62 * s, y + 62 * s], radius=16, fill=GOLD)
+    bars = [(10, 34), (24, 24), (38, 15), (48, 8)]
+    for i, (bx, bh) in enumerate(bars):
+        col = (16, 22, 40) if i < 3 else (198, 60, 60)
+        d.rounded_rectangle([x + bx * s, y + (40 - bh) * s, x + (bx + 8) * s, y + 40 * s], radius=3, fill=col)
 
 
 def make_pin(p):
     ar = p.get("lang", "ar") == "ar"
-    img = gradient()
+    fp = AR if ar else EN
+    img = background()
     d = ImageDraw.Draw(img)
-    M = 70
+    M, RX = 72, 72          # RX = الحد الأيمن للنص العربي
+    LX = W - M              # الحد الأيسر للنص العربي = يمين الكادر ناقص الهامش
 
-    # الهوية أعلى
-    d.text((M, 62), "ProfitLeak AI", font=font(42, False), fill=GOLD)
-    d.text((M, 118), fix("احسب ربحك الحقيقي" if ar else "Find your real profit", ar), font=font(28, ar), fill=MUTED)
-    d.line([(M, 168), (W - M, 168)], fill=GOLD, width=3)
+    # ── الشعار والهوية ──
+    logo(d, M, 58)
+    draw(d, "ProfitLeak AI", M + 82, 62, font(40, False), GOLD, False)
+    draw(d, clean("احسب ربحك الحقيقي" if ar else "Find your real profit", fp), M + 82, 116, font(26, ar), MUTED, ar)
+    d.line([(M, 178), (W - M, 178)], fill=(52, 68, 106), width=3)
+    d.ellipse([M, 174, M + 9, 183], fill=GOLD)
 
-    # العنوان
-    title = fix(p["title"], ar)
-    lines, f = fit_lines(d, title, ar, W - 2 * M, start=76, min_s=46, max_lines=4)
-    y = 230
+    # ── العنوان ──
+    lines, f = fit(d, clean(p["title"], fp), ar, W - 2 * M)
+    y = 240
     for ln in lines:
-        d.text((M, y), ln, font=f, fill=WHITE)
-        y += f.size + 16
+        draw(d, ln, LX if ar else M, y, f, WHITE, ar)
+        y += f.size + 18
 
-    # بطاقة الأرقام
-    body = p["body"].replace("**", "").replace("▪️", "•").replace("🔻", "").replace("😳", "").replace("😅", "")
-    nums = [l.strip() for l in body.split("\n") if l.strip() and (l.strip().startswith(("•", "-", "= ", "=")) or "= " in l)]
-    if not nums:
-        nums = [l.strip() for l in body.split("\n") if l.strip()][:3]
-    nums = nums[:5]
-    card_top, card_bot = 700, 700 + 96 * len(nums) + 70
-    d.rounded_rectangle([M, card_top, W - M, min(card_bot, 1210)], radius=26, fill=(18, 26, 48), outline=(70, 88, 130), width=2)
-    ny = card_top + 36
-    for ln in nums:
-        col = GOLD if ("= " in ln or ln.startswith("=")) else WHITE
-        d.text((M + 34, ny), fix(ln, ar), font=font(40 if not ar else 38, ar), fill=col)
-        ny += 96
-        if ny > 1190:
+    # ── بطاقة الأرقام ──
+    body = clean(p["body"].replace("**", "").replace("▪️", "•").replace("🔻", ""), fp)
+    rows = [l.strip() for l in body.split("\n") if l.strip() and
+            (l.strip().startswith(("•", "-")) or "= " in l or l.strip().startswith("="))]
+    if not rows:
+        rows = [l.strip() for l in body.split("\n") if l.strip()][:3]
+    rows = rows[:5]
+    ch = 92 * len(rows) + 56
+    top, bot = 720, min(720 + ch, 1225)
+    shadow(d, [M, top, W - M, bot])
+    d.rounded_rectangle([M, top, W - M, bot], radius=28, fill=CARD, outline=CARD_EDGE, width=2)
+    ny = top + 30
+    for ln in rows:
+        is_res = ("= " in ln or ln.startswith("="))
+        fs = 40 if not ar else 38
+        ff = font(fs, ar)
+        w = tw(d, ln, ff, ar)
+        if is_res:
+            # شريط ذهبي للنتيجة
+            px0 = (W - M - 26 - w) if ar else (M + 26)
+            d.rounded_rectangle([px0 - 18, ny - 6, px0 + w + 18, ny + fs + 14], radius=14, fill=(255, 199, 70, 255))
+            draw(d, ln, (W - M - 26) if ar else (M + 44), ny, ff, (14, 20, 38), ar)
+        else:
+            draw(d, ln, (W - M - 26) if ar else (M + 26), ny, ff, WHITE, ar)
+        ny += 92
+        if ny > bot - 40:
             break
 
-    # أيقونة + سهم (تسرّب)
-    chart_icon(d, W // 2, 1290, s=1.05)
+    # ── رسم بياني: تسرّب الأرباح ──
+    cx, cy = W // 2, 1315
+    for i, (bx, bh, col) in enumerate([(-140, 86, (45, 212, 191)), (-70, 64, (80, 150, 235)),
+                                       (0, 42, GOLD), (70, 20, (235, 95, 95))]):
+        d.rounded_rectangle([cx + bx, cy - bh, cx + bx + 44, cy + 26], radius=8, fill=col)
+    d.line([(cx - 150, cy + 44), (cx + 150, cy + 44)], fill=(70, 88, 130), width=2)
 
-    # زر النداء
-    cta = fix(p.get("cta", ""), ar)
+    # ── زر النداء ──
+    cta = clean(p.get("cta", ""), fp)
     if cta:
-        cf = font(44, ar)
-        tw = d.textlength(cta, font=cf)
-        bx0 = (W - tw - 80) / 2
-        d.rounded_rectangle([bx0, 1350, bx0 + tw + 80, 1426], radius=38, fill=GOLD)
-        d.text((bx0 + 40, 1362), cta, font=cf, fill=(12, 18, 35))
+        cf = font(42, ar)
+        w = tw(d, cta, cf, ar)
+        bw = w + 84
+        bx0 = (W - bw) / 2
+        shadow(d, [bx0, 1372, bx0 + bw, 1444], radius=36, off=6)
+        d.rounded_rectangle([bx0, 1372, bx0 + bw, 1444], radius=36, fill=GOLD)
+        d.rounded_rectangle([bx0, 1372, bx0 + bw, 1406], radius=36, fill=GOLD)
+        draw(d, cta, (bx0 + bw / 2 + w / 2) if ar else (bx0 + 42), 1384, cf, (14, 20, 38), ar)
 
-    # الرابط
+    # ── الرابط ──
     url = "profitleakaii.qd.je"
-    uf = font(30, False)
-    d.text(((W - d.textlength(url, font=uf)) / 2, 1444), url, font=uf, fill=MUTED)
+    uf = font(28, False)
+    d.text(((W - tw(d, url, uf, False)) / 2, 1456), url, font=uf, fill=MUTED)
 
     path = os.path.join(OUT, f"{p['id']}.jpg")
-    img.save(path, "JPEG", quality=88, optimize=True)
+    img.save(path, "JPEG", quality=90, optimize=True, progressive=True)
     return path, os.path.getsize(path)
 
 
 if __name__ == "__main__":
     cal = json.load(open(os.path.join(HERE, "calendar.json"), encoding="utf-8"))
-    total = 0
+    tot = 0
     for p in cal["posts"]:
         path, size = make_pin(p)
-        total += size
-        print(f"✅ {os.path.basename(path):>6}  {size/1024:6.0f} KB  — #{p['id']} {p['theme']}")
-    print(f"\n📦 المجموع: {len(cal['posts'])} صورة · {total/1024/1024:.1f} MB → {OUT}")
+        tot += size
+        print(f"✅ {os.path.basename(path):>6} {size/1024:6.0f} KB — #{p['id']} {p['theme']}")
+    print(f"\n📦 {len(cal['posts'])} صورة · {tot/1048576:.1f} MB")
