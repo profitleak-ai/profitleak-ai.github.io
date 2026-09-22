@@ -33,7 +33,7 @@ def main():
     cal = P.load()
     posts = cal["posts"]
     today = datetime.date.today()
-    idx = int(os.environ.get("INDEX", P.pick_index(posts, today)))
+    idx = int(os.environ.get("INDEX") or P.pick_index(posts, today))
     p = posts[idx % len(posts)]
     print(f"🎬 توليد فيديو المنشور #{p['id']} — {p['theme']}")
     path, size, n = mv.make_video(p)
