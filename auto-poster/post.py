@@ -1,45 +1,51 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-ProfitLeak AI — الناشر التلقائي اليومي
-=====================================
-• يختار منشور اليوم من التقويم تلقائيًا (بلا تكرار في نفس اليوم).
-• يولّد نسخة مخصصة لكل منصة: فيسبوك / انستغرام / تيكتوك / تلغرام / واتساب.
-• ينشر تلقائيًا بالكامل في: تلغرام (قناتك) + فيسبوك (صفحتك) — إن كانت المفاتيح مضبوطة.
-• يرسل لك كل النسخ على الهاتف عبر ntfy لتنسخي والصقي في الباقي.
-• وسم المصدر (?ref=facebook/tiktok...) يُضاف تلقائيًا لكل رابط لتعرفي من أين جاء الزائر.
+ProfitLeak AI — الناشر التلقائي اليومي (متعدد المنصات)
+=====================================================
+المنصات المدعومة:
+  🟢 تلغرام     — تلقائي كامل (واجهة البوت الرسمية، مجانية)
+  🟢 ريديت      — تلقائي كامل (OAuth سكربت، مجاني للاستخدام الشخصي)
+  🟢 بينتوريست  — تلقائي كامل (API v5، مجاني)
+  🟡 فيسبوك     — تلقائي (مفتاح يتجدد كل 60 يومًا)
+  🟡 تويتر/إكس  — الوحدة جاهزة (المنصة صارت مدفوعة: تحتاج رصيدًا)
+  🟡 يوتيوب     — الوحدة جاهزة (تحتاج تفويض Google لمرة واحدة)
+  📲 الهاتف     — دائمًا: كل النسخ + الصورة + وسوم المصدر
 
-يعمل على: GitHub Actions (مجانًا للأبد) — أو محليًا: python3 post.py --test
+يعمل على GitHub Actions مجانًا للأبد — أو محليًا: python3 post.py --dry
 """
-import json, os, sys, ssl, urllib.request, urllib.parse, datetime, textwrap
+import json, os, sys, ssl, time, random, string, base64, hmac, hashlib
+import urllib.request, urllib.parse, urllib.error, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CAL = os.path.join(HERE, "calendar.json")
 STATE = os.path.join(HERE, "state.json")
 
 SITE = os.environ.get("SITE", "https://profitleakaii.qd.je/").rstrip("/") + "/"
-MEDIA_BASE = os.environ.get("MEDIA_BASE", "")  # رابط مجلد الصور (raw.githubusercontent)
+MEDIA_BASE = os.environ.get("MEDIA_BASE", "")
 NTFY = os.environ.get("NTFY_TOPIC", "profitleak-alerts-34d2c8377c")
-SLOT = os.environ.get("SLOT", "morning")  # morning | evening
+SLOT = os.environ.get("SLOT", "morning")
 DRY = "--dry" in sys.argv or os.environ.get("DRY_RUN") == "1"
 TEST = "--test" in sys.argv
 FORCE = "--force" in sys.argv
-
 ctx = ssl.create_default_context()
 
 
-def http(url, data=None, headers=None, method=None, timeout=45):
+def http(url, data=None, headers=None, method=None, timeout=60, json_body=False):
     body = None
     if data is not None:
-        body = data if isinstance(data, bytes) else urllib.parse.urlencode(data).encode()
+        body = json.dumps(data).encode() if json_body else (data if isinstance(data, bytes) else urllib.parse.urlencode(data).encode())
     req = urllib.request.Request(url, data=body, headers=headers or {}, method=method or ("POST" if body else "GET"))
     try:
         r = urllib.request.urlopen(req, timeout=timeout, context=ctx)
-        return r.status, r.read().decode("utf-8", "ignore")
+        return r.status, r.read().decode("utf-8", "ignore"), dict(r.headers)
     except urllib.error.HTTPError as e:
-        return e.code, e.read().decode("utf-8", "ignore")
+        try:
+            return e.code, e.read().decode("utf-8", "ignore"), dict(e.headers)
+        except Exception:
+            return e.code, "", {}
     except Exception as e:
-        return 0, str(e)
+        return 0, str(e), {}
 
 
 def load():
@@ -48,13 +54,9 @@ def load():
 
 
 def pick_index(posts, today):
-    """مؤشر ثابت لليوم + الفترة (صباح/مساء) — بلا تخزين، ودورة كاملة بلا تكرار."""
     epoch = datetime.date(2026, 9, 22)
-    days = (today - epoch).days
-    if days < 0:
-        days = 0
-    slot = 0 if SLOT == "morning" else 1
-    return (days * 2 + slot) % len(posts)
+    days = max((today - epoch).days, 0)
+    return (days * 2 + (0 if SLOT == "morning" else 1)) % len(posts)
 
 
 def link(ref):
@@ -70,77 +72,193 @@ def media_url(rel):
 
 
 # ───────────────────────── صياغة النسخ ─────────────────────────
+def strip_md(s):
+    return s.replace("**", "").replace("▪️", "-").replace("🔻", "")
+
+
 def render(p, platform):
     t, b, cta = p["title"], p["body"], p["cta"]
-    tags = " ".join(("#" + h.strip().lstrip("#")) for h in p.get("hashtags", []))
+    tags = " ".join(("#" + h.strip().lstrip("#").strip()) for h in p.get("hashtags", []))
     url = link(platform)
     if platform == "facebook":
         return f"{t}\n\n{b}\n\n👉 {cta}: {url}"
     if platform == "instagram":
         return f"{t}\n\n{b}\n\n👉 {cta}\n(الرابط في البايو 👆 أو انسخيه: {url})\n.\n.\n.\n{tags}"
     if platform == "tiktok":
-        short = b.split("\n")[0]
-        return f"{t}\n\n{short}\n\n👉 {url}\n{tags}"
+        return f"{t}\n\n{b.splitlines()[0]}\n\n👉 {url}\n{tags}"
     if platform == "telegram":
-        return f"<b>{t}</b>\n\n{b.replace('**', '')}\n\n👉 <a href=\"{url}\">{cta}</a>"
+        return f"<b>{t}</b>\n\n{strip_md(b)}\n\n👉 <a href=\"{url}\">{cta}</a>"
     if platform == "whatsapp":
-        return f"{t}\n\n{b.split(chr(10))[0]}\n👉 {url}"
+        return f"{t}\n\n{b.splitlines()[0]}\n👉 {url}"
+    if platform == "reddit":
+        return f"{t}\n\n{strip_md(b)}\n\n{cta}: {url}"
+    if platform == "pinterest":
+        desc = strip_md(b).replace("\n", " ")
+        return (t[:95], f"{desc} — {cta}. {url}"[:480])
+    if platform == "twitter":
+        base = f"{t}\n\n{b.splitlines()[0]}\n{url}"
+        return base[:275]
+    if platform == "youtube":
+        return (t[:95], f"{strip_md(b)}\n\n{cta}: {url}\n\n{tags}")
     return f"{t}\n\n{b}\n\n{url}"
 
 
-# ───────────────────────── قنوات النشر ─────────────────────────
+# ───────────────────────── الهاتف ─────────────────────────
 def to_ntfy(p, media):
-    title = f"ProfitLeak - Daily Post #{p['id']} ({SLOT})"
     body = (
-        f"📘 فيسبوك:\n{render(p, 'facebook')}\n\n"
-        f"📸 انستغرام:\n{render(p, 'instagram')}\n\n"
-        f"🎵 تيكتوك:\n{render(p, 'tiktok')}\n\n"
-        f"🟢 حالة واتساب:\n{render(p, 'whatsapp')}"
+        f"📘 فيسبوك:\n{render(p,'facebook')}\n\n📸 انستغرام:\n{render(p,'instagram')}\n\n"
+        f"🎵 تيكتوك:\n{render(p,'tiktok')}\n\n🟢 واتساب:\n{render(p,'whatsapp')}\n\n"
+        f"📌 بينتوريست:\n{p['title'][:95]}\n\n🔗 ريديت:\n{render(p,'reddit')[:300]}"
     )
-    headers = {
-        "Title": title.encode("ascii", "ignore").decode(),
-        "Tags": "calendar,rocket",
-        "Priority": "default",
-        "Markdown": "no",
-        "Actions": json.dumps([{"action": "view", "label": "Open site", "url": link(SLOT)}], ensure_ascii=False),
-    }
+    headers = {"Title": f"ProfitLeak - Daily Post #{p['id']} ({SLOT})", "Tags": "calendar,rocket",
+               "Actions": json.dumps([{"action": "view", "label": "Open site", "url": link(SLOT)}])}
     if media:
         headers["Attach"] = media
         headers["Filename"] = media.split("/")[-1]
-    st, out = http(f"https://ntfy.sh/{NTFY}", data=body.encode("utf-8"), headers=headers)
+    st, out, _ = http(f"https://ntfy.sh/{NTFY}", data=body.encode("utf-8"), headers=headers)
     return st == 200, f"ntfy {st}"
 
 
+# ───────────────────────── تلغرام ─────────────────────────
 def to_telegram(p, media):
     tok, chat = os.environ.get("TELEGRAM_TOKEN"), os.environ.get("TELEGRAM_CHAT")
     if not (tok and chat):
         return None, "غير مضبوط (اختياري)"
     text = render(p, "telegram")
     if media:
-        st, out = http(f"https://api.telegram.org/bot{tok}/sendPhoto",
-                       data={"chat_id": chat, "photo": media, "caption": text, "parse_mode": "HTML"})
+        st, out, _ = http(f"https://api.telegram.org/bot{tok}/sendPhoto",
+                          data={"chat_id": chat, "photo": media, "caption": text, "parse_mode": "HTML"})
     else:
-        st, out = http(f"https://api.telegram.org/bot{tok}/sendMessage",
-                       data={"chat_id": chat, "text": text, "parse_mode": "HTML", "disable_web_page_preview": "false"})
+        st, out, _ = http(f"https://api.telegram.org/bot{tok}/sendMessage",
+                          data={"chat_id": chat, "text": text, "parse_mode": "HTML"})
     ok = st == 200 and '"ok":true' in out
-    return ok, f"telegram HTTP {st}" + ("" if ok else " — " + out[:120])
+    return ok, f"telegram {st}" + ("" if ok else " — " + out[:110])
 
 
+# ───────────────────────── ريديت ─────────────────────────
+def to_reddit(p):
+    cid = os.environ.get("REDDIT_CLIENT_ID")
+    sec = os.environ.get("REDDIT_CLIENT_SECRET")
+    user = os.environ.get("REDDIT_USERNAME")
+    pwd = os.environ.get("REDDIT_PASSWORD")
+    if not all([cid, sec, user, pwd]):
+        return None, "غير مضبوط (اختياري)"
+    ua = f"ProfitLeakAutoPoster/1.0 (by /u/{user})"
+    tok_url = "https://www.reddit.com/api/v1/access_token"
+    auth = base64.b64encode(f"{cid}:{sec}".encode()).decode()
+    st, out, _ = http(tok_url, data={"grant_type": "password", "username": user, "password": pwd},
+                      headers={"Authorization": f"Basic {auth}", "User-Agent": ua})
+    try:
+        token = json.loads(out)["access_token"]
+    except Exception:
+        return False, f"فشل الدخول {st}: {out[:90]}"
+    targets = os.environ.get("REDDIT_SUBS", "").strip()
+    targets = [s.strip() for s in targets.split(",") if s.strip()] or [f"u_{user}"]
+    last_ok, last_msg = False, ""
+    for sr in targets:
+        st2, out2, _ = http("https://oauth.reddit.com/api/submit",
+                            data={"sr": sr, "kind": "self", "api_type": "json",
+                                  "title": p["title"][:295], "text": render(p, "reddit")},
+                            headers={"Authorization": f"bearer {token}", "User-Agent": ua})
+        ok = st2 == 200 and '"errors"' in out2 and '"errors": []' in out2.replace(" ", "")
+        last_ok, last_msg = ok, f"reddit/{sr} {st2}" + ("" if ok else " — " + out2[:90])
+        if sr != targets[-1]:
+            time.sleep(3)
+    return last_ok, last_msg
+
+
+# ───────────────────────── بينتوريست ─────────────────────────
+def to_pinterest(p, media):
+    token = os.environ.get("PINTEREST_TOKEN")
+    board = os.environ.get("PINTEREST_BOARD_ID")
+    if not (token and board):
+        return None, "غير مضبوط (اختياري)"
+    title, desc = render(p, "pinterest")
+    payload = {"board_id": board, "title": title, "description": desc, "link": link("pinterest"),
+               "media_source": {"source_type": "image_url", "url": media or link("pinterest")}}
+    st, out, _ = http("https://api.pinterest.com/v5/pins", data=payload, json_body=True,
+                      headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"})
+    ok = st in (200, 201)
+    return ok, f"pinterest {st}" + ("" if ok else " — " + out[:110])
+
+
+# ───────────────────────── تويتر / إكس (OAuth 1.0a) ─────────────────────────
+def oauth1_header(method, url, ck, cs, at, ats):
+    oa = {"oauth_consumer_key": ck, "oauth_nonce": "".join(random.choices(string.ascii_letters + string.digits, k=32)),
+          "oauth_signature_method": "HMAC-SHA1", "oauth_timestamp": str(int(time.time())),
+          "oauth_token": at, "oauth_version": "1.0"}
+    base = "&".join([method.upper(), urllib.parse.quote(url, safe=""),
+                     urllib.parse.quote("&".join(f"{k}={urllib.parse.quote(str(oa[k]), safe='')}" for k in sorted(oa)), safe="")])
+    sig = base64.b64encode(hmac.new(f"{urllib.parse.quote(cs)}&{urllib.parse.quote(ats)}".encode(),
+                                    base.encode(), hashlib.sha1).digest()).decode()
+    oa["oauth_signature"] = sig
+    return "OAuth " + ", ".join(f'{k}="{urllib.parse.quote(str(v), safe="")}"' for k, v in sorted(oa.items()))
+
+
+def to_twitter(p):
+    ck = os.environ.get("TWITTER_API_KEY")
+    cs = os.environ.get("TWITTER_API_SECRET")
+    at = os.environ.get("TWITTER_ACCESS_TOKEN")
+    ats = os.environ.get("TWITTER_ACCESS_SECRET")
+    if not all([ck, cs, at, ats]):
+        return None, "غير مضبوط (المنصة مدفوعة — اختياري)"
+    url = "https://api.twitter.com/2/tweets"
+    st, out, _ = http(url, data={"text": render(p, "twitter")}, json_body=True,
+                      headers={"Authorization": oauth1_header("POST", url, ck, cs, at, ats),
+                               "Content-Type": "application/json"})
+    ok = st in (200, 201)
+    return ok, f"twitter {st}" + ("" if ok else " — " + out[:110])
+
+
+# ───────────────────────── يوتيوب ─────────────────────────
+def to_youtube(p):
+    cid = os.environ.get("YOUTUBE_CLIENT_ID")
+    cs = os.environ.get("YOUTUBE_CLIENT_SECRET")
+    rt = os.environ.get("YOUTUBE_REFRESH_TOKEN")
+    vid = os.environ.get("YOUTUBE_VIDEO_URL")
+    if not all([cid, cs, rt, vid]):
+        return None, "غير مضبوط (يحتاج تفويض Google لمرة واحدة)"
+    st, out, _ = http("https://oauth2.googleapis.com/token",
+                      data={"client_id": cid, "client_secret": cs, "refresh_token": rt, "grant_type": "refresh_token"})
+    try:
+        access = json.loads(out)["access_token"]
+    except Exception:
+        return False, f"فشل التوكن {st}"
+    st2, raw, _ = http(vid, method="GET")
+    if st2 != 200:
+        return False, f"تعذّر تحميل الفيديو {st2}"
+    title, desc = render(p, "youtube")
+    meta = {"snippet": {"title": title, "description": desc, "tags": [h.strip() for h in p.get("hashtags", [])],
+                        "categoryId": "22"},
+            "status": {"privacyStatus": "public", "selfDeclaredMadeForKids": False}}
+    st3, out3, hdr = http("https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status",
+                          data=meta, json_body=True,
+                          headers={"Authorization": f"Bearer {access}", "Content-Type": "application/json"})
+    loc = hdr.get("Location") or hdr.get("location")
+    if st3 not in (200, 201) or not loc:
+        return False, f"فشل بدء الرفع {st3}"
+    st4, out4, _ = http(loc, data=raw, method="PUT",
+                        headers={"Authorization": f"Bearer {access}", "Content-Type": "video/mp4"}, timeout=300)
+    return st4 in (200, 201), f"youtube {st4}"
+
+
+# ───────────────────────── فيسبوك ─────────────────────────
 def to_facebook(p, media):
     pid, tok = os.environ.get("FACEBOOK_PAGE_ID"), os.environ.get("FACEBOOK_TOKEN")
     if not (pid and tok):
         return None, "غير مضبوط (اختياري)"
     msg = render(p, "facebook")
     if media:
-        st, out = http(f"https://graph.facebook.com/v20.0/{pid}/photos",
-                       data={"url": media, "message": msg, "access_token": tok})
+        st, out, _ = http(f"https://graph.facebook.com/v20.0/{pid}/photos",
+                          data={"url": media, "message": msg, "access_token": tok})
     else:
-        st, out = http(f"https://graph.facebook.com/v20.0/{pid}/feed",
-                       data={"message": msg, "link": link("facebook"), "access_token": tok})
+        st, out, _ = http(f"https://graph.facebook.com/v20.0/{pid}/feed",
+                          data={"message": msg, "link": link("facebook"), "access_token": tok})
     ok = st == 200 and '"id"' in out
-    return ok, f"facebook HTTP {st}" + ("" if ok else " — " + out[:120])
+    return ok, f"facebook {st}" + ("" if ok else " — " + out[:110])
 
 
+# ───────────────────────── الرئيسية ─────────────────────────
 def main():
     data = load()
     posts = data["posts"]
@@ -149,59 +267,54 @@ def main():
     p = posts[idx % len(posts)]
     media = media_url(p.get("media", ""))
 
-    # حاجز التكرار: لا ننشر نفس الفترة مرتين في اليوم
     key = f"{today.isoformat()}-{SLOT}"
     if os.path.exists(STATE) and not FORCE:
         try:
             if json.load(open(STATE, encoding="utf-8")).get("last") == key:
-                print(f"⏭  تم النشر مسبقًا لـ {key} — تخطي (استعمل --force للإعادة)")
+                print(f"⏭  نُشر مسبقًا لـ {key} — تخطي (--force للإعادة)")
                 return 0
         except Exception:
             pass
 
-    print("=" * 60)
-    print(f"📅 {today.isoformat()} — الفترة: {SLOT} — المنشور #{p['id']} ({p['theme']})")
-    print("=" * 60)
-    for pl in ("facebook", "instagram", "tiktok", "whatsapp"):
+    print("=" * 62)
+    print(f"📅 {today} | {SLOT} | المنشور #{p['id']} — {p['theme']}")
+    print("=" * 62)
+    for pl in ("facebook", "instagram", "tiktok", "reddit", "whatsapp"):
         print(f"\n─── {pl} ───\n{render(p, pl)}\n")
 
     if DRY:
-        print("🧪 وضع تجريبي — بلا إرسال فعلي")
+        print("🧪 تجربة جافة — بلا إرسال")
         return 0
 
-    results = []
-    results.append(("ntfy (هاتفك)",) + to_ntfy(p, media))
+    results = [("ntfy (هاتفك)",) + to_ntfy(p, media)]
     if TEST:
-        print("🧪 اختبار: لن يُنشر في تلغرام/فيسبوك (فقط الهاتف)")
+        print("🧪 اختبار: الهاتف فقط")
     else:
-        results.append(("تلغرام (تلقائي)",) + to_telegram(p, media))
-        results.append(("فيسبوك (تلقائي)",) + to_facebook(p, media))
+        results.append(("تلغرام",) + to_telegram(p, media))
+        if SLOT == "morning":                       # مرة يوميًا (أمان من الحظر)
+            results.append(("ريديت",) + to_reddit(p))
+            results.append(("بينتوريست",) + to_pinterest(p, media))
+        results.append(("تويتر/إكس",) + to_twitter(p))
+        if today.weekday() == int(os.environ.get("YOUTUBE_DAY", "5")) and SLOT == "evening":
+            results.append(("يوتيوب",) + to_youtube(p))
+        results.append(("فيسبوك",) + to_facebook(p, media))
 
-    print("\n" + "=" * 60)
+    print("\n" + "=" * 62)
     for name, ok, note in results:
-        if ok is None:
-            print(f"⚪  {name}: {note}")
-        elif ok:
-            print(f"✅  {name}: نُشر ({note})")
-        else:
-            print(f"❌  {name}: {note}")
-    print("=" * 60)
+        print(("✅ " if ok else ("⚪ " if ok is None else "❌ ")) + f"{name}: {note}")
+    print("=" * 62)
 
-    # ملخّص GitHub Actions
     summ = os.environ.get("GITHUB_STEP_SUMMARY")
     if summ:
         with open(summ, "a", encoding="utf-8") as f:
-            f.write(f"## 📅 منشور اليوم — #{p['id']} ({p['theme']})\n\n")
+            f.write(f"## 📅 منشور #{p['id']} — {p['theme']} ({SLOT})\n\n")
             for name, ok, note in results:
                 f.write(f"- {'✅' if ok else ('⚪' if ok is None else '❌')} {name}: {note}\n")
-            f.write(f"\n```\n{render(p, 'facebook')}\n```\n")
-
-    # حفظ الحالة (يَمنع التكرار)
     try:
         json.dump({"last": key, "post_id": p["id"], "at": datetime.datetime.utcnow().isoformat() + "Z"},
                   open(STATE, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
     except Exception as e:
-        print("تحذير: تعذّر حفظ الحالة:", e)
+        print("تحذير:", e)
     return 0
 
 
