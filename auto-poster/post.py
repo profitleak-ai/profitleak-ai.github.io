@@ -225,8 +225,11 @@ def to_pinterest(p, media):
     if not (token and board):
         return None, "غير مضبوط (اختياري)"
     title, desc = render(p, "pinterest")
+    # الصورة العمودية المخصّصة (1000×1500) لهذا المنشور، وإن لم توجد فالصورة العامة
+    pin = f"{MEDIA_BASE.rstrip('/')}/pinterest/{p['id']}.jpg" if MEDIA_BASE else ""
+    img = pin if os.environ.get("PINTEREST_PINS", "1") == "1" else media
     payload = {"board_id": board, "title": title, "description": desc, "link": link("pinterest"),
-               "media_source": {"source_type": "image_url", "url": media or link("pinterest")}}
+               "media_source": {"source_type": "image_url", "url": img or media or link("pinterest")}}
     st, out, _ = http("https://api.pinterest.com/v5/pins", data=payload, json_body=True,
                       headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"})
     ok = st in (200, 201)
