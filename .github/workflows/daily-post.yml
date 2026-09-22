@@ -1,0 +1,71 @@
+name: 📅 النشر التلقائي اليومي
+
+on:
+  schedule:
+    - cron: '30 11 * * *'   # 12:30 بتوقيت المغرب (صباح)
+    - cron: '0 19 * * *'    # 20:00 بتوقيت المغرب (مساء)
+  workflow_dispatch:
+    inputs:
+      slot:
+        description: 'الفترة'
+        required: false
+        default: 'morning'
+        type: choice
+        options: [morning, evening]
+      force:
+        description: 'أعد النشر حتى لو نُشر اليوم'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: تنزيل المستودع
+        uses: actions/checkout@v4
+
+      - name: إعداد Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: تحديد الفترة
+        id: slot
+        run: |
+          if [ "${{ github.event.inputs.slot }}" = "evening" ] || [ "${{ github.event.schedule }}" = "0 19 * * *" ]; then
+            echo "slot=evening" >> $GITHUB_OUTPUT
+          else
+            echo "slot=morning" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 📤 نشر منشور اليوم
+        env:
+          SLOT: ${{ steps.slot.outputs.slot }}
+          SITE: https://profitleakaii.qd.je
+          MEDIA_BASE: https://profitleakaii.qd.je
+          NTFY_TOPIC: profitleak-alerts-34d2c8377c
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT: ${{ secrets.TELEGRAM_CHAT }}
+          FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
+          FACEBOOK_TOKEN: ${{ secrets.FACEBOOK_TOKEN }}
+        run: |
+          if [ "${{ github.event.inputs.force }}" = "true" ]; then
+            python3 auto-poster/post.py --force
+          else
+            python3 auto-poster/post.py
+          fi
+
+      - name: حفظ الحالة (منع التكرار)
+        run: |
+          git config user.name  "ProfitLeak Auto-Poster"
+          git config user.email "autoposter@profitleakaii.qd.je"
+          if ! git diff --quiet auto-poster/state.json 2>/dev/null; then
+            git add auto-poster/state.json
+            git commit -m "auto-poster: posted ${{ steps.slot.outputs.slot }} $(date -u +%F)"
+            git push
+          else
+            echo "لا جديد لحفظه"
+          fi
