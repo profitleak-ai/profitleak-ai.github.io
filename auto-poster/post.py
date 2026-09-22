@@ -221,9 +221,13 @@ def to_reddit(p):
 # ───────────────────────── بينتوريست ─────────────────────────
 def to_pinterest(p, media):
     token = os.environ.get("PINTEREST_TOKEN")
-    board = os.environ.get("PINTEREST_BOARD_ID")
-    if not (token and board):
+    if not token:
         return None, "غير مضبوط (اختياري)"
+    board = os.environ.get("PINTEREST_BOARD_ID", "")
+    if not board:
+        board, bnote = pinterest_board(token)
+        if not board:
+            return False, bnote
     title, desc = render(p, "pinterest")
     # الصورة العمودية المخصّصة (1000×1500) لهذا المنشور، وإن لم توجد فالصورة العامة
     pin = f"{MEDIA_BASE.rstrip('/')}/pinterest/{p['id']}.jpg" if MEDIA_BASE else ""
@@ -236,6 +240,40 @@ def to_pinterest(p, media):
                       headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"})
     ok = st in (200, 201)
     return ok, f"pinterest {st}" + ("" if ok else " — " + out[:110])
+
+
+# ─────────────── بينتوريست: اللوحة تلقائيًا (بلا إعداد يدوي) ───────────────
+_BOARD_CACHE = {}
+
+
+def pinterest_board(token):
+    """يجد لوحة بالاسم (أو ينشئها) — لا حاجة لإدخال معرّف يدويًا"""
+    if _BOARD_CACHE.get("id"):
+        return _BOARD_CACHE["id"], _BOARD_CACHE.get("note", "")
+    name = os.environ.get("PINTEREST_BOARD_NAME", "ProfitLeak AI")
+    auth = {"Authorization": f"Bearer {token}"}
+    st, out, _ = http("https://api.pinterest.com/v5/boards?page_size=50", headers=auth, method="GET")
+    if st == 200:
+        try:
+            for b in (json.loads(out).get("items") or []):
+                if (b.get("name") or "").strip().lower() == name.strip().lower():
+                    _BOARD_CACHE.update(id=b.get("id"), note=f"لوحة: {b.get('name')}")
+                    return b.get("id"), f"لوحة موجودة: {b.get('name')}"
+        except Exception:
+            pass
+    st2, out2, _ = http("https://api.pinterest.com/v5/boards",
+                        data={"name": name, "description": "احسب ربحك الحقيقي · ProfitLeak AI",
+                              "privacy": "PUBLIC"},
+                        json_body=True,
+                        headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"})
+    if st2 in (200, 201):
+        try:
+            bid = json.loads(out2).get("id")
+            _BOARD_CACHE.update(id=bid, note=f"أُنشئت لوحة: {name}")
+            return bid, f"أُنشئت لوحة جديدة: {name}"
+        except Exception:
+            pass
+    return "", f"تعذّر تحديد اللوحة ({st}/{st2})"
 
 
 # ─────────────── بينتوريست: بن فيديو (رفع مباشر، بلا استضافة) ───────────────
@@ -253,8 +291,13 @@ def multipart(fields, files):
 def pinterest_video_pin(p, board, cover, video_path):
     """يرفع الفيديو مباشرة إلى بينتوريست ثم ينشره بنًّا"""
     token = os.environ.get("PINTEREST_TOKEN")
-    if not (token and board):
+    if not token:
         return None, "غير مضبوط (اختياري)"
+    board = board or os.environ.get("PINTEREST_BOARD_ID", "")
+    if not board:
+        board, bnote = pinterest_board(token)
+        if not board:
+            return False, bnote
     auth = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
     st, out, _ = http("https://api.pinterest.com/v5/media", data={"media_type": "video"},
                       json_body=True, headers=auth)
