@@ -386,7 +386,7 @@ def main():
     data = load()
     posts = data["posts"]
     today = datetime.date.today()
-    idx = int(os.environ.get("INDEX", pick_index(posts, today)))
+    idx = int(os.environ.get("INDEX") or pick_index(posts, today))
     p = posts[idx % len(posts)]
     media = media_url(p.get("media", ""))
 
