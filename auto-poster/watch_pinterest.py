@@ -40,8 +40,10 @@ def main():
         board, note = P.pinterest_board(token)
         msg = (f"تم تفعيل بينتوريست! الحساب: {acc.get('username','?')} · "
                f"{note} · معرّف اللوحة: {board or 'غير متاح'}")
-        notify("ProfitLeak - Pinterest ACTIVATED", msg, prio="high", tags="tada,rocket")
+        notify("ProfitLeak - بينتوريست مُفعّل!", msg, prio="high", tags="tada,rocket")
         print("🎉 " + msg)
+        print("🚀 إطلاق أول دفعة تلقائيًا (بن صورة + بن فيديو)…")
+        os.system(f"python3 {os.path.join(HERE, 'first_pins.py')}")
         summ = os.environ.get("GITHUB_STEP_SUMMARY")
         if summ:
             with open(summ, "a", encoding="utf-8") as f:
