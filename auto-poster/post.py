@@ -229,11 +229,80 @@ def to_pinterest(p, media):
     pin = f"{MEDIA_BASE.rstrip('/')}/pinterest/{p['id']}.jpg" if MEDIA_BASE else ""
     img = pin if os.environ.get("PINTEREST_PINS", "1") == "1" else media
     payload = {"board_id": board, "title": title, "description": desc, "link": link("pinterest"),
-               "media_source": {"source_type": "image_url", "url": img or media or link("pinterest")}}
+               "alt_text": (p["title"][:480]),
+               "media_source": {"source_type": "image_url", "url": img or media or link("pinterest"),
+                                "is_standard": True}}
     st, out, _ = http("https://api.pinterest.com/v5/pins", data=payload, json_body=True,
                       headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"})
     ok = st in (200, 201)
     return ok, f"pinterest {st}" + ("" if ok else " — " + out[:110])
+
+
+# ─────────────── بينتوريست: بن فيديو (رفع مباشر، بلا استضافة) ───────────────
+def multipart(fields, files):
+    b = "----ProfitLeakBoundary" + "".join(random.choices(string.digits, k=12))
+    out = b""
+    for k, v in fields.items():
+        out += f"--{b}\r\nContent-Disposition: form-data; name=\"{k}\"\r\n\r\n{v}\r\n".encode()
+    for name, (fn, data, ctype) in files.items():
+        out += (f"--{b}\r\nContent-Disposition: form-data; name=\"{name}\"; filename=\"{fn}\"\r\n"
+                f"Content-Type: {ctype}\r\n\r\n").encode() + data + f"\r\n--{b}--\r\n".encode()
+    return out, f"multipart/form-data; boundary={b}"
+
+
+def pinterest_video_pin(p, board, cover, video_path):
+    """يرفع الفيديو مباشرة إلى بينتوريست ثم ينشره بنًّا"""
+    token = os.environ.get("PINTEREST_TOKEN")
+    if not (token and board):
+        return None, "غير مضبوط (اختياري)"
+    auth = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+    st, out, _ = http("https://api.pinterest.com/v5/media", data={"media_type": "video"},
+                      json_body=True, headers=auth)
+    try:
+        d = json.loads(out)
+    except Exception:
+        return False, f"فشل تسجيل الرفع {st}: {out[:90]}"
+    mid, up, params = d.get("media_id"), d.get("upload_url"), d.get("upload_parameters") or {}
+    if not (mid and up):
+        return False, f"استجابة غير متوقعة: {out[:110]}"
+    try:
+        raw = open(video_path, "rb").read()
+    except Exception as e:
+        return False, f"تعذّر قراءة الفيديو: {e}"
+    body, ctype = multipart(params, {"file": ("video.mp4", raw, "video/mp4")})
+    st2, out2, _ = http(up, data=body, headers={"Content-Type": ctype}, timeout=300)
+    if st2 not in (200, 201, 204):
+        return False, f"فشل الرفع لـ S3 {st2}: {out2[:90]}"
+    # انتظار المعالجة
+    status = ""
+    for _ in range(40):
+        s3, o3, _ = http(f"https://api.pinterest.com/v5/media/{mid}", headers=auth)
+        try:
+            status = json.loads(o3).get("status", "")
+        except Exception:
+            pass
+        if status in ("succeeded", "processed", "SUCCEEDED", "PROCESSED"):
+            break
+        time.sleep(10)
+    title, desc = render(p, "pinterest")
+    payload = {"board_id": board, "title": title, "description": desc, "link": link("pinterest"),
+               "media_source": {"source_type": "video_id", "media_id": mid, "cover_image_url": cover}}
+    st4, out4, _ = http("https://api.pinterest.com/v5/pins", data=payload, json_body=True, headers=auth)
+    ok = st4 in (200, 201)
+    return ok, f"video-pin {st4} (حالة: {status or 'غير معروفة'})" + ("" if ok else " — " + out4[:110])
+
+
+def telegram_video(p, video_path):
+    tok, chat = os.environ.get("TELEGRAM_TOKEN"), os.environ.get("TELEGRAM_CHAT")
+    if not (tok and chat):
+        return None, "غير مضبوط (اختياري)"
+    raw = open(video_path, "rb").read()
+    body, ctype = multipart({"chat_id": chat, "caption": render(p, "telegram"), "parse_mode": "HTML"},
+                            {"video": ("video.mp4", raw, "video/mp4")})
+    st, out, _ = http(f"https://api.telegram.org/bot{tok}/sendVideo", data=body,
+                      headers={"Content-Type": ctype}, timeout=300)
+    ok = st == 200 and '"ok":true' in out
+    return ok, f"telegram-video {st}" + ("" if ok else " — " + out[:110])
 
 
 # ───────────────────────── تويتر / إكس (OAuth 1.0a) ─────────────────────────
