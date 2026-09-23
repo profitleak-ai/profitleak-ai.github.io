@@ -1,0 +1,36 @@
+name: 🧪 اختبار بينتوريست (Sandbox)
+
+on:
+  workflow_dispatch:
+    inputs:
+      index:
+        description: 'رقم المنشور (فارغ = تلقائي)'
+        required: false
+      template:
+        description: 'قالب الفيديو'
+        required: false
+        default: ''
+        type: choice
+        options: ['', midnight, royal, emerald, sunset]
+
+jobs:
+  sandbox:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: تثبيت حزم الوسائط
+        run: pip install --quiet Pillow imageio-ffmpeg fonttools
+      - name: 🚀 نشر تجريبي على بيئة الاختبار
+        env:
+          PINTEREST_SANDBOX: '1'
+          PINTEREST_BOARD_NAME: ProfitLeak AI Test
+          SKIP_NTFY: 'true'
+          SITE: https://profitleakaii.qd.je
+          SLOT: morning
+          VIDEO_TEMPLATE: ${{ github.event.inputs.template }}
+          INDEX: ${{ github.event.inputs.index }}
+          PINTEREST_TOKEN: ${{ secrets.PINTEREST_SANDBOX_TOKEN }}
+        run: python3 auto-poster/first_pins.py
