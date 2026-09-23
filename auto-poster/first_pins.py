@@ -28,6 +28,24 @@ def notify(msg):
         return False
 
 
+def pinterest_has(board, title):
+    """يتحقق إن كان بن بنفس العنوان موجودًا مسبقًا (منع التكرار بلا ملف حالة)"""
+    tok = os.environ.get("PINTEREST_TOKEN", "")
+    if not (tok and board):
+        return False
+    st, out, _ = P.http(P.pbase() + f"/v5/boards/{board}/pins?page_size=25",
+                        headers={"Authorization": f"Bearer {tok}", "User-Agent": "ProfitLeak/1.0"},
+                        method="GET")
+    if st != 200:
+        return False
+    try:
+        items = json.loads(out).get("items") or []
+    except Exception:
+        return False
+    return any((i.get("title") or "").strip() == title.strip() for i in items)
+
+
+
 def main():
     cal = P.load()
     posts = cal["posts"]
@@ -36,6 +54,12 @@ def main():
     p = posts[idx % len(posts)]
     cover = f"{SITE}/pinterest/{p['id']}.jpg"
     print(f"🚀 أول دفعة بينتوريست — المنشور #{p['id']} ({p.get('theme','')})")
+
+    title, _desc = P.render(p, "pinterest")
+    board_now = os.environ.get("PINTEREST_BOARD_ID", "") or (P.pinterest_board(os.environ.get("PINTEREST_TOKEN", ""))[0] if os.environ.get("PINTEREST_TOKEN") else "")
+    if pinterest_has(board_now, title):
+        print(f"⏭  البن موجود مسبقًا على اللوحة ({title[:40]}…) — تخطي منعًا للتكرار")
+        return 0
 
     results = [("بينتوريست (بن صورة)",) + P.to_pinterest(p, cover)]
     try:
