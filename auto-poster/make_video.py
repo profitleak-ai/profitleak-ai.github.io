@@ -30,6 +30,40 @@ MUTED = (147, 164, 200)
 CARD = (16, 25, 48)
 CARD_EDGE = (51, 69, 110)
 
+# ───────── قوالب بصرية (تتغير تلقائيًا كل يوم) ─────────
+TEMPLATES = {
+    "midnight": dict(bg=(7, 11, 24), g1=(58, 92, 180, 90), g2=(255, 199, 70, 34),
+                     gold=(255, 199, 70), accent=(45, 212, 191), bar2=(78, 140, 232),
+                     card=(16, 25, 48), edge=(51, 69, 110), text=(220, 231, 247),
+                     chart="bars", entr="slide"),
+    "royal":    dict(bg=(15, 9, 34), g1=(124, 58, 190, 95), g2=(255, 120, 180, 40),
+                     gold=(255, 214, 102), accent=(167, 139, 250), bar2=(236, 72, 153),
+                     card=(26, 17, 50), edge=(88, 56, 140), text=(232, 226, 255),
+                     chart="line", entr="zoom"),
+    "emerald":  dict(bg=(4, 22, 26), g1=(16, 150, 140, 95), g2=(255, 199, 70, 36),
+                     gold=(255, 205, 90), accent=(52, 211, 153), bar2=(34, 211, 238),
+                     card=(8, 34, 38), edge=(26, 96, 96), text=(214, 245, 240),
+                     chart="line", entr="slide"),
+    "sunset":   dict(bg=(26, 10, 16), g1=(198, 82, 62, 92), g2=(255, 176, 80, 46),
+                     gold=(255, 176, 80), accent=(248, 113, 113), bar2=(251, 191, 36),
+                     card=(36, 15, 20), edge=(120, 54, 54), text=(255, 232, 226),
+                     chart="bars", entr="zoom"),
+}
+TEMPLATE_ORDER = ["midnight", "royal", "emerald", "sunset"]
+
+
+def pick_template(p):
+    """يختار القالب: من المتغيّر البيئي، أو بالتناوب حسب رقم المنشور"""
+    name = os.environ.get("VIDEO_TEMPLATE", "").strip()
+    if name in TEMPLATES:
+        return name, TEMPLATES[name]
+    if name == "random" or os.environ.get("VIDEO_TEMPLATE_RANDOM"):
+        import random
+        name = random.choice(TEMPLATE_ORDER)
+        return name, TEMPLATES[name]
+    name = TEMPLATE_ORDER[int(p.get("id", 1)) % len(TEMPLATE_ORDER)]
+    return name, TEMPLATES[name]
+
 FFMPEG = imageio_ffmpeg.get_ffmpeg_exe()
 
 
@@ -62,12 +96,13 @@ def rrect(d, box, r, fill, outline=None, width=2):
 
 
 # ───────── طبقات ثابتة تُحسب مرة واحدة ─────────
-def build_bg():
-    img = Image.new("RGB", (W, H), (7, 11, 24))
+def build_bg(base=(7, 11, 24)):
+    img = Image.new("RGB", (W, H), base)
     d = ImageDraw.Draw(img)
     for y in range(0, H, 4):
         t = y / H
-        d.line([(0, y), (W, y + 4)], fill=(int(7 + 20 * t), int(11 + 30 * t), int(24 + 55 * t)))
+        d.line([(0, y), (W, y + 4)], fill=(int(base[0] + 20 * t), int(base[1] + 30 * t),
+                                           int(base[2] + 55 * t)))
     return img
 
 
@@ -97,13 +132,15 @@ def build_vignette():
 
 
 # ───────── عناصر ─────────
-def brand_layer(ar):
+def brand_layer(ar, T=None):
+    T = T or TEMPLATES["midnight"]
+    gold = T["gold"]
     L = layer(880, 180)
     d = ImageDraw.Draw(L)
-    rrect(d, [0, 30, 130, 160], 34, GOLD)
+    rrect(d, [0, 30, 130, 160], 34, gold)
     for i, h in enumerate([104, 78, 52, 28]):
         rrect(d, [22 + i * 26, 142 - h, 40 + i * 26, 142], 6, (16, 22, 40) if i < 3 else RED)
-    mp.draw(d, "ProfitLeak AI", 160, 34, mp.font(64, False), GOLD, False)
+    mp.draw(d, "ProfitLeak AI", 160, 34, mp.font(64, False), gold, False)
     tag = mp.clean("احسب ربحك الحقيقي" if ar else "Find your real profit", mp.AR if ar else mp.EN)
     mp.draw(d, tag, 160, 112, mp.font(34, ar), MUTED, ar)
     return L
@@ -122,15 +159,16 @@ def bar_layer():
     return None
 
 
-def build_frames(p):
+def build_frames(p, T=None, tname=""):
+    T = T or TEMPLATES["midnight"]
     ar = p.get("lang", "ar") == "ar"
     fpath = mp.AR if ar else mp.EN
-    bg = build_bg()
-    glow1 = build_glow(1100, (58, 92, 180), 90)
-    glow2 = build_glow(1000, (255, 199, 70), 34)
+    bg = build_bg(T["bg"])
+    glow1 = build_glow(1100, T["g1"][:3], T["g1"][3])
+    glow2 = build_glow(1000, T["g2"][:3], T["g2"][3])
     grid = build_grid()
     vig = build_vignette()
-    brand = brand_layer(ar)
+    brand = brand_layer(ar, T)
 
     title_lines, tf = mp.fit(ImageDraw.Draw(Image.new("RGB", (10, 10))),
                              mp.clean(p["title"], fpath), ar, W - 200)
@@ -174,7 +212,12 @@ def build_frames(p):
                 continue
             tl = text_layer(ln, tf, ar, WHITE, W - 180)
             x = (W - 90 - tl.width) if ar else 90
-            ov.paste(fade(tl, a), (int(x + (1 - a) * (60 if ar else -60)), int(y + (1 - a) * 18)), fade(tl, a))
+            if T["entr"] == "zoom":
+                sc = 0.82 + 0.18 * a
+                tl2 = tl.resize((max(1, int(tl.width * sc)), max(1, int(tl.height * sc))), Image.LANCZOS)
+                ov.paste(fade(tl2, a), (int(x - (tl2.width - tl.width) / 2), int(y + (1 - a) * 10)), fade(tl2, a))
+            else:
+                ov.paste(fade(tl, a), (int(x + (1 - a) * (60 if ar else -60)), int(y + (1 - a) * 18)), fade(tl, a))
             y += tf.size + 26
 
         # بطاقة الأرقام
@@ -183,7 +226,7 @@ def build_frames(p):
         if a:
             ca = layer(W - 160, card_h)
             cd = ImageDraw.Draw(ca)
-            rrect(cd, [0, 0, W - 160, card_h], 36, CARD + (235,), CARD_EDGE, 3)
+            rrect(cd, [0, 0, W - 160, card_h], 36, T["card"] + (235,), T["edge"], 3)
             ov.paste(fade(ca, a), (80, int(880 + (1 - a) * 50)), fade(ca, a))
 
             ny = 80 + 880
@@ -198,7 +241,7 @@ def build_frames(p):
                     pw, ph = rl.width + 60, resf.size + 46
                     pill = layer(pw, ph)
                     pd = ImageDraw.Draw(pill)
-                    rrect(pd, [0, 0, pw, ph], 24, GOLD)
+                    rrect(pd, [0, 0, pw, ph], 24, T["gold"])
                     pd_rl = rl
                     pill.paste(pd_rl, (30, 22), pd_rl)
                     px = (W - 120 - pw) if ar else 120
@@ -207,21 +250,41 @@ def build_frames(p):
                     pill = pill.resize((pw2, ph2), Image.LANCZOS)
                     ov.paste(fade(pill, ra), (int(px - (pw2 - pw) / 2), int(ny - (ph2 - ph) / 2)), fade(pill, ra))
                 else:
-                    rl = text_layer("• " + r, rf, ar, (220, 231, 247))
+                    rl = text_layer("• " + r, rf, ar, T["text"])
                     rx = (W - 130 - rl.width) if ar else 130
                     ov.paste(fade(rl, ra), (int(rx + (1 - ra) * (70 if ar else -70)), ny), fade(rl, ra))
                 ny += 118
 
         # الرسم البياني
         base_y = 1720
-        for i, (bh, col) in enumerate([(190, TEAL), (140, BLUE), (92, GOLD), (44, RED)]):
-            g = prog(f, 260 + i * 10, 32)
-            if not g:
-                continue
-            h = int(bh * g)
-            x = int(W / 2 - 190 + i * 100)
-            od.rounded_rectangle([x, base_y - h, x + 62, base_y], radius=14, fill=col + (255,))
-        od.line([(W / 2 - 210, base_y + 14), (W / 2 + 210, base_y + 14)], fill=(70, 88, 130, 255), width=3)
+        if T["chart"] == "line":
+            k = prog(f, 262, 72)
+            if k:
+                vals = [40, 105, 175, 300]
+                x0, dx = int(W / 2 - 240), 160
+                pts, stop = [], k * (len(vals) - 1)
+                for i, v in enumerate(vals):
+                    if i <= stop:
+                        pts.append((x0 + i * dx, base_y - v))
+                i0 = int(stop)
+                if i0 < len(vals) - 1:
+                    fr = stop - i0
+                    y0, y1 = base_y - vals[i0], base_y - vals[i0 + 1]
+                    pts.append((x0 + (i0 + fr) * dx, y0 + (y1 - y0) * fr))
+                if len(pts) >= 2:
+                    od.polygon(pts + [(pts[-1][0], base_y), (pts[0][0], base_y)], fill=T["accent"] + (58,))
+                    od.line(pts, fill=T["accent"] + (255,), width=8)
+                    for (px, py) in pts:
+                        od.ellipse([px - 9, py - 9, px + 9, py + 9], fill=T["gold"] + (255,))
+        else:
+            for i, (bh, col) in enumerate([(190, T["accent"]), (140, T["bar2"]), (92, T["gold"]), (44, RED)]):
+                g = prog(f, 260 + i * 10, 32)
+                if not g:
+                    continue
+                h = int(bh * g)
+                x = int(W / 2 - 190 + i * 100)
+                od.rounded_rectangle([x, base_y - h, x + 62, base_y], radius=14, fill=col + (255,))
+        od.line([(W / 2 - 215, base_y + 14), (W / 2 + 255, base_y + 14)], fill=(70, 88, 130, 255), width=3)
 
         # نداء + رابط
         a = prog(f, 392, 26)
@@ -231,7 +294,7 @@ def build_frames(p):
             pw, ph = int(cw + 130), 140
             pill = layer(pw, ph)
             pd = ImageDraw.Draw(pill)
-            rrect(pd, [0, 0, pw, ph], 70, GOLD)
+            rrect(pd, [0, 0, pw, ph], 70, T["gold"])
             mp.draw(pd, ct, pw - 65 if ar else 65, 34, ctf, (12, 18, 34), ar)
             pop = ease(a) * 0.1 + 0.9
             pill = pill.resize((int(pw * pop), int(ph * pop)), Image.LANCZOS)
@@ -261,9 +324,11 @@ def encode(stream, out):
     return n
 
 
-def make_video(p):
+def make_video(p, template=None):
+    name, T = (template, TEMPLATES[template]) if template in TEMPLATES else pick_template(p)
+    print(f"🎨 القالب: {name}")
     out = os.path.join(OUT, f"{p['id']}.mp4")
-    n = encode(build_frames(p), out)
+    n = encode(build_frames(p, T, name), out)
     return out, os.path.getsize(out), n
 
 
