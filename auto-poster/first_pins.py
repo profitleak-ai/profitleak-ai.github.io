@@ -15,6 +15,10 @@ NTFY = os.environ.get("NTFY_TOPIC", "profitleak-alerts-34d2c8377c")
 ctx = ssl.create_default_context()
 
 
+def envflag(k):
+    return os.environ.get(k, "").strip().lower() in ("1", "true", "yes", "on")
+
+
 def notify(msg):
     try:
         req = urllib.request.Request(f"https://ntfy.sh/{NTFY}", data=msg.encode("utf-8"), method="POST",
@@ -57,7 +61,7 @@ def main():
             for name, ok, note in results:
                 f.write(f"- {'✅' if ok else ('⚪' if ok is None else '❌')} {name}: {note}\n")
 
-    if ok_all:
+    if ok_all and not envflag("SKIP_NTFY"):
         notify("نُشر أول بن صورة + بن فيديو على لوحة ProfitLeak AI ✅")
     return 0
 
