@@ -41,6 +41,13 @@ jobs:
             echo "slot=morning" >> $GITHUB_OUTPUT
           fi
 
+      - name: 📌 حزمة بينتوريست اليدوية (حتى يكتمل trial access)
+        env:
+          NTFY_TOPIC: profitleak-alerts-34d2c8377c
+          INDEX: ${{ github.event.inputs.index }}
+          SLOT: ${{ steps.slot.outputs.slot }}
+        run: python3 auto-poster/pinterest_pack.py
+
       - name: 📤 نشر منشور اليوم
         env:
           SLOT: ${{ steps.slot.outputs.slot }}
