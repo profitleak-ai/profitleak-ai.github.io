@@ -35,6 +35,20 @@ def main():
     today = datetime.date.today()
     idx = int(os.environ.get("INDEX") or P.pick_index(posts, today))
     p = posts[idx % len(posts)]
+
+    # ── حماية من التكرار: فيديو واحد يوميًا ──
+    STATE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "state.json")
+    today_s = today.isoformat()
+    stt = {}
+    if os.path.exists(STATE):
+        try:
+            stt = json.load(open(STATE, encoding="utf-8"))
+        except Exception:
+            stt = {}
+    if stt.get("video") == today_s and not os.environ.get("FORCE_VIDEO"):
+        print(f"⏭  نُشر فيديو اليوم ({today_s}) مسبقًا — تخطي (FORCE_VIDEO لإعادة النشر)")
+        return 0
+
     print(f"🎬 توليد فيديو المنشور #{p['id']} — {p['theme']}")
     path, size, n = mv.make_video(p)
     print(f"✅ الفيديو: {path} ({size/1048576:.1f} MB · {n} إطار)")
@@ -62,6 +76,14 @@ def main():
             f.write(f"## 🎬 فيديو اليوم — #{p['id']} ({p['theme']})\n\n")
             for name, ok, note in results:
                 f.write(f"- {'✅' if ok else ('⚪' if ok is None else '❌')} {name}: {note}\n")
+    # حفظ حالة اليوم (لمنع تكرار الفيديو)
+    stt["video"] = today_s
+    try:
+        json.dump(stt, open(STATE, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+        print(f"💾 حُفظت الحالة: video={today_s}")
+    except Exception as e:
+        print("⚠️ تعذّر حفظ الحالة:", str(e)[:80])
+
     if os.environ.get("SKIP_NTFY"):
         print("🧪 اختبار: تجاهُل إشعار الهاتف")
     else:
