@@ -153,10 +153,8 @@ def make_pin(p):
         ff = font(fs, ar)
         w = tw(d, ln, ff, ar)
         if is_res:
-            # شريط ذهبي للنتيجة
-            px0 = (W - M - 26 - w) if ar else (M + 26)
-            d.rounded_rectangle([px0 - 18, ny - 6, px0 + w + 18, ny + fs + 14], radius=14, fill=(255, 199, 70, 255))
-            draw(d, ln, (W - M - 26) if ar else (M + 44), ny, ff, (14, 20, 38), ar)
+            # النتيجة: نص ذهبي فقط — بلا شريط
+            draw(d, ln, (W - M - 26) if ar else (M + 26), ny, font(44 if not ar else 42, ar), GOLD, ar)
         else:
             draw(d, ln, (W - M - 26) if ar else (M + 26), ny, ff, WHITE, ar)
         ny += 92
