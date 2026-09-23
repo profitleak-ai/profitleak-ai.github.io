@@ -312,11 +312,78 @@ def encode(stream, out):
     return n
 
 
+# ───────── التعليق الصوتي (edge-tts — مجاني) ─────────
+VOICES = {("ar", "f"): "ar-MA-MounaNeural", ("ar", "m"): "ar-MA-JamalNeural",
+          ("en", "f"): "en-US-AriaNeural",  ("en", "m"): "en-US-GuyNeural"}
+
+
+def pick_voice(p):
+    """اللغة من المنشور؛ الجنس بالتناوب (فردي = نسائي، زوجي = رجالي) أو VOICE_GENDER=f/m"""
+    lang = "en" if p.get("lang", "ar") == "en" else "ar"
+    g = os.environ.get("VOICE_GENDER", "").strip().lower()[:1]
+    if g not in ("f", "m"):
+        g = "f" if int(p.get("id", 1)) % 2 else "m"
+    return lang, g, VOICES[(lang, g)]
+
+
+def narration_text(p):
+    import re
+    body = re.sub(r"\*\*|__|`", "", p["body"])
+    body = re.sub(r"[\U0001F000-\U0001FFFF\u2600-\u27BF\u2B00-\u2BFF\uFE0F]", "", body)
+    body = re.sub(r"https?://\S+", "", body)
+    title = re.sub(r"[\U0001F000-\U0001FFFF\u2600-\u27BF\uFE0F]", "", p["title"])
+    return f"{title}. {body.replace(chr(10), '. ')}. {p['cta']}."
+
+
+def make_voice(p, out_mp3):
+    """يولّد التعليق الصوتي؛ يعيد (المسار, المدة بالثواني) أو (None, 0) عند الفشل"""
+    if os.environ.get("NO_VOICE"):
+        return None, 0
+    lang, g, voice = pick_voice(p)
+    txt = narration_text(p)
+    for attempt in range(3):
+        r = subprocess.run([sys.executable, "-m", "edge_tts", "--voice", voice, "--rate=+8%",
+                            "--text", txt, "--write-media", out_mp3],
+                           capture_output=True, timeout=120)
+        if r.returncode == 0 and os.path.exists(out_mp3) and os.path.getsize(out_mp3) > 2000:
+            pr = subprocess.run([FFMPEG, "-i", out_mp3], capture_output=True, text=True)
+            import re
+            m = re.search(r"Duration: (\d+):(\d+):([\d.]+)", pr.stderr)
+            dur = (int(m[1]) * 3600 + int(m[2]) * 60 + float(m[3])) if m else 0
+            print(f"🎙️ الصوت: {voice} ({'نسائي' if g == 'f' else 'رجالي'} · {lang}) · {dur:.1f}s")
+            return out_mp3, dur
+    print("⚠️ تعذّر توليد الصوت — فيديو صامت")
+    return None, 0
+
+
+def mux(video, audio, out, vdur, adur):
+    """يدمج الصوت؛ يبطّئ الحركة بسلاسة لتطابق مدة التعليق (لا تجميد للإطار الأخير)"""
+    target = adur + 1.6
+    k = max(1.0, target / vdur)
+    cmd = [FFMPEG, "-y", "-i", video, "-i", audio, "-filter_complex",
+           f"[0:v]setpts={k:.4f}*PTS,fps={FPS}[v];[1:a]adelay=900|900,apad=pad_dur=1.5[a]",
+           "-map", "[v]", "-map", "[a]", "-c:v", "libx264", "-preset", "veryfast", "-crf", "24",
+           "-c:a", "aac", "-b:a", "128k", "-pix_fmt", "yuv420p", "-movflags", "+faststart", "-shortest", out]
+    r = subprocess.run(cmd, capture_output=True)
+    if r.returncode != 0:
+        raise RuntimeError(r.stderr.decode("utf-8", "ignore")[-800:])
+
+
 def make_video(p, template=None):
     name, T = (template, TEMPLATES[template]) if template in TEMPLATES else pick_template(p)
     print(f"🎨 القالب: {name}")
     out = os.path.join(OUT, f"{p['id']}.mp4")
-    n = encode(build_frames(p, T, name), out)
+    silent = os.path.join(OUT, f"{p['id']}-silent.mp4")
+    n = encode(build_frames(p, T, name), silent)
+    voice, adur = make_voice(p, os.path.join(OUT, f"{p['id']}-voice.mp3"))
+    if voice:
+        try:
+            mux(silent, voice, out, n / FPS, adur)
+            os.remove(silent)
+            return out, os.path.getsize(out), n
+        except Exception as e:
+            print("⚠️ فشل دمج الصوت:", str(e)[:200])
+    os.replace(silent, out)
     return out, os.path.getsize(out), n
 
 
