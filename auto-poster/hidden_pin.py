@@ -146,6 +146,61 @@ def notify(p, title, desc, link, tags, video_url, pin_note):
         return False
 
 
+# ─────────── تلغرام: رسالة خاصة لكِ (ليس القناة) ───────────
+STATE = os.path.join(HERE, "state.json")
+
+
+def admin_chat(tok):
+    """معرّف محادثتك الخاصة: من السرّ TELEGRAM_ADMIN_CHAT، أو من state.json، أو يكتشفه من أول رسالة خاصة للبوت"""
+    cid = os.environ.get("TELEGRAM_ADMIN_CHAT", "").strip()
+    if cid:
+        return cid
+    stt = {}
+    try:
+        stt = json.load(open(STATE, encoding="utf-8"))
+    except Exception:
+        pass
+    if stt.get("admin_chat"):
+        return str(stt["admin_chat"])
+    st, out, _ = P.http(f"https://api.telegram.org/bot{tok}/getUpdates?limit=100", method="GET")
+    try:
+        for u in reversed(json.loads(out).get("result", [])):
+            m = u.get("message") or u.get("edited_message") or {}
+            if (m.get("chat") or {}).get("type") == "private":
+                cid = str(m["chat"]["id"])
+                stt["admin_chat"] = cid
+                json.dump(stt, open(STATE, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+                return cid
+    except Exception:
+        pass
+    return ""
+
+
+def telegram_alert(p, video_path, title, desc, link, video_url, pin_note):
+    tok = os.environ.get("TELEGRAM_TOKEN", "")
+    if not tok:
+        return None, "لا يوجد رمز تلغرام"
+    cid = admin_chat(tok)
+    if not cid:
+        return False, "لم أجد محادثتك الخاصة — أرسلي /start للبوت مرة واحدة"
+    cap = (f"📌 رفعتُ فيديو #{p['id']} على لوحة بينتوريست التجريبية (مخفي)\n"
+           f"🎬 {p['theme']}\n\n⬇️ الفيديو مرفق هنا — احفظيه في المعرض ثم انشريه دبوسًا عامًا\n"
+           f"🔗 أو حمّليه: {video_url}\n\nℹ️ {pin_note}")
+    body, ctype = P.multipart({"chat_id": cid, "caption": cap[:1000], "supports_streaming": "true"},
+                              {"video": ("pin.mp4", open(video_path, "rb").read(), "video/mp4")})
+    st, out, _ = P.http(f"https://api.telegram.org/bot{tok}/sendVideo", data=body,
+                        headers={"Content-Type": ctype}, timeout=180)
+    if st != 200:
+        return False, f"telegram {st}: {out[:80]}"
+    txt = (f"━━━━━ انسخي للدبوس العام ━━━━━\n\n📝 Titre:\n{title}\n\n📄 Description:\n{desc}\n\n"
+           f"🔗 Lien:\n{link}\n\n📋 Tableau: ProfitLeak AI\n\n"
+           f"📱 Pinterest: ＋ → Épingle → Vidéo → اختاري الفيديو من المعرض")
+    st2, _, _ = P.http(f"https://api.telegram.org/bot{tok}/sendMessage",
+                       data={"chat_id": cid, "text": txt, "disable_web_page_preview": "true"}, json_body=True,
+                       headers={"Content-Type": "application/json"})
+    return st2 == 200, f"telegram خاص ✅ ({cid})"
+
+
 def main():
     posts = P.load()["posts"]
     today = datetime.date.today()
@@ -179,7 +234,11 @@ def main():
             ok, pin_note = hidden_pin(p, board, f"{SITE}/pinterest/{p['id']}.jpg", path, video_url, title, desc)
     print("📌", pin_note)
 
-    # 4) الهاتف
+    # 4) تلغرام (رسالة خاصة لكِ مع الفيديو مرفقًا)
+    tg_ok, tg_note = telegram_alert(p, path, title, desc, link, video_url, pin_note)
+    print("📨", tg_note)
+
+    # 5) الهاتف (ntfy)
     if envflag("SKIP_NTFY"):
         print("🧪 تجاهُل إشعار الهاتف")
     else:
@@ -188,7 +247,7 @@ def main():
     summ = os.environ.get("GITHUB_STEP_SUMMARY")
     if summ:
         with open(summ, "a", encoding="utf-8") as f:
-            f.write(f"## 📌 بن مخفي #{p['id']} — {p['theme']}\n\n- 🎬 {video_url}\n- 📌 {pin_note}\n\n"
+            f.write(f"## 📌 بن مخفي #{p['id']} — {p['theme']}\n\n- 🎬 {video_url}\n- 📌 {pin_note}\n- 📨 {tg_note}\n\n"
                     f"**Titre:** {title}\n\n**Description:**\n\n```\n{desc}\n```\n")
     return 0
 
