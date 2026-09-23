@@ -41,7 +41,10 @@ def main():
 
     cover = f"{SITE}/pinterest/{p['id']}.jpg"
     results = []
-    results.append(("تلغرام (فيديو)",) + P.telegram_video(p, path))
+    if os.environ.get("SKIP_TELEGRAM"):
+        print("🧪 اختبار: تجاهُل تلغرام (لا منشور)")
+    else:
+        results.append(("تلغرام (فيديو)",) + P.telegram_video(p, path))
     results.append(("بينتوريست (بن فيديو)",) + P.pinterest_video_pin(p, os.environ.get("PINTEREST_BOARD_ID", ""), cover, path))
     if os.environ.get("PINTEREST_BOARD_ID") and results[-1][1] is not True:
         # احتياط: بن صورة إن فشل الفيديو
@@ -59,7 +62,10 @@ def main():
             f.write(f"## 🎬 فيديو اليوم — #{p['id']} ({p['theme']})\n\n")
             for name, ok, note in results:
                 f.write(f"- {'✅' if ok else ('⚪' if ok is None else '❌')} {name}: {note}\n")
-    notify(p, results)
+    if os.environ.get("SKIP_NTFY"):
+        print("🧪 اختبار: تجاهُل إشعار الهاتف")
+    else:
+        notify(p, results)
     return 0
 
 
