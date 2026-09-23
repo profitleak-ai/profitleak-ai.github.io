@@ -236,10 +236,20 @@ def to_pinterest(p, media):
                "alt_text": (p["title"][:480]),
                "media_source": {"source_type": "image_url", "url": img or media or link("pinterest"),
                                 "is_standard": True}}
-    st, out, _ = http("https://api.pinterest.com/v5/pins", data=payload, json_body=True,
+    st, out, _ = http(pbase() + "/v5/pins", data=payload, json_body=True,
                       headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"})
     ok = st in (200, 201)
     return ok, f"pinterest {st}" + ("" if ok else " — " + out[:110])
+
+
+def envflag(k):
+    """يقرأ متغيّرًا منطقيًا بأمان ("false"/""/"0" = معطّل)"""
+    return os.environ.get(k, "").strip().lower() in ("1", "true", "yes", "on")
+
+
+def pbase():
+    """عنوان API: الإنتاج افتراضًا، أو بيئة الاختبار عند PINTEREST_SANDBOX"""
+    return "https://api-sandbox.pinterest.com" if envflag("PINTEREST_SANDBOX") else "https://api.pinterest.com"
 
 
 # ─────────────── بينتوريست: اللوحة تلقائيًا (بلا إعداد يدوي) ───────────────
@@ -252,7 +262,7 @@ def pinterest_board(token):
         return _BOARD_CACHE["id"], _BOARD_CACHE.get("note", "")
     name = os.environ.get("PINTEREST_BOARD_NAME", "ProfitLeak AI")
     auth = {"Authorization": f"Bearer {token}"}
-    st, out, _ = http("https://api.pinterest.com/v5/boards?page_size=50", headers=auth, method="GET")
+    st, out, _ = http(pbase() + "/v5/boards?page_size=25", headers=auth, method="GET")
     if st == 200:
         try:
             for b in (json.loads(out).get("items") or []):
@@ -261,7 +271,7 @@ def pinterest_board(token):
                     return b.get("id"), f"لوحة موجودة: {b.get('name')}"
         except Exception:
             pass
-    st2, out2, _ = http("https://api.pinterest.com/v5/boards",
+    st2, out2, _ = http(pbase() + "/v5/boards",
                         data={"name": name, "description": "احسب ربحك الحقيقي · ProfitLeak AI",
                               "privacy": "PUBLIC"},
                         json_body=True,
@@ -299,7 +309,7 @@ def pinterest_video_pin(p, board, cover, video_path):
         if not board:
             return False, bnote
     auth = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
-    st, out, _ = http("https://api.pinterest.com/v5/media", data={"media_type": "video"},
+    st, out, _ = http(pbase() + "/v5/media", data={"media_type": "video"},
                       json_body=True, headers=auth)
     try:
         d = json.loads(out)
@@ -319,7 +329,7 @@ def pinterest_video_pin(p, board, cover, video_path):
     # انتظار المعالجة
     status = ""
     for _ in range(40):
-        s3, o3, _ = http(f"https://api.pinterest.com/v5/media/{mid}", headers=auth)
+        s3, o3, _ = http(pbase() + f"/v5/media/{mid}", headers=auth)
         try:
             status = json.loads(o3).get("status", "")
         except Exception:
@@ -330,7 +340,7 @@ def pinterest_video_pin(p, board, cover, video_path):
     title, desc = render(p, "pinterest")
     payload = {"board_id": board, "title": title, "description": desc, "link": link("pinterest"),
                "media_source": {"source_type": "video_id", "media_id": mid, "cover_image_url": cover}}
-    st4, out4, _ = http("https://api.pinterest.com/v5/pins", data=payload, json_body=True, headers=auth)
+    st4, out4, _ = http(pbase() + "/v5/pins", data=payload, json_body=True, headers=auth)
     ok = st4 in (200, 201)
     return ok, f"video-pin {st4} (حالة: {status or 'غير معروفة'})" + ("" if ok else " — " + out4[:110])
 
