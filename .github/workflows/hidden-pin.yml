@@ -1,0 +1,39 @@
+name: 📌 بن فيديو مخفي (Pinterest يدوي)
+
+on:
+  schedule:
+    - cron: '30 12 * * *'   # 13:30 بتوقيت المغرب
+  workflow_dispatch:
+    inputs:
+      index:
+        description: 'رقم المنشور (فارغ = منشور اليوم)'
+        required: false
+      template:
+        description: 'قالب الفيديو'
+        required: false
+        default: ''
+        type: choice
+        options: ['', midnight, royal, emerald, sunset]
+
+jobs:
+  hidden:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install --quiet Pillow imageio-ffmpeg fonttools
+      - name: 🎬 توليد + رفع + بن مخفي + إشعار الهاتف
+        env:
+          PINTEREST_SANDBOX: '1'
+          PINTEREST_BOARD_NAME: ProfitLeak AI Test
+          PINTEREST_TOKEN: ${{ secrets.PINTEREST_SANDBOX_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SITE: https://profitleakaii.qd.je
+          NTFY_TOPIC: profitleak-alerts-34d2c8377c
+          INDEX: ${{ github.event.inputs.index }}
+          VIDEO_TEMPLATE: ${{ github.event.inputs.template }}
+        run: python3 auto-poster/hidden_pin.py
