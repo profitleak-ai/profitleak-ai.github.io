@@ -14,6 +14,11 @@ on:
         default: ''
         type: choice
         options: ['', midnight, royal, emerald, sunset]
+      force:
+        description: 'أعد النشر حتى لو نُشر اليوم'
+        required: false
+        default: false
+        type: boolean
       skip_telegram:
         description: 'تجاهُل النشر في تلغرام (للاختبار)'
         required: false
@@ -23,6 +28,8 @@ on:
 jobs:
   video:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: تنزيل المستودع
         uses: actions/checkout@v4
@@ -43,8 +50,22 @@ jobs:
           INDEX: ${{ github.event.inputs.index }}
           VIDEO_TEMPLATE: ${{ github.event.inputs.template }}
           SKIP_TELEGRAM: ${{ github.event.inputs.skip_telegram }}
+          FORCE_VIDEO: ${{ github.event.inputs.force }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT: ${{ secrets.TELEGRAM_CHAT }}
           PINTEREST_TOKEN: ${{ secrets.PINTEREST_TOKEN }}
           PINTEREST_BOARD_ID: ${{ secrets.PINTEREST_BOARD_ID }}
         run: python3 auto-poster/publish_video.py
+
+      - name: حفظ الحالة (منع تكرار الفيديو)
+        run: |
+          git config user.name  "ProfitLeak Auto-Poster"
+          git config user.email "autoposter@profitleakaii.qd.je"
+          git pull --rebase --autostash origin main || true
+          if ! git diff --quiet auto-poster/state.json 2>/dev/null; then
+            git add auto-poster/state.json
+            git commit -m "auto-poster: video $(date -u +%F)"
+            git push
+          else
+            echo "لا جديد لحفظه"
+          fi
