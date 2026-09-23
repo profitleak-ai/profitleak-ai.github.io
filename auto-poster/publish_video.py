@@ -29,6 +29,11 @@ def notify(p, ok_list):
         return False
 
 
+def envflag(k):
+    """يقرأ متغيّرًا منطقيًا بأمان: "false"/""/"0" كلها = معطّل"""
+    return os.environ.get(k, "").strip().lower() in ("1", "true", "yes", "on")
+
+
 def main():
     cal = P.load()
     posts = cal["posts"]
@@ -45,7 +50,7 @@ def main():
             stt = json.load(open(STATE, encoding="utf-8"))
         except Exception:
             stt = {}
-    if stt.get("video") == today_s and not os.environ.get("FORCE_VIDEO"):
+    if stt.get("video") == today_s and not envflag("FORCE_VIDEO"):
         print(f"⏭  نُشر فيديو اليوم ({today_s}) مسبقًا — تخطي (FORCE_VIDEO لإعادة النشر)")
         return 0
 
@@ -55,7 +60,7 @@ def main():
 
     cover = f"{SITE}/pinterest/{p['id']}.jpg"
     results = []
-    if os.environ.get("SKIP_TELEGRAM"):
+    if envflag("SKIP_TELEGRAM"):
         print("🧪 اختبار: تجاهُل تلغرام (لا منشور)")
     else:
         results.append(("تلغرام (فيديو)",) + P.telegram_video(p, path))
@@ -84,7 +89,7 @@ def main():
     except Exception as e:
         print("⚠️ تعذّر حفظ الحالة:", str(e)[:80])
 
-    if os.environ.get("SKIP_NTFY"):
+    if envflag("SKIP_NTFY"):
         print("🧪 اختبار: تجاهُل إشعار الهاتف")
     else:
         notify(p, results)
