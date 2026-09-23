@@ -236,23 +236,11 @@ def build_frames(p, T=None, tname=""):
                     ny += 118
                     continue
                 is_res = (r == result)
-                if is_res:
-                    rl = text_layer(r, resf, ar, (12, 18, 34))
-                    pw, ph = rl.width + 60, resf.size + 46
-                    pill = layer(pw, ph)
-                    pd = ImageDraw.Draw(pill)
-                    rrect(pd, [0, 0, pw, ph], 24, T["gold"])
-                    pd_rl = rl
-                    pill.paste(pd_rl, (30, 22), pd_rl)
-                    px = (W - 120 - pw) if ar else 120
-                    pop = ease(min(1, ra)) * 0.08 + 0.92
-                    pw2, ph2 = int(pw * pop), int(ph * pop)
-                    pill = pill.resize((pw2, ph2), Image.LANCZOS)
-                    ov.paste(fade(pill, ra), (int(px - (pw2 - pw) / 2), int(ny - (ph2 - ph) / 2)), fade(pill, ra))
-                else:
-                    rl = text_layer("• " + r, rf, ar, T["text"])
-                    rx = (W - 130 - rl.width) if ar else 130
-                    ov.paste(fade(rl, ra), (int(rx + (1 - ra) * (70 if ar else -70)), ny), fade(rl, ra))
+                # النتيجة: نص ذهبي فقط — بلا شريط/مربع
+                rl = text_layer(r if is_res else "• " + r, resf if is_res else rf, ar,
+                                T["gold"] if is_res else T["text"])
+                rx = (W - 130 - rl.width) if ar else 130
+                ov.paste(fade(rl, ra), (int(rx + (1 - ra) * (70 if ar else -70)), ny), fade(rl, ra))
                 ny += 118
 
         # الرسم البياني
