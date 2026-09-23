@@ -25,15 +25,22 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install --quiet Pillow imageio-ffmpeg fonttools
+      - run: pip install --quiet Pillow imageio-ffmpeg fonttools edge-tts
       - name: 🎬 توليد + رفع + بن مخفي + إشعار الهاتف
         env:
           PINTEREST_SANDBOX: '1'
           PINTEREST_BOARD_NAME: ProfitLeak AI Test
           PINTEREST_TOKEN: ${{ secrets.PINTEREST_SANDBOX_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_ADMIN_CHAT: ${{ secrets.TELEGRAM_ADMIN_CHAT }}
           SITE: https://profitleakaii.qd.je
           NTFY_TOPIC: profitleak-alerts-34d2c8377c
           INDEX: ${{ github.event.inputs.index }}
           VIDEO_TEMPLATE: ${{ github.event.inputs.template }}
         run: python3 auto-poster/hidden_pin.py
+      - name: حفظ الحالة
+        run: |
+          git config user.name "ProfitLeak Auto-Poster"; git config user.email "autoposter@profitleakaii.qd.je"
+          git pull --rebase --autostash origin main || true
+          git diff --quiet auto-poster/state.json || (git add auto-poster/state.json && git commit -m "hidden-pin: state" && git push)
