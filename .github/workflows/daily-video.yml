@@ -8,6 +8,17 @@ on:
       index:
         description: 'رقم المنشور (اتركيه فارغًا للاختيار التلقائي)'
         required: false
+      template:
+        description: 'القالب (فارغ = تلقائي)'
+        required: false
+        default: ''
+        type: choice
+        options: ['', midnight, royal, emerald, sunset]
+      skip_telegram:
+        description: 'تجاهُل النشر في تلغرام (للاختبار)'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   video:
@@ -30,6 +41,8 @@ jobs:
           SLOT: morning
           NTFY_TOPIC: profitleak-alerts-34d2c8377c
           INDEX: ${{ github.event.inputs.index }}
+          VIDEO_TEMPLATE: ${{ github.event.inputs.template }}
+          SKIP_TELEGRAM: ${{ github.event.inputs.skip_telegram }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT: ${{ secrets.TELEGRAM_CHAT }}
           PINTEREST_TOKEN: ${{ secrets.PINTEREST_TOKEN }}
