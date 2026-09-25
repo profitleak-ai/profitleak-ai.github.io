@@ -31,6 +31,8 @@ jobs:
           PINTEREST_SANDBOX: '1'
           PINTEREST_BOARD_NAME: ProfitLeak AI Test
           PIXAZO_API_KEY: ${{ secrets.PIXAZO_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           PINTEREST_TOKEN: ${{ secrets.PINTEREST_SANDBOX_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
