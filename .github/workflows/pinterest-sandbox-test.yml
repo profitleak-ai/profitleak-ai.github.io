@@ -32,6 +32,7 @@ jobs:
           SLOT: morning
           VIDEO_TEMPLATE: ${{ github.event.inputs.template }}
           INDEX: ${{ github.event.inputs.index }}
+          PIXAZO_API_KEY: ${{ secrets.PIXAZO_API_KEY }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           PINTEREST_TOKEN: ${{ secrets.PINTEREST_SANDBOX_TOKEN }}
         run: python3 auto-poster/first_pins.py
