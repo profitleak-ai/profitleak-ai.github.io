@@ -6,244 +6,784 @@
   },
   "posts": [
     {
-      "id": 1, "lang": "ar", "theme": "الإطلاق",
+      "id": 1,
+      "lang": "ar",
+      "theme": "الإطلاق",
       "media": "brand/cover-banner.png",
       "title": "واش كتعرف شحال خسرت هاد الشهر بلا ما تدري؟",
       "body": "أغلب البائعين كيحسبو «سعر البيع − سعر الشراء» وكيظنو راهم رابحين… حتى يحسبو: الإعلان + التوصيل + الرجوع + الأجرة.\nمنتج بـ199 درهم يمكن يكون ربحو الحقيقي 22 درهم فقط 😅\nالحساب كامل مجاني هنا (بلا تسجيل):",
       "cta": "احسب منتجك دابا",
-      "hashtags": ["التجارة_الالكترونية", "المغرب", "ربح", " dropshipping", "محاسبة"]
+      "hashtags": [
+        "التجارة_الالكترونية",
+        "المغرب",
+        "ربح",
+        " dropshipping",
+        "محاسبة"
+      ],
+      "video": {
+        "title": "هل تعرف كم خسرت هذا الشهر دون أن تدري؟",
+        "points": [
+          "أغلب البائعين يحسبون: سعر البيع − سعر الشراء",
+          "وينسون الإعلان والتوصيل والمرتجعات والأجور",
+          "منتج بـ199 درهمًا قد يكون ربحه الحقيقي 22 درهمًا"
+        ],
+        "result": "الربح الحقيقي = 22 درهمًا فقط",
+        "cta": "احسب منتجك الآن",
+        "script": "هل تعرف كم خسرت هذا الشهر دون أن تدري؟ أغلب البائعين يحسبون سعر البيع ناقص سعر الشراء، ويظنون أنهم يربحون. لكن عند إضافة الإعلان والتوصيل والمرتجعات والأجور، قد يتحول منتج بمئة وتسعة وتسعين درهمًا إلى ربح حقيقي لا يتجاوز اثنين وعشرين درهمًا. احسب ربحك الحقيقي مجانًا ودون تسجيل، على بروفت ليك إيه آي."
+      }
     },
     {
-      "id": 2, "lang": "ar", "theme": "الحسبة الصادمة",
+      "id": 2,
+      "lang": "ar",
+      "theme": "الحسبة الصادمة",
       "media": "brand/post-199-breakdown.png",
       "title": "شحال من درهم كتخسر في كل بيعة بلا ما تدري؟ 🔻",
       "body": "درنا الحسبة على منتج كيتباع بـ199 درهم:\n▪️ ثمن الشراء: 90\n▪️ الإعلان (كلفة البيعة): 35\n▪️ التوصيل: 25\n▪️ الرجوع والإلغاء: 15\n▪️ الأجرة والتغليف: 12\n= الربح الحقيقي **22 درهم**… ماشي 109 كيفما كيتوقع الأغلبية 😳\nاحسب منتجاتك أنت هنا (مجاني، بلا تسجيل):",
       "cta": "احسب دابا",
-      "hashtags": ["التجارة_الالكترونية", "المغرب", "ربح", "محاسبة", "نصائح"]
+      "hashtags": [
+        "التجارة_الالكترونية",
+        "المغرب",
+        "ربح",
+        "محاسبة",
+        "نصائح"
+      ],
+      "video": {
+        "title": "كم درهمًا تخسر في كل عملية بيع دون أن تعلم؟",
+        "points": [
+          "سعر البيع: 199 · الشراء: 90",
+          "الإعلان: 35 · التوصيل: 25",
+          "المرتجعات: 15 · الأجور والتغليف: 12"
+        ],
+        "result": "الربح الحقيقي = 22 درهمًا… لا 109",
+        "cta": "احسب الآن",
+        "script": "كم درهمًا تخسر في كل عملية بيع دون أن تعلم؟ لنأخذ منتجًا يباع بمئة وتسعة وتسعين درهمًا. سعر الشراء تسعون. الإعلان خمسة وثلاثون. التوصيل خمسة وعشرون. المرتجعات خمسة عشر. الأجور والتغليف اثنا عشر. الربح الحقيقي اثنان وعشرون درهمًا فقط، وليس مئة وتسعة كما يتوقع الأغلبية. احسب منتجاتك مجانًا ودون تسجيل."
+      }
     },
     {
-      "id": 3, "lang": "ar", "theme": "القصة الشخصية",
+      "id": 3,
+      "lang": "ar",
+      "theme": "القصة الشخصية",
       "media": "brand/ad-style-dark-tech.png",
       "title": "خسرت 3 أشهر قبل ما نفهم السبب… كنت كنربح 8 دراهم في البيعة 😅",
       "body": "كنت كنبيع نظارات شمسية وكنظن كل بيعة فيها 40 درهم ربح.\nملي حسبت كلشي بالتفصيل (الإعلان، الرجوع، التوصيل…) لقيت الربح الحقيقي 8 دراهم — والوقت اللي كنصرفو ما مخسوبش أصلاً!\nمن بعد هاد الصدمة بنيت الأداة لي كتحسب هادشي في 30 ثانية.\nمجانية للتجربة هنا:",
       "cta": "جرّب مجانًا",
-      "hashtags": ["قصة", "التجارة_الالكترونية", "المغرب", "دروبشيبينغ"]
+      "hashtags": [
+        "قصة",
+        "التجارة_الالكترونية",
+        "المغرب",
+        "دروبشيبينغ"
+      ],
+      "video": {
+        "title": "خسرت ثلاثة أشهر قبل أن أفهم السبب",
+        "points": [
+          "كنت أظن أن كل عملية بيع تربحني 40 درهمًا",
+          "بعد حساب الإعلان والمرتجعات والتوصيل…",
+          "الربح الحقيقي كان 8 دراهم فقط"
+        ],
+        "result": "8 دراهم بدل 40 — والوقت غير محسوب",
+        "cta": "جرّب مجانًا",
+        "script": "خسرت ثلاثة أشهر كاملة قبل أن أفهم السبب. كنت أبيع نظارات شمسية وأظن أن كل عملية بيع تربحني أربعين درهمًا. وعندما حسبت كل شيء بالتفصيل، الإعلان والمرتجعات والتوصيل، اكتشفت أن الربح الحقيقي ثمانية دراهم فقط. بعد تلك الصدمة بنيت أداة تحسب كل ذلك في ثلاثين ثانية. جرّبها مجانًا الآن."
+      }
     },
     {
-      "id": 4, "lang": "ar", "theme": "قنبلة الواتساب",
+      "id": 4,
+      "lang": "ar",
+      "theme": "قنبلة الواتساب",
       "media": "brand/post-whatsapp-feature.png",
       "title": "كل بيعة واتساب… كتسجل وحدها مع ربحها 🤯",
       "body": "لي كيبيع بالدفع عند الاستلام عبر واتساب، هادي مفيدة ليك:\n🛒 الأداة كتعطيك **رابط طلب لكل منتج** تحطو في الإعلان ديالك\n👤 الزبون يضغط، يكتب سميتو ورقمو، ويطلب\n📊 **المبيعة كتسجل عندك أوتوماتيكيًا** مع الربح الحقيقي ديالها — بلا ما تدوّن بيديك\nجرّبها مجانًا:",
       "cta": "شوف الميزة",
-      "hashtags": ["واتساب", "التجارة_الالكترونية", "المغرب", "دفع_عند_الاستلام"]
+      "hashtags": [
+        "واتساب",
+        "التجارة_الالكترونية",
+        "المغرب",
+        "دفع_عند_الاستلام"
+      ],
+      "video": {
+        "title": "كل طلب عبر واتساب يُسجَّل تلقائيًا مع ربحه",
+        "points": [
+          "رابط طلب خاص لكل منتج تضعه في إعلانك",
+          "العميل يضغط، يكتب اسمه ورقمه، ويطلب",
+          "تُسجَّل عملية البيع تلقائيًا مع ربحها الحقيقي"
+        ],
+        "result": "لا جداول ولا تدوين يدوي",
+        "cta": "اكتشف الميزة",
+        "script": "هل تبيع بالدفع عند الاستلام عبر واتساب؟ هذه الميزة صُممت لك. تحصل على رابط طلب خاص لكل منتج، تضعه في إعلانك. العميل يضغط، يكتب اسمه ورقمه، ويطلب. وتُسجَّل عملية البيع لديك تلقائيًا مع ربحها الحقيقي، دون جداول ودون تدوين يدوي. جرّب الميزة مجانًا على بروفت ليك إيه آي."
+      }
     },
     {
-      "id": 5, "lang": "ar", "theme": "التشخيص التلقائي",
+      "id": 5,
+      "lang": "ar",
+      "theme": "التشخيص التلقائي",
       "media": "screen-2-diagnosis.png",
       "title": "هاد الشاشة كتقول على 40% من الأرباح كتمشي فين… تخمّن؟",
       "body": "هادا تشخيص منتج حقيقي: 40% من التكاليف كتمشي للإعلانات 😱\nالتشخيص كامل (أكبر خسارة + الحل المقترح) كيطلع أوتوماتيكيًا من الأرقام ديالك.\nشوف منتجك أنت كيشوف شنو:",
       "cta": "شخّص منتجك",
-      "hashtags": ["تشخيص", "إعلانات", "التجارة_الالكترونية", "المغرب"]
+      "hashtags": [
+        "تشخيص",
+        "إعلانات",
+        "التجارة_الالكترونية",
+        "المغرب"
+      ],
+      "video": {
+        "title": "أين تختفي 40% من أرباحك؟",
+        "points": [
+          "تشخيص لمنتج حقيقي: 40% من التكاليف تذهب للإعلانات",
+          "الأداة تحدد أكبر تسريب في منتجك",
+          "وتقترح الحل تلقائيًا من أرقامك"
+        ],
+        "result": "أكبر خسارة + الحل المقترح، تلقائيًا",
+        "cta": "شخّص منتجك",
+        "script": "أين تختفي أربعون بالمئة من أرباحك؟ هذا تشخيص لمنتج حقيقي: أربعون بالمئة من التكاليف تذهب إلى الإعلانات وحدها. الأداة تحلل أرقامك، تحدد أكبر تسريب في منتجك، وتقترح الحل تلقائيًا. اكتشف ما يقوله التشخيص عن منتجك أنت، مجانًا."
+      }
     },
     {
-      "id": 6, "lang": "ar", "theme": "التكاليف المخفية",
+      "id": 6,
+      "lang": "ar",
+      "theme": "التكاليف المخفية",
       "media": "brand/ad-style-bold-poster.png",
       "title": "5 تكاليف ما كتحسبهومش… وهادي هي السرقة الصامتة 💸",
       "body": "1️⃣ كلفة الإعلان على كل بيعة\n2️⃣ التوصيل (والتوصيل الفاشل كيترجع عليك)\n3️⃣ الرجوع والإلغاء\n4️⃣ الأجرة والتغليف\n5️⃣ بوابات الدفع والعمولات\nالخامسة هي لي كتقتل الربح بصمت.\nحاسبها كلها في 30 ثانية:",
       "cta": "احسبها كلها",
-      "hashtags": ["تكاليف_مخفية", "المغرب", "التجارة_الالكترونية", "ربح"]
+      "hashtags": [
+        "تكاليف_مخفية",
+        "المغرب",
+        "التجارة_الالكترونية",
+        "ربح"
+      ],
+      "video": {
+        "title": "خمس تكاليف لا تحسبها… وهي السرقة الصامتة",
+        "points": [
+          "كلفة الإعلان على كل عملية بيع",
+          "التوصيل — والتوصيل الفاشل يعود عليك",
+          "المرتجعات والإلغاء · الأجور والتغليف"
+        ],
+        "result": "الخامسة: عمولات بوابات الدفع",
+        "cta": "احسبها كلها",
+        "script": "خمس تكاليف لا يحسبها أغلب البائعين، وهي السرقة الصامتة لأرباحك. الأولى: كلفة الإعلان على كل عملية بيع. الثانية: التوصيل، والتوصيل الفاشل يعود عليك. الثالثة: المرتجعات والإلغاء. الرابعة: الأجور والتغليف. والخامسة، التي تقتل الربح بصمت: عمولات بوابات الدفع. احسبها كلها في ثلاثين ثانية."
+      }
     },
     {
-      "id": 7, "lang": "ar", "theme": "نسبة الرجوع",
+      "id": 7,
+      "lang": "ar",
+      "theme": "نسبة الرجوع",
       "media": "screen-1-dashboard.png",
       "title": "الرجوع ماشي «مشكل صغير» — راه كياكل ربع الربح 😬",
       "body": "بائع كيرجع ليه 12% من الطلبات.\nعلى 100 بيعة = 12 طلب راجع: كتخسر فيهم التوصيل ذهابًا وإيابًا + التغليف.\nبلا ما تحسب الرجوع، الأرقام ديالك كلها غالطة.\nحسبها صح هنا:",
       "cta": "احسب مع الرجوع",
-      "hashtags": ["دفع_عند_الاستلام", "المغرب", "التجارة_الالكترونية", "ربح"]
+      "hashtags": [
+        "دفع_عند_الاستلام",
+        "المغرب",
+        "التجارة_الالكترونية",
+        "ربح"
+      ],
+      "video": {
+        "title": "المرتجعات ليست مشكلة صغيرة",
+        "points": [
+          "بائع تعود إليه 12% من الطلبات",
+          "على 100 طلب = 12 مرتجعًا",
+          "تخسر فيها التوصيل ذهابًا وإيابًا + التغليف"
+        ],
+        "result": "ربع الربح يذهب في المرتجعات",
+        "cta": "احسب مع المرتجعات",
+        "script": "المرتجعات ليست مشكلة صغيرة، بل تلتهم ربع أرباحك. تخيّل بائعًا تعود إليه اثنا عشر بالمئة من الطلبات. على كل مئة طلب، اثنا عشر مرتجعًا تخسر فيها التوصيل ذهابًا وإيابًا، والتغليف أيضًا. إن لم تحسب المرتجعات، فكل أرقامك خاطئة. احسبها بشكل صحيح مجانًا."
+      }
     },
     {
-      "id": 8, "lang": "ar", "theme": "نقطة التعادل",
+      "id": 8,
+      "lang": "ar",
+      "theme": "نقطة التعادل",
       "media": "screen-3-whatif.png",
       "title": "شحال خاصك تبيع باش تبدا تربح؟ (نقطة التعادل)",
       "body": "ميزة «ماذا لو» كتجاوبك على السؤال لي كيقلق كل بائع:\nإذا زدت ميزانية الإعلان 100 درهم… شحال غادي يطلع الربح؟\nوإذا نقصت الثمن بـ10 دراهم… شحال خاصني نبيع باش نبقى رابح؟\nجرّب السيناريوهات ديالك:",
       "cta": "جرّب ماذا لو",
-      "hashtags": ["ماذا_لو", "المغرب", "إعلانات", "التجارة_الالكترونية"]
+      "hashtags": [
+        "ماذا_لو",
+        "المغرب",
+        "إعلانات",
+        "التجارة_الالكترونية"
+      ],
+      "video": {
+        "title": "كم وحدة عليك أن تبيع لتبدأ في الربح؟",
+        "points": [
+          "ميزة «ماذا لو» تجيب عن أسئلة كل بائع",
+          "زيادة ميزانية الإعلان 100 درهم → كم يرتفع الربح؟",
+          "خفض السعر 10 دراهم → كم عليّ أن أبيع؟"
+        ],
+        "result": "نقطة التعادل في ثانية واحدة",
+        "cta": "جرّب ماذا لو",
+        "script": "كم وحدة عليك أن تبيع لتبدأ في الربح؟ ميزة ماذا لو تجيب عن الأسئلة التي تقلق كل بائع. إذا زدت ميزانية الإعلان مئة درهم، كم سيرتفع الربح؟ وإذا خفضت السعر عشرة دراهم، كم وحدة عليك أن تبيع لتبقى رابحًا؟ جرّب سيناريوهاتك الخاصة الآن مجانًا."
+      }
     },
     {
-      "id": 9, "lang": "ar", "theme": "سؤال وجواب",
+      "id": 9,
+      "lang": "ar",
+      "theme": "سؤال وجواب",
       "media": "brand/cover-banner.png",
       "title": "الأسئلة لي كيجيوني بزاف — جاوبت عليها كلها 👇",
       "body": "❓ واش خاص التسجيل؟ → لا. كتحسب ديريكت.\n❓ واش كيعرف رقم سيارتي؟ → لا، الحساب كامل فالمتصفح ديالك.\n❓ واش كنقدر نخرج تقرير؟ → آه، PDF و CSV.\n❓ واش كيخدم على التيليفون؟ → آه، مضبوط للهاتف.\nجرب وقرر:",
       "cta": "جرب بلا تسجيل",
-      "hashtags": ["اسئلة", "المغرب", "التجارة_الالكترونية"]
+      "hashtags": [
+        "اسئلة",
+        "المغرب",
+        "التجارة_الالكترونية"
+      ],
+      "video": {
+        "title": "الأسئلة الأكثر تكرارًا — أجبنا عنها كلها",
+        "points": [
+          "هل يلزم التسجيل؟ لا، تحسب مباشرة",
+          "هل تُحفظ بياناتي؟ لا، الحساب داخل متصفحك",
+          "هل يمكن تصدير تقرير؟ نعم، PDF وCSV"
+        ],
+        "result": "ويعمل على الهاتف بشكل مثالي",
+        "cta": "جرّب دون تسجيل",
+        "script": "الأسئلة الأكثر تكرارًا، أجبنا عنها كلها. هل يلزم التسجيل؟ لا، تحسب مباشرة. هل تُحفظ بياناتي؟ لا، الحساب يتم بالكامل داخل متصفحك. هل يمكنني تصدير تقرير؟ نعم، بصيغة بي دي إف وسي إس في. وهل يعمل على الهاتف؟ نعم، مصمم للهاتف. جرّب وقرر بنفسك."
+      }
     },
     {
-      "id": 10, "lang": "ar", "theme": "تحدي اليوم",
+      "id": 10,
+      "lang": "ar",
+      "theme": "تحدي اليوم",
       "media": "screen-1-dashboard.png",
       "title": "تحدي 3 دقائق اليوم ⏱️",
       "body": "دخل أرقام أحسن منتج عندك (سعر البيع، الشراء، الإعلان، التوصيل، الرجوع).\nإذا طلع لك الربح الحقيقي أقل من 20%… راه عندك تسريب 🚨\nالأداة كتقولك فين بالضبط وكيفاش تسدّو.\nابدأ التحدي:",
       "cta": "ابدأ التحدي",
-      "hashtags": ["تحدي", "المغرب", "التجارة_الالكترونية", "ربح"]
+      "hashtags": [
+        "تحدي",
+        "المغرب",
+        "التجارة_الالكترونية",
+        "ربح"
+      ],
+      "video": {
+        "title": "تحدي الدقائق الثلاث",
+        "points": [
+          "أدخل أرقام أفضل منتج لديك",
+          "السعر، الشراء، الإعلان، التوصيل، المرتجعات",
+          "إذا كان الربح الحقيقي أقل من 20%… لديك تسريب"
+        ],
+        "result": "الأداة تخبرك أين بالضبط وكيف تسدّه",
+        "cta": "ابدأ التحدي",
+        "script": "تحدي الدقائق الثلاث. أدخل أرقام أفضل منتج لديك: سعر البيع، سعر الشراء، الإعلان، التوصيل، والمرتجعات. إذا جاء الربح الحقيقي أقل من عشرين بالمئة، فلديك تسريب. والأداة تخبرك أين بالضبط وكيف تسدّه. ابدأ التحدي الآن مجانًا."
+      }
     },
     {
-      "id": 11, "lang": "ar", "theme": "خطأ شائع",
+      "id": 11,
+      "lang": "ar",
+      "theme": "خطأ شائع",
       "media": "brand/ad-style-dark-tech.png",
       "title": "أكبر خطأ: كتحسب الربح على الإعلان وكنساو التوصيل 🚚",
       "body": "بزاف ديال البائعين كيحسبو: البيع − الشراء − الإعلان = ربح.\nالواقع: خاصك تحيد حتى التوصيل، الرجوع، التغليف، وعمولة الدفع.\nالفرق بين الحسابين كيوصل لـ50 درهم في البيعة الواحدة!\nاحسبها مضبوطة:",
       "cta": "صحح حسابك",
-      "hashtags": ["اخطاء", "المغرب", "التجارة_الالكترونية", "ربح"]
+      "hashtags": [
+        "اخطاء",
+        "المغرب",
+        "التجارة_الالكترونية",
+        "ربح"
+      ],
+      "video": {
+        "title": "أكبر خطأ: تحسب الإعلان وتنسى التوصيل",
+        "points": [
+          "الحساب الشائع: البيع − الشراء − الإعلان",
+          "الواقع: اطرح أيضًا التوصيل والمرتجعات والتغليف",
+          "وعمولة الدفع كذلك"
+        ],
+        "result": "الفرق يصل إلى 50 درهمًا في البيعة الواحدة",
+        "cta": "صحّح حسابك",
+        "script": "أكبر خطأ يرتكبه البائعون: يحسبون الإعلان وينسون التوصيل. الحساب الشائع هو سعر البيع ناقص الشراء ناقص الإعلان. أما الواقع، فعليك أن تطرح أيضًا التوصيل والمرتجعات والتغليف وعمولة الدفع. الفرق بين الحسابين يصل إلى خمسين درهمًا في عملية البيع الواحدة. صحّح حسابك مجانًا."
+      }
     },
     {
-      "id": 12, "lang": "ar", "theme": "كل المنتجات",
+      "id": 12,
+      "lang": "ar",
+      "theme": "كل المنتجات",
       "media": "screen-1-dashboard.png",
       "title": "منتج واحد رابح و3 خاسرين… وانت ماعارف 😶",
       "body": "الأداة كتحسبلك **كل منتجاتك** مرة وحدة وكتعطيك لوحة وحدة كتشوف فيها:\n📈 الرابح (زيد فيه الإعلان)\n📉 الخاسر (وقفو ولا صححو)\n⏱️ الوقت لي كتصرفو على كل منتج\nلوحة التحكم هنا:",
       "cta": "افتح اللوحة",
-      "hashtags": ["لوحة_تحكم", "المغرب", "التجارة_الالكترونية"]
+      "hashtags": [
+        "لوحة_تحكم",
+        "المغرب",
+        "التجارة_الالكترونية"
+      ],
+      "video": {
+        "title": "منتج واحد رابح وثلاثة خاسرون… وأنت لا تعلم",
+        "points": [
+          "الأداة تحسب كل منتجاتك دفعة واحدة",
+          "الرابح: زد فيه الإعلان",
+          "الخاسر: أوقفه أو صحّحه"
+        ],
+        "result": "لوحة واحدة ترى فيها كل شيء",
+        "cta": "افتح اللوحة",
+        "script": "منتج واحد رابح وثلاثة خاسرون، وأنت لا تعلم أيها. الأداة تحسب كل منتجاتك دفعة واحدة، وتعرضها في لوحة واحدة: المنتج الرابح الذي يستحق مزيدًا من الإعلان، والمنتج الخاسر الذي يجب إيقافه أو تصحيحه، والوقت الذي تصرفه على كل منتج. افتح لوحة التحكم الآن."
+      }
     },
     {
-      "id": 13, "lang": "ar", "theme": "تقارير PDF/CSV",
+      "id": 13,
+      "lang": "ar",
+      "theme": "تقارير PDF/CSV",
       "media": "screen-4-pricing.png",
       "title": "كتحتاج تقرير لواحد آخر؟ خرجو PDF ف ثانية 📄",
       "body": "عندك شريك؟ محاسب؟ ولا باغي تحفظ الأرقام ديالك؟\nالأداة كتخرجلك تقرير PDF مرتب + ملف CSV للإكسيل.\nشوف الطريقة:",
       "cta": "شوف التقارير",
-      "hashtags": ["تقارير", "PDF", "المغرب", "التجارة_الالكترونية"]
+      "hashtags": [
+        "تقارير",
+        "PDF",
+        "المغرب",
+        "التجارة_الالكترونية"
+      ],
+      "video": {
+        "title": "تحتاج تقريرًا لشريك أو محاسب؟",
+        "points": [
+          "تقرير PDF مرتب بنقرة واحدة",
+          "ملف CSV جاهز للإكسيل",
+          "احفظ أرقامك أو شاركها بثقة"
+        ],
+        "result": "PDF + CSV في ثانية واحدة",
+        "cta": "اطّلع على التقارير",
+        "script": "هل تحتاج تقريرًا لشريك أو محاسب، أو تريد فقط حفظ أرقامك؟ الأداة تصدّر لك تقرير بي دي إف مرتبًا بنقرة واحدة، وملف سي إس في جاهزًا للإكسيل. احفظ أرقامك أو شاركها بثقة. اطّلع على الطريقة الآن."
+      }
     },
     {
-      "id": 14, "lang": "ar", "theme": "تفاعل",
+      "id": 14,
+      "lang": "ar",
+      "theme": "تفاعل",
       "media": "brand/post-199-breakdown.png",
       "title": "سؤال للنقاش: أش من تكلفة كتاكل ليك الربح كثر؟ 🤔",
       "body": "اختار 👇\n🔥 الإعلان\n🚚 التوصيل\n↩️ الرجوع\n📦 التغليف\nأنا كنقول الإعلان — والرجوع هو لي كيجي من بعد بالصمت.\nشاركنا تجربتك، واحسبها مضبوطة هنا:",
       "cta": "احسب وشارك",
-      "hashtags": ["نقاش", "المغرب", "التجارة_الالكترونية", "ربح"]
+      "hashtags": [
+        "نقاش",
+        "المغرب",
+        "التجارة_الالكترونية",
+        "ربح"
+      ],
+      "video": {
+        "title": "أي تكلفة تلتهم ربحك أكثر؟",
+        "points": [
+          "الإعلان؟",
+          "التوصيل؟",
+          "المرتجعات؟ أم التغليف؟"
+        ],
+        "result": "رأينا: الإعلان أولًا… والمرتجعات بصمت",
+        "cta": "احسب وشارك",
+        "script": "سؤال للنقاش: أي تكلفة تلتهم ربحك أكثر؟ الإعلان؟ التوصيل؟ المرتجعات؟ أم التغليف؟ في رأينا، الإعلان يأتي أولًا، ثم المرتجعات التي تأتي بصمت. شاركنا تجربتك، واحسب أرقامك بدقة مجانًا."
+      }
     },
     {
-      "id": 15, "lang": "ar", "theme": "مقارنة",
+      "id": 15,
+      "lang": "ar",
+      "theme": "مقارنة",
       "media": "brand/ad-style-bold-poster.png",
       "title": "منتج بـ99 درهم vs منتج بـ299 درهم — شكون كيربح كثر؟",
       "body": "الجواب كيصدك: ماشي ديما الغالي.\nالمنتج الرخيص غالبًا عندو نسبة رجوع كبيرة وتوصيل مكلف نسبيًا.\nالحسبة وحدها هي لي كتجاوب — ماشي التخمين.\nقارن منتجاتك:",
       "cta": "قارن دابا",
-      "hashtags": ["مقارنة", "المغرب", "التجارة_الالكترونية", "ربح"]
+      "hashtags": [
+        "مقارنة",
+        "المغرب",
+        "التجارة_الالكترونية",
+        "ربح"
+      ],
+      "video": {
+        "title": "منتج بـ99 درهمًا أم بـ299 — أيهما يربح أكثر؟",
+        "points": [
+          "الجواب يفاجئ: ليس الأغلى دائمًا",
+          "المنتج الرخيص: مرتجعات أعلى وتوصيل مكلف نسبيًا",
+          "الحساب وحده يجيب — لا التخمين"
+        ],
+        "result": "قارن منتجاتك بالأرقام",
+        "cta": "قارن الآن",
+        "script": "منتج بتسعة وتسعين درهمًا أم منتج بمئتين وتسعة وتسعين، أيهما يربح أكثر؟ الجواب يفاجئ الكثيرين: ليس الأغلى دائمًا. فالمنتج الرخيص غالبًا ما تكون نسبة مرتجعاته أعلى، وتوصيله مكلفًا نسبيًا. الحساب وحده هو الذي يجيب، لا التخمين. قارن منتجاتك الآن مجانًا."
+      }
     },
     {
-      "id": 16, "lang": "ar", "theme": "الدفع عند الاستلام",
+      "id": 16,
+      "lang": "ar",
+      "theme": "الدفع عند الاستلام",
       "media": "brand/post-whatsapp-feature.png",
       "title": "بائعين الدفع عند الاستلام: هاد الحسبة مخصصة ليكم 🇲🇦",
       "body": "الرجوع عند الدفع عند الاستلام كيوصل 10-20%.\nكل طلب راجع = خسارة التوصيل مرتين + التغليف + الوقت.\nالأداة كتحسبها معاك وتعطيك رابط طلب يقلل الرجوع (الزبون كيأكد قبل ما يتصيفط).\nجرّبها:",
       "cta": "جرّبها",
-      "hashtags": ["دفع_عند_الاستلام", "المغرب", "التجارة_الالكترونية"]
+      "hashtags": [
+        "دفع_عند_الاستلام",
+        "المغرب",
+        "التجارة_الالكترونية"
+      ],
+      "video": {
+        "title": "لبائعي الدفع عند الاستلام: هذا الحساب لكم",
+        "points": [
+          "المرتجعات في الدفع عند الاستلام تصل إلى 20%",
+          "كل طلب مرتجع = توصيل مرتين + تغليف + وقت",
+          "رابط طلب يقلل المرتجعات: العميل يؤكد قبل الشحن"
+        ],
+        "result": "احسب المرتجعات قبل أن تحسب الربح",
+        "cta": "جرّبها",
+        "script": "لبائعي الدفع عند الاستلام: هذا الحساب مخصص لكم. نسبة المرتجعات في الدفع عند الاستلام تصل إلى عشرين بالمئة. وكل طلب مرتجع يعني خسارة التوصيل مرتين، والتغليف، والوقت. الأداة تحسبها معك، وتمنحك رابط طلب يقلل المرتجعات لأن العميل يؤكد قبل الشحن. جرّبها مجانًا."
+      }
     },
     {
-      "id": 17, "lang": "ar", "theme": "تسعير",
+      "id": 17,
+      "lang": "ar",
+      "theme": "تسعير",
       "media": "screen-3-whatif.png",
       "title": "كيفاش تحدد سعر البيع ديالك مزيان 🎯",
       "body": "قبل ما تحدد السعر، خاصك تعرف:\n✅ كلفة الإعلان على كل بيعة\n✅ نسبة الرجوع\n✅ هامش الربح لي باغي (مثلاً 30%)\nالأداة كتحسبلك السعر الأدنى باش ما تخسرش.\nاحسب سعرك:",
       "cta": "احسب السعر",
-      "hashtags": ["تسعير", "المغرب", "التجارة_الالكترونية", "ربح"]
+      "hashtags": [
+        "تسعير",
+        "المغرب",
+        "التجارة_الالكترونية",
+        "ربح"
+      ],
+      "video": {
+        "title": "كيف تحدد سعر البيع المناسب؟",
+        "points": [
+          "اعرف كلفة الإعلان على كل عملية بيع",
+          "اعرف نسبة المرتجعات",
+          "حدد هامش الربح المطلوب، مثلًا 30%"
+        ],
+        "result": "الأداة تحسب لك السعر الأدنى كي لا تخسر",
+        "cta": "احسب سعرك",
+        "script": "كيف تحدد سعر البيع المناسب؟ قبل أن تختار السعر، عليك أن تعرف ثلاثة أشياء: كلفة الإعلان على كل عملية بيع، ونسبة المرتجعات، وهامش الربح الذي تريده، مثلًا ثلاثين بالمئة. الأداة تحسب لك السعر الأدنى الذي يضمن ألا تخسر. احسب سعرك الآن."
+      }
     },
     {
-      "id": 18, "lang": "ar", "theme": "نصيحة إعلانية",
+      "id": 18,
+      "lang": "ar",
+      "theme": "نصيحة إعلانية",
       "media": "brand/ad-style-dark-tech.png",
       "title": "قبل ما تزيد ميزانية الإعلان… قرا هادشي ⛔",
       "body": "الزيادة فالميزانية بلا حساب = خسارة أسرع.\nإذا كلفة البيعة ديالك 35 درهم والربح الحقيقي 22… راه كل بيعة كتخسر.\nحساب 30 ثانية كينقذك من شهر كامل ضايع.\nاحسب قبل ما تصرف:",
       "cta": "احسب قبل الإعلان",
-      "hashtags": ["إعلانات", "المغرب", "التجارة_الالكترونية", "نصائح"]
+      "hashtags": [
+        "إعلانات",
+        "المغرب",
+        "التجارة_الالكترونية",
+        "نصائح"
+      ],
+      "video": {
+        "title": "قبل أن تزيد ميزانية الإعلان… اقرأ هذا",
+        "points": [
+          "زيادة الميزانية دون حساب = خسارة أسرع",
+          "كلفة البيعة 35 درهمًا والربح الحقيقي 22؟",
+          "إذن كل عملية بيع تخسرك"
+        ],
+        "result": "حساب 30 ثانية ينقذك من شهر ضائع",
+        "cta": "احسب قبل الإعلان",
+        "script": "قبل أن تزيد ميزانية الإعلان، اقرأ هذا. زيادة الميزانية دون حساب تعني خسارة أسرع. إذا كانت كلفة عملية البيع خمسة وثلاثين درهمًا وربحك الحقيقي اثنين وعشرين، فكل عملية بيع تخسرك. حساب من ثلاثين ثانية ينقذك من شهر كامل ضائع. احسب قبل أن تنفق."
+      }
     },
     {
-      "id": 19, "lang": "ar", "theme": "منشور خفيف",
+      "id": 19,
+      "lang": "ar",
+      "theme": "منشور خفيف",
       "media": "brand/ad-style-bold-poster.png",
       "title": "البائع كيقول: «راني كنبيع بزاف ولكن مابقاش كيبقى والو» 😂",
       "body": "المحاسب كيقول: «عافاك قول ليا شحال كتصرف على التوصيل؟»\nالبائع: «…»\nهاد السكات هو لي كيكلّف. حاسب كلشي:",
       "cta": "حاسب كلشي",
-      "hashtags": ["مضحك", "المغرب", "التجارة_الالكترونية", "محاسبة"]
+      "hashtags": [
+        "مضحك",
+        "المغرب",
+        "التجارة_الالكترونية",
+        "محاسبة"
+      ],
+      "video": {
+        "title": "«أبيع كثيرًا… لكن لا يبقى شيء»",
+        "points": [
+          "البائع: أبيع كثيرًا ولا يبقى شيء",
+          "المحاسب: كم تنفق على التوصيل؟",
+          "البائع: …"
+        ],
+        "result": "هذا الصمت هو ما يكلّفك",
+        "cta": "احسب كل شيء",
+        "script": "يقول البائع: أبيع كثيرًا، لكن في النهاية لا يبقى شيء. فيسأله المحاسب: حسنًا، كم تنفق على التوصيل؟ فيصمت البائع. هذا الصمت بالذات هو ما يكلّفك أرباحك. احسب كل شيء مجانًا في ثلاثين ثانية."
+      }
     },
     {
-      "id": 20, "lang": "ar", "theme": "ختام الأسبوع",
+      "id": 20,
+      "lang": "ar",
+      "theme": "ختام الأسبوع",
       "media": "brand/cover-banner.png",
       "title": "الخلاصة ديال هاد الأسبوع 📊",
       "body": "الربح الحقيقي = سعر البيع − (الشراء + الإعلان + التوصيل + الرجوع + الأجرة).\nأي رقم ناقص من هاد القائمة = قرار غالط.\nالأداة كتحسبها كلها في 30 ثانية ومجانية للتجربة:",
       "cta": "ابدأ دابا",
-      "hashtags": ["خلاصة", "المغرب", "التجارة_الالكترونية", "ربح"]
+      "hashtags": [
+        "خلاصة",
+        "المغرب",
+        "التجارة_الالكترونية",
+        "ربح"
+      ],
+      "video": {
+        "title": "خلاصة الأسبوع",
+        "points": [
+          "الربح الحقيقي = سعر البيع − (الشراء + الإعلان",
+          "+ التوصيل + المرتجعات + الأجور)",
+          "أي رقم ناقص من القائمة = قرار خاطئ"
+        ],
+        "result": "الأداة تحسبها كلها في 30 ثانية",
+        "cta": "ابدأ الآن",
+        "script": "خلاصة هذا الأسبوع في جملة واحدة: الربح الحقيقي يساوي سعر البيع ناقص مجموع الشراء والإعلان والتوصيل والمرتجعات والأجور. أي رقم ناقص من هذه القائمة يعني قرارًا خاطئًا. الأداة تحسبها كلها في ثلاثين ثانية، ومجانية للتجربة. ابدأ الآن."
+      }
     },
     {
-      "id": 21, "lang": "en", "theme": "Hidden leaks",
+      "id": 21,
+      "lang": "en",
+      "theme": "Hidden leaks",
       "media": "brand/ad-style-dark-tech.png",
       "title": "Your best-selling product might be the one losing money 💸",
       "body": "Most sellers calculate: sale price − cost = profit.\nReal profit also subtracts: ads, shipping, returns, packaging, payment fees.\nA $29 product can hide a real profit of only $3.\nCalculate all of it free (no signup):",
       "cta": "Calculate now",
-      "hashtags": ["ecommerce", "smallbusiness", "profit", "shopify", "dropshipping"]
+      "hashtags": [
+        "ecommerce",
+        "smallbusiness",
+        "profit",
+        "shopify",
+        "dropshipping"
+      ],
+      "video": {
+        "title": "Your best-seller might be the one losing money",
+        "points": [
+          "Most sellers calculate: price − cost = profit",
+          "Real profit also subtracts ads, shipping, returns",
+          "Plus packaging and payment fees"
+        ],
+        "result": "A $29 product can hide a real profit of $3",
+        "cta": "Calculate now",
+        "script": "Your best-selling product might be the one losing you money. Most sellers calculate sale price minus cost and call it profit. But real profit also subtracts ads, shipping, returns, packaging and payment fees. A twenty-nine dollar product can hide a real profit of only three dollars. Calculate all of it for free, no signup, at ProfitLeak AI."
+      }
     },
     {
-      "id": 22, "lang": "en", "theme": "199 breakdown EN",
+      "id": 22,
+      "lang": "en",
+      "theme": "199 breakdown EN",
       "media": "brand/post-199-breakdown.png",
       "title": "A product sold at $29 — here is where the money actually goes 🔻",
       "body": "Cost: $13\nAds (per sale): $5\nShipping: $4\nReturns: $2\nPackaging + fees: $2\n= Real profit: $3 — not $16 like most sellers think 😳\nRun your own numbers (free, no signup):",
       "cta": "Run the numbers",
-      "hashtags": ["ecommerce", "profit", "smallbusiness", "dropshipping"]
+      "hashtags": [
+        "ecommerce",
+        "profit",
+        "smallbusiness",
+        "dropshipping"
+      ],
+      "video": {
+        "title": "A $29 product — where the money actually goes",
+        "points": [
+          "Cost: $13 · Ads per sale: $5",
+          "Shipping: $4 · Returns: $2",
+          "Packaging + fees: $2"
+        ],
+        "result": "Real profit: $3 — not $16",
+        "cta": "Run the numbers",
+        "script": "A product sold at twenty-nine dollars. Here is where the money actually goes. Cost: thirteen. Ads per sale: five. Shipping: four. Returns: two. Packaging and fees: two. Real profit: three dollars, not sixteen like most sellers think. Run your own numbers for free, no signup required."
+      }
     },
     {
-      "id": 23, "lang": "en", "theme": "Story EN",
+      "id": 23,
+      "lang": "en",
+      "theme": "Story EN",
       "media": "brand/cover-banner.png",
       "title": "I sold 400 units and made almost nothing. Here is why.",
       "body": "I thought each sale made me $6.\nWhen I finally added ads, shipping, returns and packaging — the real number was $1.20.\nSo I built a tool that does this math in 30 seconds.\nTry it free:",
       "cta": "Try it free",
-      "hashtags": ["ecommerce", "storytime", "smallbusiness", "profit"]
+      "hashtags": [
+        "ecommerce",
+        "storytime",
+        "smallbusiness",
+        "profit"
+      ],
+      "video": {
+        "title": "I sold 400 units and made almost nothing",
+        "points": [
+          "I thought each sale made me $6",
+          "Then I added ads, shipping, returns, packaging",
+          "The real number was $1.20"
+        ],
+        "result": "So I built a tool that does this in 30 seconds",
+        "cta": "Try it free",
+        "script": "I sold four hundred units and made almost nothing. Here is why. I thought each sale made me six dollars. When I finally added ads, shipping, returns and packaging, the real number was one dollar twenty. So I built a tool that does this math in thirty seconds. Try it free at ProfitLeak AI."
+      }
     },
     {
-      "id": 24, "lang": "en", "theme": "WhatsApp orders EN",
+      "id": 24,
+      "lang": "en",
+      "theme": "WhatsApp orders EN",
       "media": "brand/post-whatsapp-feature.png",
       "title": "Selling on WhatsApp? Every order logs itself now 🤯",
       "body": "Generate a product order link, drop it in your ad.\nThe customer taps, fills name + phone, orders.\nThe sale is logged automatically with its real profit — no spreadsheets.\nTry it free:",
       "cta": "See the feature",
-      "hashtags": ["whatsapp", "ecommerce", "smallbusiness", "cod"]
+      "hashtags": [
+        "whatsapp",
+        "ecommerce",
+        "smallbusiness",
+        "cod"
+      ],
+      "video": {
+        "title": "Selling on WhatsApp? Every order logs itself",
+        "points": [
+          "Generate an order link for each product",
+          "Drop it in your ad — the customer taps and orders",
+          "The sale is logged with its real profit"
+        ],
+        "result": "No spreadsheets. Ever.",
+        "cta": "See the feature",
+        "script": "Selling on WhatsApp with cash on delivery? Every order now logs itself. Generate an order link for each product and drop it in your ad. The customer taps, fills in name and phone, and orders. The sale is logged automatically with its real profit. No spreadsheets, ever. Try it free."
+      }
     },
     {
-      "id": 25, "lang": "en", "theme": "Diagnosis EN",
+      "id": 25,
+      "lang": "en",
+      "theme": "Diagnosis EN",
       "media": "screen-2-diagnosis.png",
       "title": "This screen tells you where 40% of your costs disappear 📊",
       "body": "A real product diagnosis: 40% of total cost goes to ads.\nThe tool shows your biggest leak and the fix — automatically from your own numbers.\nCheck your product:",
       "cta": "Diagnose my product",
-      "hashtags": ["analytics", "ecommerce", "profit", "ads"]
+      "hashtags": [
+        "analytics",
+        "ecommerce",
+        "profit",
+        "ads"
+      ],
+      "video": {
+        "title": "Where do 40% of your costs disappear?",
+        "points": [
+          "A real product diagnosis: 40% goes to ads",
+          "The tool finds your biggest leak",
+          "And shows the fix — from your own numbers"
+        ],
+        "result": "Biggest leak + the fix, automatically",
+        "cta": "Diagnose my product",
+        "script": "Where do forty percent of your costs disappear? This is a real product diagnosis: forty percent of total cost goes to ads alone. The tool finds your biggest leak and shows you the fix, automatically, from your own numbers. Check what it says about your product, for free."
+      }
     },
     {
-      "id": 26, "lang": "en", "theme": "Break-even EN",
+      "id": 26,
+      "lang": "en",
+      "theme": "Break-even EN",
       "media": "screen-3-whatif.png",
       "title": "How many units before you actually profit? (break-even)",
       "body": "The \"What if\" panel answers the questions that keep sellers up:\n+ $100 ad budget → how much extra profit?\n− $2 on the price → how many more sales to stay profitable?\nRun your scenarios:",
       "cta": "Run scenarios",
-      "hashtags": ["breakeven", "ecommerce", "profit", "ads"]
+      "hashtags": [
+        "breakeven",
+        "ecommerce",
+        "profit",
+        "ads"
+      ],
+      "video": {
+        "title": "How many units before you actually profit?",
+        "points": [
+          "The What-if panel answers the hard questions",
+          "+$100 ad budget → how much extra profit?",
+          "−$2 on price → how many more sales to stay profitable?"
+        ],
+        "result": "Break-even in one second",
+        "cta": "Run scenarios",
+        "script": "How many units do you need to sell before you actually profit? The What-if panel answers the questions that keep sellers up at night. Add one hundred dollars to your ad budget: how much extra profit? Cut two dollars off the price: how many more sales to stay profitable? Run your own scenarios now, for free."
+      }
     },
     {
-      "id": 27, "lang": "en", "theme": "Returns EN",
+      "id": 27,
+      "lang": "en",
+      "theme": "Returns EN",
       "media": "screen-1-dashboard.png",
       "title": "Returns are not a small problem — they eat a quarter of your margin 😬",
       "body": "12% return rate on 100 orders = 12 packages you paid to ship twice.\nSkip returns in your math and every number you have is wrong.\nCalculate it right:",
       "cta": "Calculate with returns",
-      "hashtags": ["returns", "ecommerce", "profit", "cod"]
+      "hashtags": [
+        "returns",
+        "ecommerce",
+        "profit",
+        "cod"
+      ],
+      "video": {
+        "title": "Returns eat a quarter of your margin",
+        "points": [
+          "12% return rate on 100 orders",
+          "= 12 packages you paid to ship twice",
+          "Skip returns and every number you have is wrong"
+        ],
+        "result": "Calculate it with returns included",
+        "cta": "Calculate with returns",
+        "script": "Returns are not a small problem. They eat a quarter of your margin. A twelve percent return rate on one hundred orders means twelve packages you paid to ship twice. Skip returns in your math, and every number you have is wrong. Calculate it right, for free."
+      }
     },
     {
-      "id": 28, "lang": "en", "theme": "Dashboard EN",
+      "id": 28,
+      "lang": "en",
+      "theme": "Dashboard EN",
       "media": "screen-1-dashboard.png",
       "title": "One winner, three losers — and you do not know which 😶",
       "body": "Score every product at once:\n📈 Winners (scale the ads)\n📉 Losers (fix or stop)\n⏱️ Time spent per product\nOpen the dashboard:",
       "cta": "Open dashboard",
-      "hashtags": ["dashboard", "ecommerce", "analytics", "smallbusiness"]
+      "hashtags": [
+        "dashboard",
+        "ecommerce",
+        "analytics",
+        "smallbusiness"
+      ],
+      "video": {
+        "title": "One winner, three losers — which is which?",
+        "points": [
+          "Score every product at once",
+          "Winners: scale the ads",
+          "Losers: fix or stop"
+        ],
+        "result": "Plus the time you spend per product",
+        "cta": "Open dashboard",
+        "script": "One winner, three losers, and you do not know which is which. Score every product at once on a single dashboard. Winners: scale the ads. Losers: fix them or stop them. And see the time you spend on each product. Open the dashboard now, for free."
+      }
     },
     {
-      "id": 29, "lang": "en", "theme": "Reports EN",
+      "id": 29,
+      "lang": "en",
+      "theme": "Reports EN",
       "media": "screen-4-pricing.png",
       "title": "Export a clean PDF + CSV report in one click 📄",
       "body": "Partner, accountant, or just your own records — export a tidy PDF report and a CSV for spreadsheets.\nSee how:",
       "cta": "See reports",
-      "hashtags": ["reports", "ecommerce", "pdf", "smallbusiness"]
+      "hashtags": [
+        "reports",
+        "ecommerce",
+        "pdf",
+        "smallbusiness"
+      ],
+      "video": {
+        "title": "Export a clean PDF + CSV report in one click",
+        "points": [
+          "For a partner, an accountant, or your records",
+          "A tidy PDF report",
+          "A CSV for spreadsheets"
+        ],
+        "result": "One click. Done.",
+        "cta": "See reports",
+        "script": "Need a report for a partner, an accountant, or just your own records? Export a tidy PDF report and a CSV for spreadsheets, in one click. See how it works at ProfitLeak AI."
+      }
     },
     {
-      "id": 30, "lang": "en", "theme": "Challenge EN",
+      "id": 30,
+      "lang": "en",
+      "theme": "Challenge EN",
       "media": "brand/ad-style-bold-poster.png",
       "title": "3-minute challenge: what is your real margin? ⏱️",
       "body": "Enter your best product numbers (price, cost, ads, shipping, returns).\nIf real profit comes back under 20% — you have a leak 🚨\nThe tool tells you exactly where and how to fix it.\nStart the challenge:",
       "cta": "Start now",
-      "hashtags": ["challenge", "ecommerce", "profit", "smallbusiness"]
+      "hashtags": [
+        "challenge",
+        "ecommerce",
+        "profit",
+        "smallbusiness"
+      ],
+      "video": {
+        "title": "3-minute challenge: what is your real margin?",
+        "points": [
+          "Enter your best product: price, cost, ads, shipping, returns",
+          "If real profit comes back under 20%…",
+          "You have a leak"
+        ],
+        "result": "The tool tells you where — and how to fix it",
+        "cta": "Start now",
+        "script": "The three-minute challenge: what is your real margin? Enter your best product numbers: price, cost, ads, shipping and returns. If real profit comes back under twenty percent, you have a leak. And the tool tells you exactly where it is and how to fix it. Start the challenge now, for free."
+      }
     }
   ]
 }
