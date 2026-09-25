@@ -372,7 +372,7 @@ def encode(stream, out):
 
 
 # ───────── التعليق الصوتي (edge-tts — مجاني) ─────────
-VOICES = {("ar", "f"): "ar-MA-MounaNeural", ("ar", "m"): "ar-MA-JamalNeural",
+VOICES = {("ar", "f"): "ar-SA-ZariyahNeural", ("ar", "m"): "ar-SA-HamedNeural",
           ("en", "f"): "en-US-AriaNeural",  ("en", "m"): "en-US-GuyNeural"}
 
 
@@ -403,7 +403,7 @@ def make_voice(p, out_mp3):
     lang, g, voice = pick_voice(p)
     txt = narration_text(p)
     for attempt in range(3):
-        r = subprocess.run([sys.executable, "-m", "edge_tts", "--voice", voice, "--rate=+8%",
+        r = subprocess.run([sys.executable, "-m", "edge_tts", "--voice", voice, "--rate=+0%",
                             "--text", txt, "--write-media", out_mp3],
                            capture_output=True, timeout=120)
         if r.returncode == 0 and os.path.exists(out_mp3) and os.path.getsize(out_mp3) > 2000:
