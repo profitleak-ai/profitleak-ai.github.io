@@ -152,7 +152,7 @@ STATE = os.path.join(HERE, "state.json")
 
 def admin_chat(tok):
     """معرّف محادثتك الخاصة: من السرّ TELEGRAM_ADMIN_CHAT، أو من state.json، أو يكتشفه من أول رسالة خاصة للبوت"""
-    cid = os.environ.get("TELEGRAM_ADMIN_CHAT", "").strip()
+    cid = os.environ.get("TELEGRAM_ADMIN_CHAT", "").strip() or "5906873534"   # محادثة أمل الخاصة (ثبتت 2026-09-25)
     if cid:
         return cid
     stt = {}
