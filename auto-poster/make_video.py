@@ -162,12 +162,25 @@ def bar_layer():
 class BgStream:
     """يقرأ إطارات خلفية AI (1080×1920 RGB) من ffmpeg: ذهاب-إياب مُبطّأ + تعتيم لقراءة النص"""
     def __init__(self, path, total):
-        # 5 ث → ذهاب+إياب 10 ث → إبطاء لتغطية TOTAL إطارًا بسلاسة
         need = total / FPS
-        k = max(1.0, need / 10.0)
-        vf = (f"[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,split[a][b];"
-              f"[b]reverse[r];[a][r]concat=n=2:v=1:a=0,setpts={k:.3f}*PTS,fps={FPS},"
-              f"eq=brightness=-0.18:saturation=0.9,gblur=sigma=1.2,format=rgb24[v]")
+        dur = 0.0
+        try:
+            pr = subprocess.run([FFMPEG, "-i", path], capture_output=True, text=True)
+            import re as _re
+            m = _re.search(r"Duration: (\d+):(\d+):([\d.]+)", pr.stderr)
+            dur = int(m[1]) * 3600 + int(m[2]) * 60 + float(m[3]) if m else 0.0
+        except Exception:
+            pass
+        if dur >= need - 0.5:
+            # لقطات حقيقية طويلة بما يكفي: تُعرض كما هي
+            vf = (f"[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps={FPS},"
+                  f"eq=brightness=-0.16:saturation=0.9,gblur=sigma=1.0,format=rgb24[v]")
+        else:
+            # مشهد AI قصير (5 ث) → ذهاب+إياب مُبطّأ لتغطية المدة بسلاسة
+            k = max(1.0, need / max(2 * dur, 1.0))
+            vf = (f"[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,split[a][b];"
+                  f"[b]reverse[r];[a][r]concat=n=2:v=1:a=0,setpts={k:.3f}*PTS,fps={FPS},"
+                  f"eq=brightness=-0.18:saturation=0.9,gblur=sigma=1.2,format=rgb24[v]")
         self.pr = subprocess.Popen([FFMPEG, "-v", "error", "-i", path, "-filter_complex", vf, "-map", "[v]",
                                     "-f", "rawvideo", "-pix_fmt", "rgb24", "-"],
                                    stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, bufsize=W * H * 3 * 2)
@@ -436,11 +449,18 @@ def make_video(p, template=None):
     out = os.path.join(OUT, f"{p['id']}.mp4")
     silent = os.path.join(OUT, f"{p['id']}-silent.mp4")
     bg_path = None
+    # سلسلة الخلفية: لقطات حقيقية (Pexels→Pixabay) → مشهد AI (Hugging Face) → الخلفية العادية
     try:
-        import ai_bg
-        bg_path = ai_bg.get_background(p)
+        import footage
+        bg_path = footage.get_footage(p, seconds=TOTAL / FPS + 1)
     except Exception as e:
-        print("⚪ خلفية AI غير متاحة:", str(e)[:120])
+        print("⚪ اللقطات غير متاحة:", str(e)[:120])
+    if not bg_path:
+        try:
+            import ai_bg
+            bg_path = ai_bg.get_background(p)
+        except Exception as e:
+            print("⚪ خلفية AI غير متاحة:", str(e)[:120])
     n = encode(build_frames(p, T, name, bg_path), silent)
     voice, adur = make_voice(p, os.path.join(OUT, f"{p['id']}-voice.mp3"))
     if voice:
