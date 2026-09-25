@@ -40,7 +40,7 @@ jobs:
           python-version: '3.11'
 
       - name: تثبيت الحزم
-        run: pip install --quiet Pillow imageio-ffmpeg fonttools edge-tts
+        run: pip install --quiet Pillow imageio-ffmpeg fonttools edge-tts gradio_client
 
       - name: 🎞️ توليد الفيديو ونشره
         env:
@@ -53,6 +53,8 @@ jobs:
           FORCE_VIDEO: ${{ github.event.inputs.force }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT: ${{ secrets.TELEGRAM_CHAT }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PINTEREST_TOKEN: ${{ secrets.PINTEREST_TOKEN }}
           PINTEREST_BOARD_ID: ${{ secrets.PINTEREST_BOARD_ID }}
         run: python3 auto-poster/publish_video.py
