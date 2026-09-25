@@ -22,7 +22,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: تثبيت حزم الوسائط
-        run: pip install --quiet Pillow imageio-ffmpeg fonttools edge-tts
+        run: pip install --quiet Pillow imageio-ffmpeg fonttools edge-tts gradio_client
       - name: 🚀 نشر تجريبي على بيئة الاختبار
         env:
           PINTEREST_SANDBOX: '1'
@@ -32,5 +32,6 @@ jobs:
           SLOT: morning
           VIDEO_TEMPLATE: ${{ github.event.inputs.template }}
           INDEX: ${{ github.event.inputs.index }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
           PINTEREST_TOKEN: ${{ secrets.PINTEREST_SANDBOX_TOKEN }}
         run: python3 auto-poster/first_pins.py
