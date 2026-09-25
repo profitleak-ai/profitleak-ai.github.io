@@ -159,7 +159,35 @@ def bar_layer():
     return None
 
 
-def build_frames(p, T=None, tname=""):
+class BgStream:
+    """يقرأ إطارات خلفية AI (1080×1920 RGB) من ffmpeg: ذهاب-إياب مُبطّأ + تعتيم لقراءة النص"""
+    def __init__(self, path, total):
+        # 5 ث → ذهاب+إياب 10 ث → إبطاء لتغطية TOTAL إطارًا بسلاسة
+        need = total / FPS
+        k = max(1.0, need / 10.0)
+        vf = (f"[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,split[a][b];"
+              f"[b]reverse[r];[a][r]concat=n=2:v=1:a=0,setpts={k:.3f}*PTS,fps={FPS},"
+              f"eq=brightness=-0.18:saturation=0.9,gblur=sigma=1.2,format=rgb24[v]")
+        self.pr = subprocess.Popen([FFMPEG, "-v", "error", "-i", path, "-filter_complex", vf, "-map", "[v]",
+                                    "-f", "rawvideo", "-pix_fmt", "rgb24", "-"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, bufsize=W * H * 3 * 2)
+        self.last = None
+        self.n = W * H * 3
+
+    def next(self):
+        raw = self.pr.stdout.read(self.n) if self.pr.stdout else b""
+        if len(raw) == self.n:
+            self.last = Image.frombytes("RGB", (W, H), raw)
+        return self.last
+
+    def close(self):
+        try:
+            self.pr.kill()
+        except Exception:
+            pass
+
+
+def build_frames(p, T=None, tname="", bg_path=None):
     T = T or TEMPLATES["midnight"]
     ar = p.get("lang", "ar") == "ar"
     fpath = mp.AR if ar else mp.EN
@@ -169,6 +197,7 @@ def build_frames(p, T=None, tname=""):
     grid = build_grid()
     vig = build_vignette()
     brand = brand_layer(ar, T)
+    bgs = BgStream(bg_path, TOTAL) if bg_path else None
 
     V = p.get("video") or {}
     probe = ImageDraw.Draw(Image.new("RGB", (10, 10)))
@@ -205,12 +234,20 @@ def build_frames(p, T=None, tname=""):
 
     frames = []
     for f in range(TOTAL):
-        img = bg.copy()
-        # خلفية متحركة
-        img.paste(glow1, (-320, int(-260 + f * 0.55)), glow1)
-        img.paste(glow2, (int(W - 700), int(H - 620 - f * 0.42)), glow2)
-        img.paste(grid, (-120, int(-120 - (f * 0.35) % 112)), grid)
-        img.paste(Image.new("RGB", (W, H), (0, 0, 0)), (0, 0), vig)
+        fr_ai = bgs.next() if bgs else None
+        if fr_ai is not None:
+            img = fr_ai.copy()
+            # طبقة داكنة خلف النصوص + هالة القالب للحفاظ على الهوية اللونية
+            img.paste(Image.new("RGB", (W, H), T["bg"]), (0, 0), Image.new("L", (W, H), 95))
+            img.paste(glow1, (-320, int(-260 + f * 0.55)), glow1)
+            img.paste(Image.new("RGB", (W, H), (0, 0, 0)), (0, 0), vig)
+        else:
+            img = bg.copy()
+            # خلفية متحركة
+            img.paste(glow1, (-320, int(-260 + f * 0.55)), glow1)
+            img.paste(glow2, (int(W - 700), int(H - 620 - f * 0.42)), glow2)
+            img.paste(grid, (-120, int(-120 - (f * 0.35) % 112)), grid)
+            img.paste(Image.new("RGB", (W, H), (0, 0, 0)), (0, 0), vig)
 
         ov = layer(W, H)
         od = ImageDraw.Draw(ov)
@@ -242,7 +279,7 @@ def build_frames(p, T=None, tname=""):
         if a:
             ca = layer(W - 160, card_h)
             cd = ImageDraw.Draw(ca)
-            rrect(cd, [0, 0, W - 160, card_h], 36, T["card"] + (235,), T["edge"], 3)
+            rrect(cd, [0, 0, W - 160, card_h], 36, T["card"] + (242,), T["edge"], 3)
             ov.paste(fade(ca, a), (80, int(card_y + (1 - a) * 50)), fade(ca, a))
 
             ny = card_y + 50
@@ -313,6 +350,8 @@ def build_frames(p, T=None, tname=""):
             ov.paste(fade(ul, ua), (int((W - ul.width) / 2), url_y), fade(ul, ua))
 
         yield Image.alpha_composite(img.convert("RGBA"), ov).convert("RGB")
+    if bgs:
+        bgs.close()
 
 
 def encode(stream, out):
@@ -396,7 +435,13 @@ def make_video(p, template=None):
     print(f"🎨 القالب: {name}")
     out = os.path.join(OUT, f"{p['id']}.mp4")
     silent = os.path.join(OUT, f"{p['id']}-silent.mp4")
-    n = encode(build_frames(p, T, name), silent)
+    bg_path = None
+    try:
+        import ai_bg
+        bg_path = ai_bg.get_background(p)
+    except Exception as e:
+        print("⚪ خلفية AI غير متاحة:", str(e)[:120])
+    n = encode(build_frames(p, T, name, bg_path), silent)
     voice, adur = make_voice(p, os.path.join(OUT, f"{p['id']}-voice.mp3"))
     if voice:
         try:
