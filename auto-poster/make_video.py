@@ -142,7 +142,7 @@ def brand_layer(ar, T=None):
         rrect(d, [22 + i * 26, 142 - h, 40 + i * 26, 142], 6, (16, 22, 40) if i < 3 else RED)
     mp.draw(d, "ProfitLeak AI", 160, 34, mp.font(64, False), gold, False)
     tag = mp.clean("احسب ربحك الحقيقي" if ar else "Find your real profit", mp.AR if ar else mp.EN)
-    mp.draw(d, tag, 160, 112, mp.font(34, ar), MUTED, ar)
+    mp.draw(d, tag, 160, 112, mp.font(34, ar), MUTED, False) if not ar else d.text((160, 112), tag, font=mp.font(34, True), fill=MUTED, anchor="la", direction="rtl", language="ar")
     return L
 
 
@@ -170,21 +170,38 @@ def build_frames(p, T=None, tname=""):
     vig = build_vignette()
     brand = brand_layer(ar, T)
 
-    title_lines, tf = mp.fit(ImageDraw.Draw(Image.new("RGB", (10, 10))),
-                             mp.clean(p["title"], fpath), ar, W - 200)
-    body = mp.clean(p["body"].replace("**", "").replace("▪️", "•").replace("🔻", ""), fpath)
-    rows = [l.strip() for l in body.split("\n") if l.strip() and
-            (l.strip().startswith(("•", "-")) or "= " in l or l.strip().startswith("="))]
-    if not rows:
+    V = p.get("video") or {}
+    probe = ImageDraw.Draw(Image.new("RGB", (10, 10)))
+    title_src = V.get("title") or p["title"]
+    title_lines, tf = mp.fit(probe, mp.clean(title_src, fpath), ar, W - 200, start=78, min_s=50, max_lines=3)
+    if V:
+        rows = [mp.clean(x, fpath) for x in V.get("points", [])][:3]
+        result = mp.clean(V.get("result", ""), fpath)
+    else:
+        body = mp.clean(p["body"].replace("**", "").replace("▪️", "•").replace("🔻", ""), fpath)
         rows = [l.strip() for l in body.split("\n") if l.strip()][:3]
-    rows = rows[:4]
-    result = next((r for r in rows if "= " in r or r.startswith("=")), rows[-1] if rows else "")
-    rows = [r for r in rows if r != result][:3] + ([result] if result else [])
-
-    rf = mp.font(52, ar)
-    resf = mp.font(62, ar)
-    ct = mp.clean(p.get("cta", ""), fpath)
-    ctf = mp.font(58, ar)
+        result = ""
+    rf = mp.font(50 if ar else 46, ar)
+    resf = mp.font(54, ar)
+    # لفّ الأسطر داخل البطاقة (لا اقتطاع)
+    inner = W - 160 - 110
+    wrapped = []
+    for r in rows:
+        ls = mp.wrap(probe, r, rf, ar, inner - 10)[:2]
+        wrapped.append(ls)
+    res_lines = mp.wrap(probe, result, resf, ar, inner)[:2] if result else []
+    row_h = [len(ls) * (rf.size + 14) + 30 for ls in wrapped]
+    res_h = (len(res_lines) * (resf.size + 16) + 30) if res_lines else 0
+    card_h = 70 + sum(row_h) + (24 if res_lines else 0) + res_h + 50
+    title_h = len(title_lines) * (tf.size + 26)
+    card_y = 430 + title_h + 50
+    chart_top = card_y + card_h + 60
+    ct = mp.clean(V.get("cta") or p.get("cta", ""), fpath)
+    ctf = mp.font(54, ar)
+    # الرسم البياني + النداء + الرابط تُوزَّع في المساحة المتبقية
+    base_y = min(1660, max(chart_top + 200, 1500))
+    pill_y = base_y + 40
+    url_y = pill_y + 150
 
     frames = []
     for f in range(TOTAL):
@@ -221,35 +238,38 @@ def build_frames(p, T=None, tname=""):
             y += tf.size + 26
 
         # بطاقة الأرقام
-        card_h = 118 * len(rows) + 250
         a = prog(f, 150, 26)
         if a:
             ca = layer(W - 160, card_h)
             cd = ImageDraw.Draw(ca)
             rrect(cd, [0, 0, W - 160, card_h], 36, T["card"] + (235,), T["edge"], 3)
-            ov.paste(fade(ca, a), (80, int(880 + (1 - a) * 50)), fade(ca, a))
+            ov.paste(fade(ca, a), (80, int(card_y + (1 - a) * 50)), fade(ca, a))
 
-            ny = 80 + 880
-            for i, r in enumerate(rows):
+            ny = card_y + 50
+            for i, ls in enumerate(wrapped):
                 ra = prog(f, 172 + i * 15, 22)
-                if not ra:
-                    ny += 118
-                    continue
-                is_res = (r == result)
-                # النتيجة: نص ذهبي فقط — بلا شريط/مربع
-                rl = text_layer(r if is_res else "• " + r, resf if is_res else rf, ar,
-                                T["gold"] if is_res else T["text"])
-                rx = (W - 130 - rl.width) if ar else 130
-                ov.paste(fade(rl, ra), (int(rx + (1 - ra) * (70 if ar else -70)), ny), fade(rl, ra))
-                ny += 118
+                if ra:
+                    for j, ln in enumerate(ls):
+                        rl = text_layer(("• " + ln) if j == 0 else ln, rf, ar, T["text"])
+                        rx = (W - 135 - rl.width) if ar else 135
+                        ov.paste(fade(rl, ra), (int(rx + (1 - ra) * (70 if ar else -70)), ny + j * (rf.size + 14)), fade(rl, ra))
+                ny += row_h[i]
+            if res_lines:
+                ra = prog(f, 172 + len(wrapped) * 15, 22)
+                if ra:
+                    # خط فاصل رفيع ثم النتيجة بالذهبي
+                    od.line([(135, ny + 4), (W - 135, ny + 4)], fill=T["edge"] + (255,), width=2)
+                    for j, ln in enumerate(res_lines):
+                        rl = text_layer(ln, resf, ar, T["gold"])
+                        rx = (W - 135 - rl.width) if ar else 135
+                        ov.paste(fade(rl, ra), (rx, ny + 24 + j * (resf.size + 16)), fade(rl, ra))
 
         # الرسم البياني
-        base_y = 1720
         if T["chart"] == "line":
             k = prog(f, 262, 72)
             if k:
-                vals = [40, 105, 175, 300]
-                x0, dx = int(W / 2 - 240), 160
+                vals = [20, 55, 95, 150]
+                x0, dx = int(W / 2 - 300), 200
                 pts, stop = [], k * (len(vals) - 1)
                 for i, v in enumerate(vals):
                     if i <= stop:
@@ -265,14 +285,14 @@ def build_frames(p, T=None, tname=""):
                     for (px, py) in pts:
                         od.ellipse([px - 9, py - 9, px + 9, py + 9], fill=T["gold"] + (255,))
         else:
-            for i, (bh, col) in enumerate([(190, T["accent"]), (140, T["bar2"]), (92, T["gold"]), (44, RED)]):
+            for i, (bh, col) in enumerate([(120, T["accent"]), (90, T["bar2"]), (60, T["gold"]), (30, RED)]):
                 g = prog(f, 260 + i * 10, 32)
                 if not g:
                     continue
                 h = int(bh * g)
-                x = int(W / 2 - 190 + i * 100)
-                od.rounded_rectangle([x, base_y - h, x + 62, base_y], radius=14, fill=col + (255,))
-        od.line([(W / 2 - 215, base_y + 14), (W / 2 + 255, base_y + 14)], fill=(70, 88, 130, 255), width=3)
+                x = int(W / 2 - 300 + i * 90)
+                od.rounded_rectangle([x, base_y - h, x + 56, base_y], radius=12, fill=col + (255,))
+        od.line([(W / 2 - 320, base_y + 14), (W / 2 + 320, base_y + 14)], fill=(70, 88, 130, 255), width=3)
 
         # نداء + رابط
         a = prog(f, 392, 26)
@@ -286,11 +306,11 @@ def build_frames(p, T=None, tname=""):
             mp.draw(pd, ct, pw - 65 if ar else 65, 34, ctf, (12, 18, 34), ar)
             pop = ease(a) * 0.1 + 0.9
             pill = pill.resize((int(pw * pop), int(ph * pop)), Image.LANCZOS)
-            ov.paste(fade(pill, a), (int((W - pill.width) / 2), 1520), fade(pill, a))
+            ov.paste(fade(pill, a), (int((W - pill.width) / 2), pill_y), fade(pill, a))
         ua = prog(f, 408, 22)
         if ua:
             ul = text_layer("profitleakaii.qd.je", mp.font(40, False), False, MUTED)
-            ov.paste(fade(ul, ua), (int((W - ul.width) / 2), 1700), fade(ul, ua))
+            ov.paste(fade(ul, ua), (int((W - ul.width) / 2), url_y), fade(ul, ua))
 
         yield Image.alpha_composite(img.convert("RGBA"), ov).convert("RGB")
 
@@ -328,6 +348,8 @@ def pick_voice(p):
 
 def narration_text(p):
     import re
+    if (p.get("video") or {}).get("script"):
+        return p["video"]["script"]
     body = re.sub(r"\*\*|__|`", "", p["body"])
     body = re.sub(r"[\U0001F000-\U0001FFFF\u2600-\u27BF\u2B00-\u2BFF\uFE0F]", "", body)
     body = re.sub(r"https?://\S+", "", body)
