@@ -21,6 +21,7 @@ os.makedirs(OUT, exist_ok=True)
 W, H = 1080, 1920
 FPS = 30
 TOTAL = 510                 # 17 ثانية
+HOOK = 78                   # 2.6 ثانية — شاشة الخطّاف الجاذب قبل المحتوى
 GOLD = (255, 199, 70)
 TEAL = (45, 212, 191)
 RED = (235, 95, 95)
@@ -216,7 +217,7 @@ def build_frames(p, T=None, tname="", bg_path=None):
     grid = build_grid()
     vig = build_vignette()
     brand = brand_layer(ar, T)
-    bgs = BgStream(bg_path, TOTAL) if bg_path else None
+    bgs = BgStream(bg_path, TOTAL + HOOK) if bg_path else None
 
     V = p.get("video") or {}
     probe = ImageDraw.Draw(Image.new("RGB", (10, 10)))
@@ -250,6 +251,42 @@ def build_frames(p, T=None, tname="", bg_path=None):
     base_y = min(1660, max(chart_top + 200, 1500))
     pill_y = base_y + 40
     url_y = pill_y + 150
+
+    # ───── الخطّاف: شاشة كاملة، نص ذهبي ضخم ينبض، ثم يختفي ─────
+    hook_txt = mp.clean(V.get("hook", ""), fpath) if V else ""
+    if hook_txt:
+        hk_lines, hkf = mp.fit(probe, hook_txt, ar, W - 160, start=104, min_s=64, max_lines=3)
+        hk_layers = [text_layer(l, hkf, ar, T["gold"]) for l in hk_lines]
+        hk_h = sum(l.height for l in hk_layers)
+        for f in range(HOOK):
+            fr_ai = bgs.next() if bgs else None
+            img = fr_ai.copy() if fr_ai is not None else bg.copy()
+            img.paste(Image.new("RGB", (W, H), (0, 0, 0)), (0, 0), Image.new("L", (W, H), 150))
+            img.paste(glow1, (-320, -260), glow1)
+            img.paste(Image.new("RGB", (W, H), (0, 0, 0)), (0, 0), vig)
+            ov = layer(W, H)
+            od = ImageDraw.Draw(ov)
+            a_in = prog(f, 0, 10)
+            a_out = 1 - prog(f, HOOK - 12, 12)
+            a = min(a_in, a_out)
+            pulse = 1.0 + 0.035 * math.sin(f / 4.0)
+            sc = (0.7 + 0.3 * a_in) * pulse
+            # شريط تنبيه أعلى النص
+            tag = text_layer("انتبه!" if ar else "WAIT!", mp.font(44, ar), ar, WHITE)
+            tag_bg = layer(tag.width + 60, tag.height + 10)
+            rrect(ImageDraw.Draw(tag_bg), [0, 0, tag.width + 59, tag.height + 9], 30, (220, 38, 38, 235))
+            tag_bg.paste(tag, (30, 5), tag)
+            ov.paste(fade(tag_bg, a), (int((W - tag_bg.width) / 2), int(H / 2 - hk_h / 2 - 150)), fade(tag_bg, a))
+            y = int(H / 2 - hk_h / 2)
+            for L in hk_layers:
+                L2 = L.resize((max(1, int(L.width * sc)), max(1, int(L.height * sc))), Image.LANCZOS)
+                ov.paste(fade(L2, a), (int((W - L2.width) / 2), int(y - (L2.height - L.height) / 2)), fade(L2, a))
+                y += L.height
+            # خط ذهبي ينمو تحت النص
+            if a:
+                lw = int(520 * prog(f, 6, 24))
+                od.rounded_rectangle([int(W / 2 - lw / 2), y + 30, int(W / 2 + lw / 2), y + 38], 4, fill=T["gold"] + (int(255 * a),))
+            yield Image.alpha_composite(img.convert("RGBA"), ov).convert("RGB")
 
     frames = []
     for f in range(TOTAL):
@@ -406,8 +443,12 @@ def pick_voice(p):
 
 def narration_text(p):
     import re
-    if (p.get("video") or {}).get("script"):
-        return p["video"]["script"]
+    V = p.get("video") or {}
+    if V.get("script"):
+        hk = re.sub(r"[⚠️!]", "", V.get("hook", "")).strip()
+        if hk and not V["script"].startswith(hk[:14]):
+            return f"{hk}. {V['script']}"
+        return V["script"]
     body = re.sub(r"\*\*|__|`", "", p["body"])
     body = re.sub(r"[\U0001F000-\U0001FFFF\u2600-\u27BF\u2B00-\u2BFF\uFE0F]", "", body)
     body = re.sub(r"https?://\S+", "", body)
