@@ -146,10 +146,16 @@ def brand_layer(ar, T=None):
     return L
 
 
+def lh(fnt, ar):
+    """تباعد الأسطر: أوسع للعربية لأن نوازل الحروف (و ر ي ن) أعمق"""
+    return int(fnt.size * (1.5 if ar else 1.3))
+
+
 def text_layer(txt, fnt, ar, color, maxw=980):
     probe = ImageDraw.Draw(Image.new("RGB", (10, 10)))
     w = mp.tw(probe, txt, fnt, ar)
-    L = layer(min(int(w) + 40, W), int(fnt.size * 1.6))
+    asc, desc = fnt.getmetrics()          # ارتفاع كامل يشمل النوازل (و، ر، ي…) حتى لا تُقصّ من الأسفل
+    L = layer(min(int(w) + 40, W), asc + desc + 24)
     d = ImageDraw.Draw(L)
     mp.draw(d, txt, L.width - 20 if ar else 20, 10, fnt, color, ar)
     return L
@@ -232,8 +238,8 @@ def build_frames(p, T=None, tname="", bg_path=None):
         ls = mp.wrap(probe, r, rf, ar, inner - 10)[:2]
         wrapped.append(ls)
     res_lines = mp.wrap(probe, result, resf, ar, inner)[:2] if result else []
-    row_h = [len(ls) * (rf.size + 14) + 30 for ls in wrapped]
-    res_h = (len(res_lines) * (resf.size + 16) + 30) if res_lines else 0
+    row_h = [len(ls) * lh(rf, ar) + 30 for ls in wrapped]
+    res_h = (len(res_lines) * lh(resf, ar) + 30) if res_lines else 0
     card_h = 70 + sum(row_h) + (24 if res_lines else 0) + res_h + 50
     title_h = len(title_lines) * (tf.size + 26)
     card_y = 430 + title_h + 50
@@ -302,7 +308,7 @@ def build_frames(p, T=None, tname="", bg_path=None):
                     for j, ln in enumerate(ls):
                         rl = text_layer(("• " + ln) if j == 0 else ln, rf, ar, T["text"])
                         rx = (W - 135 - rl.width) if ar else 135
-                        ov.paste(fade(rl, ra), (int(rx + (1 - ra) * (70 if ar else -70)), ny + j * (rf.size + 14)), fade(rl, ra))
+                        ov.paste(fade(rl, ra), (int(rx + (1 - ra) * (70 if ar else -70)), ny + j * lh(rf, ar)), fade(rl, ra))
                 ny += row_h[i]
             if res_lines:
                 ra = prog(f, 172 + len(wrapped) * 15, 22)
@@ -312,7 +318,7 @@ def build_frames(p, T=None, tname="", bg_path=None):
                     for j, ln in enumerate(res_lines):
                         rl = text_layer(ln, resf, ar, T["gold"])
                         rx = (W - 135 - rl.width) if ar else 135
-                        ov.paste(fade(rl, ra), (rx, ny + 24 + j * (resf.size + 16)), fade(rl, ra))
+                        ov.paste(fade(rl, ra), (rx, ny + 24 + j * lh(resf, ar)), fade(rl, ra))
 
         # الرسم البياني
         if T["chart"] == "line":
