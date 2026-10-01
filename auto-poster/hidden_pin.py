@@ -28,13 +28,29 @@ def envflag(k):
 
 # ─────────── النص الجاهز للدبوس العام (عنوان + وصف مع هاشتاجات + رابط) ───────────
 def manual_copy(p):
-    title, _ = P.render(p, "pinterest")
-    tags = " ".join("#" + h.strip().lstrip("#") for h in p.get("hashtags", []))
-    tags = (tags + " #ProfitLeakAI #ربح #تجارة_الكترونية").strip()
-    body = P.strip_md(p["body"]).replace("\n", " ")
+    """نص الدبوس العام بالعربية الفصحى (من كتلة الفيديو) أو بالإنجليزية للمنشورات الإنجليزية"""
+    V = p.get("video") or {}
+    ar = p.get("lang", "ar") == "ar"
     link = P.link("pinterest")
-    desc = f"{body} — {p['cta']} 👇 {link}\n\n{tags}"
-    return title[:100], desc[:800], link, tags
+    base = [h.strip().lstrip("#") for h in p.get("hashtags", []) if h.strip()]
+    extra = ["ProfitLeakAI", "الربح_الحقيقي", "التجارة_الإلكترونية", "المغرب"] if ar else ["ProfitLeakAI", "ecommerce", "profit", "dropshipping"]
+    seen, uniq = set(), []
+    for h in base + extra:
+        k = h.replace("الالكترونية", "الإلكترونية")
+        if k.lower() not in seen:
+            seen.add(k.lower()); uniq.append(k)
+    tags = " ".join("#" + h for h in uniq)
+    title = (V.get("title") or P.strip_md(p["title"]))[:100]
+    points = [x for x in V.get("points", []) if x]
+    result = V.get("result", "")
+    cta = V.get("cta") or p.get("cta", "")
+    if ar:
+        body = "\n".join("• " + x for x in points)
+        desc = f"{body}\n\n✨ {result}\n\n👈 {cta} مجانًا ودون تسجيل: {link}\n\n{tags}"
+    else:
+        body = "\n".join("• " + x for x in points)
+        desc = f"{body}\n\n✨ {result}\n\n👉 {cta} — free, no signup: {link}\n\n{tags}"
+    return title, desc[:800], link, tags
 
 
 # ─────────── رفع الفيديو إلى الموقع (GitHub Contents API) ───────────
@@ -124,14 +140,14 @@ def hidden_pin(p, board, cover, video_path, video_url, title, desc):
 
 def notify(p, title, desc, link, tags, video_url, pin_note):
     body = (
-        f"🎬 فيديو #{p['id']} — {p['theme']}\n"
+        f"🎬 الفيديو رقم {p['id']} — {(p.get('video') or {}).get('title') or p['theme']}\n"
         f"⬇️ حمّلي الفيديو (اضغطي الزر أو الرابط):\n{video_url}\n\n"
-        f"📌 ثم في Pinterest: ＋ → Épingle → Vidéo → اختاري الفيديو من المعرض\n\n"
-        f"━━━━━━━━ انسخي ━━━━━━━━\n"
-        f"📝 Titre:\n{title}\n\n"
-        f"📄 Description:\n{desc}\n\n"
-        f"🔗 Lien:\n{link}\n\n"
-        f"📋 Tableau: ProfitLeak AI\n"
+        f"📌 ثم في Pinterest: ＋ ← Épingle ← Vidéo ← اختاري الفيديو من المعرض\n\n"
+        f"━━━━━━━━ النصوص الجاهزة للنسخ ━━━━━━━━\n"
+        f"📝 العنوان:\n{title}\n\n"
+        f"📄 الوصف:\n{desc}\n\n"
+        f"🔗 الرابط:\n{link}\n\n"
+        f"📋 اللوحة: ProfitLeak AI\n"
         f"━━━━━━━━━━━━━━━━━━━━━\n"
         f"ℹ️ {pin_note}"
     )
@@ -183,18 +199,19 @@ def telegram_alert(p, video_path, title, desc, link, video_url, pin_note):
     cid = admin_chat(tok)
     if not cid:
         return False, "لم أجد محادثتك الخاصة — أرسلي /start للبوت مرة واحدة"
-    cap = (f"📌 رفعتُ فيديو #{p['id']} على لوحة بينتوريست التجريبية (مخفي)\n"
-           f"🎬 {p['theme']}\n\n⬇️ الفيديو مرفق هنا — احفظيه في المعرض ثم انشريه دبوسًا عامًا\n"
-           f"🔗 أو حمّليه: {video_url}\n\nℹ️ {pin_note}")
+    cap = (f"📌 تم رفع الفيديو رقم {p['id']} إلى لوحة Pinterest التجريبية (مخفيًا)\n"
+           f"🎬 الموضوع: {(p.get('video') or {}).get('title') or p['theme']}\n\n"
+           f"⬇️ الفيديو مرفق أدناه — احفظيه في معرض الصور ثم انشريه دبوسًا عامًا\n"
+           f"🔗 أو حمّليه من الرابط: {video_url}\n\nℹ️ {pin_note}")
     body, ctype = P.multipart({"chat_id": cid, "caption": cap[:1000], "supports_streaming": "true"},
                               {"video": ("pin.mp4", open(video_path, "rb").read(), "video/mp4")})
     st, out, _ = P.http(f"https://api.telegram.org/bot{tok}/sendVideo", data=body,
                         headers={"Content-Type": ctype}, timeout=180)
     if st != 200:
         return False, f"telegram {st}: {out[:80]}"
-    txt = (f"━━━━━ انسخي للدبوس العام ━━━━━\n\n📝 Titre:\n{title}\n\n📄 Description:\n{desc}\n\n"
-           f"🔗 Lien:\n{link}\n\n📋 Tableau: ProfitLeak AI\n\n"
-           f"📱 Pinterest: ＋ → Épingle → Vidéo → اختاري الفيديو من المعرض")
+    txt = (f"━━━━━ النصوص الجاهزة للدبوس العام ━━━━━\n\n📝 العنوان (Titre):\n{title}\n\n"
+           f"📄 الوصف (Description):\n{desc}\n\n🔗 الرابط (Lien):\n{link}\n\n📋 اللوحة (Tableau): ProfitLeak AI\n\n"
+           f"📱 خطوات النشر في تطبيق Pinterest: ＋ ← Épingle ← Vidéo ← اختاري الفيديو من المعرض ← الصقي النصوص ← Publier")
     st2, _, _ = P.http(f"https://api.telegram.org/bot{tok}/sendMessage",
                        data={"chat_id": cid, "text": txt, "disable_web_page_preview": "true"}, json_body=True,
                        headers={"Content-Type": "application/json"})
