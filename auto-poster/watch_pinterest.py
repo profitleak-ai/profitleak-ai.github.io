@@ -32,6 +32,14 @@ def main():
     st, out, _ = P.http("https://api.pinterest.com/v5/user_account",
                         headers={"Authorization": f"Bearer {token}", "User-Agent": "ProfitLeak/1.0"},
                         method="GET")
+    # فحص صلاحية الكتابة بأمان: POST فارغ → 404 (لوحة غير موجودة) = الصلاحيات كاملة، 401 code 3 = الكتابة غير مفعّلة بعد
+    stw, outw, _ = P.http("https://api.pinterest.com/v5/pins", data={}, json_body=True,
+                          headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json",
+                                   "User-Agent": "ProfitLeak/1.0"})
+    can_write = stw not in (401, 403)
+    if st == 200 and not can_write:
+        print(f"⏳ القراءة تعمل، لكن الكتابة غير مفعّلة بعد — {stw}: {outw[:140]}")
+        return 0
     if st == 200:
         try:
             acc = json.loads(out)
