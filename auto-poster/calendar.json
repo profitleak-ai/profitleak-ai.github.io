@@ -29,7 +29,8 @@
         ],
         "result": "الربح الحقيقي = 22 درهمًا فقط",
         "cta": "احسب منتجك الآن",
-        "script": "هل تعرف كم خسرت هذا الشهر دون أن تدري؟ أغلب البائعين يحسبون سعر البيع ناقص سعر الشراء، ويظنون أنهم يربحون. لكن عند إضافة الإعلان والتوصيل والمرتجعات والأجور، قد يتحول منتج بمئة وتسعة وتسعين درهمًا إلى ربح حقيقي لا يتجاوز اثنين وعشرين درهمًا. احسب ربحك الحقيقي مجانًا ودون تسجيل، على بروفت ليك إيه آي."
+        "script": "هل تعرف كم خسرت هذا الشهر دون أن تدري؟ أغلب البائعين يحسبون سعر البيع ناقص سعر الشراء، ويظنون أنهم يربحون. لكن عند إضافة الإعلان والتوصيل والمرتجعات والأجور، قد يتحول منتج بمئة وتسعة وتسعين درهمًا إلى ربح حقيقي لا يتجاوز اثنين وعشرين درهمًا. احسب ربحك الحقيقي مجانًا ودون تسجيل، على بروفت ليك إيه آي.",
+        "hook": "توقّف! أنت تخسر دون أن تدري"
       }
     },
     {
@@ -56,7 +57,8 @@
         ],
         "result": "الربح الحقيقي = 22 درهمًا… لا 109",
         "cta": "احسب الآن",
-        "script": "كم درهمًا تخسر في كل عملية بيع دون أن تعلم؟ لنأخذ منتجًا يباع بمئة وتسعة وتسعين درهمًا. سعر الشراء تسعون. الإعلان خمسة وثلاثون. التوصيل خمسة وعشرون. المرتجعات خمسة عشر. الأجور والتغليف اثنا عشر. الربح الحقيقي اثنان وعشرون درهمًا فقط، وليس مئة وتسعة كما يتوقع الأغلبية. احسب منتجاتك مجانًا ودون تسجيل."
+        "script": "كم درهمًا تخسر في كل عملية بيع دون أن تعلم؟ لنأخذ منتجًا يباع بمئة وتسعة وتسعين درهمًا. سعر الشراء تسعون. الإعلان خمسة وثلاثون. التوصيل خمسة وعشرون. المرتجعات خمسة عشر. الأجور والتغليف اثنا عشر. الربح الحقيقي اثنان وعشرون درهمًا فقط، وليس مئة وتسعة كما يتوقع الأغلبية. احسب منتجاتك مجانًا ودون تسجيل.",
+        "hook": "في كل عملية بيع… درهم يضيع"
       }
     },
     {
@@ -82,7 +84,8 @@
         ],
         "result": "8 دراهم بدل 40 — والوقت غير محسوب",
         "cta": "جرّب مجانًا",
-        "script": "خسرت ثلاثة أشهر كاملة قبل أن أفهم السبب. كنت أبيع نظارات شمسية وأظن أن كل عملية بيع تربحني أربعين درهمًا. وعندما حسبت كل شيء بالتفصيل، الإعلان والمرتجعات والتوصيل، اكتشفت أن الربح الحقيقي ثمانية دراهم فقط. بعد تلك الصدمة بنيت أداة تحسب كل ذلك في ثلاثين ثانية. جرّبها مجانًا الآن."
+        "script": "خسرت ثلاثة أشهر كاملة قبل أن أفهم السبب. كنت أبيع نظارات شمسية وأظن أن كل عملية بيع تربحني أربعين درهمًا. وعندما حسبت كل شيء بالتفصيل، الإعلان والمرتجعات والتوصيل، اكتشفت أن الربح الحقيقي ثمانية دراهم فقط. بعد تلك الصدمة بنيت أداة تحسب كل ذلك في ثلاثين ثانية. جرّبها مجانًا الآن.",
+        "hook": "ثلاثة أشهر من الخسارة بسبب رقم واحد"
       }
     },
     {
@@ -108,7 +111,8 @@
         ],
         "result": "لا جداول ولا تدوين يدوي",
         "cta": "اكتشف الميزة",
-        "script": "هل تبيع بالدفع عند الاستلام عبر واتساب؟ هذه الميزة صُممت لك. تحصل على رابط طلب خاص لكل منتج، تضعه في إعلانك. العميل يضغط، يكتب اسمه ورقمه، ويطلب. وتُسجَّل عملية البيع لديك تلقائيًا مع ربحها الحقيقي، دون جداول ودون تدوين يدوي. جرّب الميزة مجانًا على بروفت ليك إيه آي."
+        "script": "هل تبيع بالدفع عند الاستلام عبر واتساب؟ هذه الميزة صُممت لك. تحصل على رابط طلب خاص لكل منتج، تضعه في إعلانك. العميل يضغط، يكتب اسمه ورقمه، ويطلب. وتُسجَّل عملية البيع لديك تلقائيًا مع ربحها الحقيقي، دون جداول ودون تدوين يدوي. جرّب الميزة مجانًا على بروفت ليك إيه آي.",
+        "hook": "تبيع عبر واتساب؟ هذه لك"
       }
     },
     {
@@ -134,7 +138,8 @@
         ],
         "result": "أكبر خسارة + الحل المقترح، تلقائيًا",
         "cta": "شخّص منتجك",
-        "script": "أين تختفي أربعون بالمئة من أرباحك؟ هذا تشخيص لمنتج حقيقي: أربعون بالمئة من التكاليف تذهب إلى الإعلانات وحدها. الأداة تحلل أرقامك، تحدد أكبر تسريب في منتجك، وتقترح الحل تلقائيًا. اكتشف ما يقوله التشخيص عن منتجك أنت، مجانًا."
+        "script": "أين تختفي أربعون بالمئة من أرباحك؟ هذا تشخيص لمنتج حقيقي: أربعون بالمئة من التكاليف تذهب إلى الإعلانات وحدها. الأداة تحلل أرقامك، تحدد أكبر تسريب في منتجك، وتقترح الحل تلقائيًا. اكتشف ما يقوله التشخيص عن منتجك أنت، مجانًا.",
+        "hook": "٤٠٪ من أرباحك تختفي… إلى أين؟"
       }
     },
     {
@@ -160,7 +165,8 @@
         ],
         "result": "الخامسة: عمولات بوابات الدفع",
         "cta": "احسبها كلها",
-        "script": "خمس تكاليف لا يحسبها أغلب البائعين، وهي السرقة الصامتة لأرباحك. الأولى: كلفة الإعلان على كل عملية بيع. الثانية: التوصيل، والتوصيل الفاشل يعود عليك. الثالثة: المرتجعات والإلغاء. الرابعة: الأجور والتغليف. والخامسة، التي تقتل الربح بصمت: عمولات بوابات الدفع. احسبها كلها في ثلاثين ثانية."
+        "script": "خمس تكاليف لا يحسبها أغلب البائعين، وهي السرقة الصامتة لأرباحك. الأولى: كلفة الإعلان على كل عملية بيع. الثانية: التوصيل، والتوصيل الفاشل يعود عليك. الثالثة: المرتجعات والإلغاء. الرابعة: الأجور والتغليف. والخامسة، التي تقتل الربح بصمت: عمولات بوابات الدفع. احسبها كلها في ثلاثين ثانية.",
+        "hook": "خمس تكاليف تسرقك بصمت"
       }
     },
     {
@@ -186,7 +192,8 @@
         ],
         "result": "ربع الربح يذهب في المرتجعات",
         "cta": "احسب مع المرتجعات",
-        "script": "المرتجعات ليست مشكلة صغيرة، بل تلتهم ربع أرباحك. تخيّل بائعًا تعود إليه اثنا عشر بالمئة من الطلبات. على كل مئة طلب، اثنا عشر مرتجعًا تخسر فيها التوصيل ذهابًا وإيابًا، والتغليف أيضًا. إن لم تحسب المرتجعات، فكل أرقامك خاطئة. احسبها بشكل صحيح مجانًا."
+        "script": "المرتجعات ليست مشكلة صغيرة، بل تلتهم ربع أرباحك. تخيّل بائعًا تعود إليه اثنا عشر بالمئة من الطلبات. على كل مئة طلب، اثنا عشر مرتجعًا تخسر فيها التوصيل ذهابًا وإيابًا، والتغليف أيضًا. إن لم تحسب المرتجعات، فكل أرقامك خاطئة. احسبها بشكل صحيح مجانًا.",
+        "hook": "المرتجعات تأكل ربع ربحك"
       }
     },
     {
@@ -212,7 +219,8 @@
         ],
         "result": "نقطة التعادل في ثانية واحدة",
         "cta": "جرّب ماذا لو",
-        "script": "كم وحدة عليك أن تبيع لتبدأ في الربح؟ ميزة ماذا لو تجيب عن الأسئلة التي تقلق كل بائع. إذا زدت ميزانية الإعلان مئة درهم، كم سيرتفع الربح؟ وإذا خفضت السعر عشرة دراهم، كم وحدة عليك أن تبيع لتبقى رابحًا؟ جرّب سيناريوهاتك الخاصة الآن مجانًا."
+        "script": "كم وحدة عليك أن تبيع لتبدأ في الربح؟ ميزة ماذا لو تجيب عن الأسئلة التي تقلق كل بائع. إذا زدت ميزانية الإعلان مئة درهم، كم سيرتفع الربح؟ وإذا خفضت السعر عشرة دراهم، كم وحدة عليك أن تبيع لتبقى رابحًا؟ جرّب سيناريوهاتك الخاصة الآن مجانًا.",
+        "hook": "كم وحدة قبل أن تربح درهمًا واحدًا؟"
       }
     },
     {
@@ -237,7 +245,8 @@
         ],
         "result": "ويعمل على الهاتف بشكل مثالي",
         "cta": "جرّب دون تسجيل",
-        "script": "الأسئلة الأكثر تكرارًا، أجبنا عنها كلها. هل يلزم التسجيل؟ لا، تحسب مباشرة. هل تُحفظ بياناتي؟ لا، الحساب يتم بالكامل داخل متصفحك. هل يمكنني تصدير تقرير؟ نعم، بصيغة بي دي إف وسي إس في. وهل يعمل على الهاتف؟ نعم، مصمم للهاتف. جرّب وقرر بنفسك."
+        "script": "الأسئلة الأكثر تكرارًا، أجبنا عنها كلها. هل يلزم التسجيل؟ لا، تحسب مباشرة. هل تُحفظ بياناتي؟ لا، الحساب يتم بالكامل داخل متصفحك. هل يمكنني تصدير تقرير؟ نعم، بصيغة بي دي إف وسي إس في. وهل يعمل على الهاتف؟ نعم، مصمم للهاتف. جرّب وقرر بنفسك.",
+        "hook": "كل أسئلتك… في فيديو واحد"
       }
     },
     {
@@ -263,7 +272,8 @@
         ],
         "result": "الأداة تخبرك أين بالضبط وكيف تسدّه",
         "cta": "ابدأ التحدي",
-        "script": "تحدي الدقائق الثلاث. أدخل أرقام أفضل منتج لديك: سعر البيع، سعر الشراء، الإعلان، التوصيل، والمرتجعات. إذا جاء الربح الحقيقي أقل من عشرين بالمئة، فلديك تسريب. والأداة تخبرك أين بالضبط وكيف تسدّه. ابدأ التحدي الآن مجانًا."
+        "script": "تحدي الدقائق الثلاث. أدخل أرقام أفضل منتج لديك: سعر البيع، سعر الشراء، الإعلان، التوصيل، والمرتجعات. إذا جاء الربح الحقيقي أقل من عشرين بالمئة، فلديك تسريب. والأداة تخبرك أين بالضبط وكيف تسدّه. ابدأ التحدي الآن مجانًا.",
+        "hook": "ثلاث دقائق قد تغيّر متجرك"
       }
     },
     {
@@ -289,7 +299,8 @@
         ],
         "result": "الفرق يصل إلى 50 درهمًا في البيعة الواحدة",
         "cta": "صحّح حسابك",
-        "script": "أكبر خطأ يرتكبه البائعون: يحسبون الإعلان وينسون التوصيل. الحساب الشائع هو سعر البيع ناقص الشراء ناقص الإعلان. أما الواقع، فعليك أن تطرح أيضًا التوصيل والمرتجعات والتغليف وعمولة الدفع. الفرق بين الحسابين يصل إلى خمسين درهمًا في عملية البيع الواحدة. صحّح حسابك مجانًا."
+        "script": "أكبر خطأ يرتكبه البائعون: يحسبون الإعلان وينسون التوصيل. الحساب الشائع هو سعر البيع ناقص الشراء ناقص الإعلان. أما الواقع، فعليك أن تطرح أيضًا التوصيل والمرتجعات والتغليف وعمولة الدفع. الفرق بين الحسابين يصل إلى خمسين درهمًا في عملية البيع الواحدة. صحّح حسابك مجانًا.",
+        "hook": "الخطأ الذي يقع فيه ٩٠٪ من البائعين"
       }
     },
     {
@@ -314,7 +325,8 @@
         ],
         "result": "لوحة واحدة ترى فيها كل شيء",
         "cta": "افتح اللوحة",
-        "script": "منتج واحد رابح وثلاثة خاسرون، وأنت لا تعلم أيها. الأداة تحسب كل منتجاتك دفعة واحدة، وتعرضها في لوحة واحدة: المنتج الرابح الذي يستحق مزيدًا من الإعلان، والمنتج الخاسر الذي يجب إيقافه أو تصحيحه، والوقت الذي تصرفه على كل منتج. افتح لوحة التحكم الآن."
+        "script": "منتج واحد رابح وثلاثة خاسرون، وأنت لا تعلم أيها. الأداة تحسب كل منتجاتك دفعة واحدة، وتعرضها في لوحة واحدة: المنتج الرابح الذي يستحق مزيدًا من الإعلان، والمنتج الخاسر الذي يجب إيقافه أو تصحيحه، والوقت الذي تصرفه على كل منتج. افتح لوحة التحكم الآن.",
+        "hook": "واحد رابح وثلاثة خاسرون… أيّهم؟"
       }
     },
     {
@@ -340,7 +352,8 @@
         ],
         "result": "PDF + CSV في ثانية واحدة",
         "cta": "اطّلع على التقارير",
-        "script": "هل تحتاج تقريرًا لشريك أو محاسب، أو تريد فقط حفظ أرقامك؟ الأداة تصدّر لك تقرير بي دي إف مرتبًا بنقرة واحدة، وملف سي إس في جاهزًا للإكسيل. احفظ أرقامك أو شاركها بثقة. اطّلع على الطريقة الآن."
+        "script": "هل تحتاج تقريرًا لشريك أو محاسب، أو تريد فقط حفظ أرقامك؟ الأداة تصدّر لك تقرير بي دي إف مرتبًا بنقرة واحدة، وملف سي إس في جاهزًا للإكسيل. احفظ أرقامك أو شاركها بثقة. اطّلع على الطريقة الآن.",
+        "hook": "تقرير احترافي بضغطة واحدة"
       }
     },
     {
@@ -366,7 +379,8 @@
         ],
         "result": "رأينا: الإعلان أولًا… والمرتجعات بصمت",
         "cta": "احسب وشارك",
-        "script": "سؤال للنقاش: أي تكلفة تلتهم ربحك أكثر؟ الإعلان؟ التوصيل؟ المرتجعات؟ أم التغليف؟ في رأينا، الإعلان يأتي أولًا، ثم المرتجعات التي تأتي بصمت. شاركنا تجربتك، واحسب أرقامك بدقة مجانًا."
+        "script": "سؤال للنقاش: أي تكلفة تلتهم ربحك أكثر؟ الإعلان؟ التوصيل؟ المرتجعات؟ أم التغليف؟ في رأينا، الإعلان يأتي أولًا، ثم المرتجعات التي تأتي بصمت. شاركنا تجربتك، واحسب أرقامك بدقة مجانًا.",
+        "hook": "أيّ تكلفة تلتهم ربحك؟"
       }
     },
     {
@@ -392,7 +406,8 @@
         ],
         "result": "قارن منتجاتك بالأرقام",
         "cta": "قارن الآن",
-        "script": "منتج بتسعة وتسعين درهمًا أم منتج بمئتين وتسعة وتسعين، أيهما يربح أكثر؟ الجواب يفاجئ الكثيرين: ليس الأغلى دائمًا. فالمنتج الرخيص غالبًا ما تكون نسبة مرتجعاته أعلى، وتوصيله مكلفًا نسبيًا. الحساب وحده هو الذي يجيب، لا التخمين. قارن منتجاتك الآن مجانًا."
+        "script": "منتج بتسعة وتسعين درهمًا أم منتج بمئتين وتسعة وتسعين، أيهما يربح أكثر؟ الجواب يفاجئ الكثيرين: ليس الأغلى دائمًا. فالمنتج الرخيص غالبًا ما تكون نسبة مرتجعاته أعلى، وتوصيله مكلفًا نسبيًا. الحساب وحده هو الذي يجيب، لا التخمين. قارن منتجاتك الآن مجانًا.",
+        "hook": "٩٩ أم ٢٩٩ درهمًا؟ الجواب سيفاجئك"
       }
     },
     {
@@ -417,7 +432,8 @@
         ],
         "result": "احسب المرتجعات قبل أن تحسب الربح",
         "cta": "جرّبها",
-        "script": "لبائعي الدفع عند الاستلام: هذا الحساب مخصص لكم. نسبة المرتجعات في الدفع عند الاستلام تصل إلى عشرين بالمئة. وكل طلب مرتجع يعني خسارة التوصيل مرتين، والتغليف، والوقت. الأداة تحسبها معك، وتمنحك رابط طلب يقلل المرتجعات لأن العميل يؤكد قبل الشحن. جرّبها مجانًا."
+        "script": "لبائعي الدفع عند الاستلام: هذا الحساب مخصص لكم. نسبة المرتجعات في الدفع عند الاستلام تصل إلى عشرين بالمئة. وكل طلب مرتجع يعني خسارة التوصيل مرتين، والتغليف، والوقت. الأداة تحسبها معك، وتمنحك رابط طلب يقلل المرتجعات لأن العميل يؤكد قبل الشحن. جرّبها مجانًا.",
+        "hook": "الدفع عند الاستلام يخفي فخًّا"
       }
     },
     {
@@ -443,7 +459,8 @@
         ],
         "result": "الأداة تحسب لك السعر الأدنى كي لا تخسر",
         "cta": "احسب سعرك",
-        "script": "كيف تحدد سعر البيع المناسب؟ قبل أن تختار السعر، عليك أن تعرف ثلاثة أشياء: كلفة الإعلان على كل عملية بيع، ونسبة المرتجعات، وهامش الربح الذي تريده، مثلًا ثلاثين بالمئة. الأداة تحسب لك السعر الأدنى الذي يضمن ألا تخسر. احسب سعرك الآن."
+        "script": "كيف تحدد سعر البيع المناسب؟ قبل أن تختار السعر، عليك أن تعرف ثلاثة أشياء: كلفة الإعلان على كل عملية بيع، ونسبة المرتجعات، وهامش الربح الذي تريده، مثلًا ثلاثين بالمئة. الأداة تحسب لك السعر الأدنى الذي يضمن ألا تخسر. احسب سعرك الآن.",
+        "hook": "سعرك خطأ… وهذا هو الدليل"
       }
     },
     {
@@ -469,7 +486,8 @@
         ],
         "result": "حساب 30 ثانية ينقذك من شهر ضائع",
         "cta": "احسب قبل الإعلان",
-        "script": "قبل أن تزيد ميزانية الإعلان، اقرأ هذا. زيادة الميزانية دون حساب تعني خسارة أسرع. إذا كانت كلفة عملية البيع خمسة وثلاثين درهمًا وربحك الحقيقي اثنين وعشرين، فكل عملية بيع تخسرك. حساب من ثلاثين ثانية ينقذك من شهر كامل ضائع. احسب قبل أن تنفق."
+        "script": "قبل أن تزيد ميزانية الإعلان، اقرأ هذا. زيادة الميزانية دون حساب تعني خسارة أسرع. إذا كانت كلفة عملية البيع خمسة وثلاثين درهمًا وربحك الحقيقي اثنين وعشرين، فكل عملية بيع تخسرك. حساب من ثلاثين ثانية ينقذك من شهر كامل ضائع. احسب قبل أن تنفق.",
+        "hook": "لا تزد ميزانية الإعلان قبل هذا"
       }
     },
     {
@@ -495,7 +513,8 @@
         ],
         "result": "هذا الصمت هو ما يكلّفك",
         "cta": "احسب كل شيء",
-        "script": "يقول البائع: أبيع كثيرًا، لكن في النهاية لا يبقى شيء. فيسأله المحاسب: حسنًا، كم تنفق على التوصيل؟ فيصمت البائع. هذا الصمت بالذات هو ما يكلّفك أرباحك. احسب كل شيء مجانًا في ثلاثين ثانية."
+        "script": "يقول البائع: أبيع كثيرًا، لكن في النهاية لا يبقى شيء. فيسأله المحاسب: حسنًا، كم تنفق على التوصيل؟ فيصمت البائع. هذا الصمت بالذات هو ما يكلّفك أرباحك. احسب كل شيء مجانًا في ثلاثين ثانية.",
+        "hook": "تبيع كثيرًا… ولا يبقى شيء؟"
       }
     },
     {
@@ -521,7 +540,8 @@
         ],
         "result": "الأداة تحسبها كلها في 30 ثانية",
         "cta": "ابدأ الآن",
-        "script": "خلاصة هذا الأسبوع في جملة واحدة: الربح الحقيقي يساوي سعر البيع ناقص مجموع الشراء والإعلان والتوصيل والمرتجعات والأجور. أي رقم ناقص من هذه القائمة يعني قرارًا خاطئًا. الأداة تحسبها كلها في ثلاثين ثانية، ومجانية للتجربة. ابدأ الآن."
+        "script": "خلاصة هذا الأسبوع في جملة واحدة: الربح الحقيقي يساوي سعر البيع ناقص مجموع الشراء والإعلان والتوصيل والمرتجعات والأجور. أي رقم ناقص من هذه القائمة يعني قرارًا خاطئًا. الأداة تحسبها كلها في ثلاثين ثانية، ومجانية للتجربة. ابدأ الآن.",
+        "hook": "خلاصة الأسبوع في ١٥ ثانية"
       }
     },
     {
@@ -548,7 +568,8 @@
         ],
         "result": "A $29 product can hide a real profit of $3",
         "cta": "Calculate now",
-        "script": "Your best-selling product might be the one losing you money. Most sellers calculate sale price minus cost and call it profit. But real profit also subtracts ads, shipping, returns, packaging and payment fees. A twenty-nine dollar product can hide a real profit of only three dollars. Calculate all of it for free, no signup, at ProfitLeak AI."
+        "script": "Your best-selling product might be the one losing you money. Most sellers calculate sale price minus cost and call it profit. But real profit also subtracts ads, shipping, returns, packaging and payment fees. A twenty-nine dollar product can hide a real profit of only three dollars. Calculate all of it for free, no signup, at ProfitLeak AI.",
+        "hook": "Stop! Your best-seller may be losing money"
       }
     },
     {
@@ -574,7 +595,8 @@
         ],
         "result": "Real profit: $3 — not $16",
         "cta": "Run the numbers",
-        "script": "A product sold at twenty-nine dollars. Here is where the money actually goes. Cost: thirteen. Ads per sale: five. Shipping: four. Returns: two. Packaging and fees: two. Real profit: three dollars, not sixteen like most sellers think. Run your own numbers for free, no signup required."
+        "script": "A product sold at twenty-nine dollars. Here is where the money actually goes. Cost: thirteen. Ads per sale: five. Shipping: four. Returns: two. Packaging and fees: two. Real profit: three dollars, not sixteen like most sellers think. Run your own numbers for free, no signup required.",
+        "hook": "$29 in… how much actually stays?"
       }
     },
     {
@@ -600,7 +622,8 @@
         ],
         "result": "So I built a tool that does this in 30 seconds",
         "cta": "Try it free",
-        "script": "I sold four hundred units and made almost nothing. Here is why. I thought each sale made me six dollars. When I finally added ads, shipping, returns and packaging, the real number was one dollar twenty. So I built a tool that does this math in thirty seconds. Try it free at ProfitLeak AI."
+        "script": "I sold four hundred units and made almost nothing. Here is why. I thought each sale made me six dollars. When I finally added ads, shipping, returns and packaging, the real number was one dollar twenty. So I built a tool that does this math in thirty seconds. Try it free at ProfitLeak AI.",
+        "hook": "400 units sold. Almost zero profit"
       }
     },
     {
@@ -626,7 +649,8 @@
         ],
         "result": "No spreadsheets. Ever.",
         "cta": "See the feature",
-        "script": "Selling on WhatsApp with cash on delivery? Every order now logs itself. Generate an order link for each product and drop it in your ad. The customer taps, fills in name and phone, and orders. The sale is logged automatically with its real profit. No spreadsheets, ever. Try it free."
+        "script": "Selling on WhatsApp with cash on delivery? Every order now logs itself. Generate an order link for each product and drop it in your ad. The customer taps, fills in name and phone, and orders. The sale is logged automatically with its real profit. No spreadsheets, ever. Try it free.",
+        "hook": "Selling on WhatsApp? Watch this"
       }
     },
     {
@@ -652,7 +676,8 @@
         ],
         "result": "Biggest leak + the fix, automatically",
         "cta": "Diagnose my product",
-        "script": "Where do forty percent of your costs disappear? This is a real product diagnosis: forty percent of total cost goes to ads alone. The tool finds your biggest leak and shows you the fix, automatically, from your own numbers. Check what it says about your product, for free."
+        "script": "Where do forty percent of your costs disappear? This is a real product diagnosis: forty percent of total cost goes to ads alone. The tool finds your biggest leak and shows you the fix, automatically, from your own numbers. Check what it says about your product, for free.",
+        "hook": "40% of your costs vanish — where?"
       }
     },
     {
@@ -678,7 +703,8 @@
         ],
         "result": "Break-even in one second",
         "cta": "Run scenarios",
-        "script": "How many units do you need to sell before you actually profit? The What-if panel answers the questions that keep sellers up at night. Add one hundred dollars to your ad budget: how much extra profit? Cut two dollars off the price: how many more sales to stay profitable? Run your own scenarios now, for free."
+        "script": "How many units do you need to sell before you actually profit? The What-if panel answers the questions that keep sellers up at night. Add one hundred dollars to your ad budget: how much extra profit? Cut two dollars off the price: how many more sales to stay profitable? Run your own scenarios now, for free.",
+        "hook": "How many sales before real profit?"
       }
     },
     {
@@ -704,7 +730,8 @@
         ],
         "result": "Calculate it with returns included",
         "cta": "Calculate with returns",
-        "script": "Returns are not a small problem. They eat a quarter of your margin. A twelve percent return rate on one hundred orders means twelve packages you paid to ship twice. Skip returns in your math, and every number you have is wrong. Calculate it right, for free."
+        "script": "Returns are not a small problem. They eat a quarter of your margin. A twelve percent return rate on one hundred orders means twelve packages you paid to ship twice. Skip returns in your math, and every number you have is wrong. Calculate it right, for free.",
+        "hook": "Returns eat 25% of your margin"
       }
     },
     {
@@ -730,7 +757,8 @@
         ],
         "result": "Plus the time you spend per product",
         "cta": "Open dashboard",
-        "script": "One winner, three losers, and you do not know which is which. Score every product at once on a single dashboard. Winners: scale the ads. Losers: fix them or stop them. And see the time you spend on each product. Open the dashboard now, for free."
+        "script": "One winner, three losers, and you do not know which is which. Score every product at once on a single dashboard. Winners: scale the ads. Losers: fix them or stop them. And see the time you spend on each product. Open the dashboard now, for free.",
+        "hook": "One winner, three losers. Which?"
       }
     },
     {
@@ -756,7 +784,8 @@
         ],
         "result": "One click. Done.",
         "cta": "See reports",
-        "script": "Need a report for a partner, an accountant, or just your own records? Export a tidy PDF report and a CSV for spreadsheets, in one click. See how it works at ProfitLeak AI."
+        "script": "Need a report for a partner, an accountant, or just your own records? Export a tidy PDF report and a CSV for spreadsheets, in one click. See how it works at ProfitLeak AI.",
+        "hook": "A clean report in one click"
       }
     },
     {
@@ -782,7 +811,8 @@
         ],
         "result": "The tool tells you where — and how to fix it",
         "cta": "Start now",
-        "script": "The three-minute challenge: what is your real margin? Enter your best product numbers: price, cost, ads, shipping and returns. If real profit comes back under twenty percent, you have a leak. And the tool tells you exactly where it is and how to fix it. Start the challenge now, for free."
+        "script": "The three-minute challenge: what is your real margin? Enter your best product numbers: price, cost, ads, shipping and returns. If real profit comes back under twenty percent, you have a leak. And the tool tells you exactly where it is and how to fix it. Start the challenge now, for free.",
+        "hook": "3 minutes to find your real margin"
       }
     }
   ]
