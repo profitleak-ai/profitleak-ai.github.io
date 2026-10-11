@@ -24,6 +24,11 @@ on:
         required: false
         default: false
         type: boolean
+      skip_youtube:
+        description: 'تجاهُل النشر في يوتيوب'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   video:
@@ -60,6 +65,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PINTEREST_TOKEN: ${{ secrets.PINTEREST_TOKEN }}
           PINTEREST_BOARD_ID: ${{ secrets.PINTEREST_BOARD_ID }}
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          SKIP_YOUTUBE: ${{ github.event.inputs.skip_youtube }}
         run: python3 auto-poster/publish_video.py
 
       - name: حفظ الحالة (منع تكرار الفيديو)
