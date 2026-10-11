@@ -64,6 +64,14 @@ def main():
         print("🧪 اختبار: تجاهُل تلغرام (لا منشور)")
     else:
         results.append(("تلغرام (فيديو)",) + P.telegram_video(p, path))
+    if envflag("SKIP_YOUTUBE"):
+        print("🧪 اختبار: تجاهُل يوتيوب")
+    else:
+        try:
+            import youtube as YT
+            results.append(("يوتيوب شورتس",) + YT.upload(p, path))
+        except Exception as e:
+            results.append(("يوتيوب شورتس", False, f"خطأ: {str(e)[:150]}"))
     results.append(("بينتوريست (بن فيديو)",) + P.pinterest_video_pin(p, os.environ.get("PINTEREST_BOARD_ID", ""), cover, path))
     if os.environ.get("PINTEREST_BOARD_ID") and results[-1][1] is not True:
         # احتياط: بن صورة إن فشل الفيديو
