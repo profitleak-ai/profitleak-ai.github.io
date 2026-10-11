@@ -39,7 +39,11 @@ def main():
     posts = cal["posts"]
     today = datetime.date.today()
     idx = int(os.environ.get("INDEX") or P.pick_index(posts, today))
-    p = posts[idx % len(posts)]
+    # شورت إضافي: إزاحة ثابتة حتى تكون فيديوهات اليوم الثلاثة مختلفة (0 / +10 / +20)
+    offset = int(os.environ.get("SHORT_OFFSET") or 0)
+    idx = (idx + offset) % len(posts)
+    p = posts[idx]
+    slot_key = "video" if offset == 0 else f"video_{offset}"
 
     # ── حماية من التكرار: فيديو واحد يوميًا ──
     STATE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "state.json")
@@ -50,8 +54,8 @@ def main():
             stt = json.load(open(STATE, encoding="utf-8"))
         except Exception:
             stt = {}
-    if stt.get("video") == today_s and not envflag("FORCE_VIDEO"):
-        print(f"⏭  نُشر فيديو اليوم ({today_s}) مسبقًا — تخطي (FORCE_VIDEO لإعادة النشر)")
+    if stt.get(slot_key) == today_s and not envflag("FORCE_VIDEO"):
+        print(f"⏭  نُشر فيديو هذه الحصة ({slot_key} · {today_s}) مسبقًا — تخطي (FORCE_VIDEO لإعادة النشر)")
         return 0
 
     print(f"🎬 توليد فيديو المنشور #{p['id']} — {p['theme']}")
@@ -72,8 +76,11 @@ def main():
             results.append(("يوتيوب شورتس",) + YT.upload(p, path))
         except Exception as e:
             results.append(("يوتيوب شورتس", False, f"خطأ: {str(e)[:150]}"))
-    results.append(("بينتوريست (بن فيديو)",) + P.pinterest_video_pin(p, os.environ.get("PINTEREST_BOARD_ID", ""), cover, path))
-    if os.environ.get("PINTEREST_BOARD_ID") and results[-1][1] is not True:
+    if envflag("SKIP_PINTEREST") or not os.environ.get("PINTEREST_TOKEN"):
+        print("⚪ بينتوريست: متجاوَز في هذه الحصة")
+    else:
+        results.append(("بينتوريست (بن فيديو)",) + P.pinterest_video_pin(p, os.environ.get("PINTEREST_BOARD_ID", ""), cover, path))
+    if not envflag("SKIP_PINTEREST") and os.environ.get("PINTEREST_BOARD_ID") and results and results[-1][0].startswith("بينتوريست") and results[-1][1] is not True:
         # احتياط: بن صورة إن فشل الفيديو
         pin_media = f"{SITE}/pinterest/{p['id']}.jpg"
         results.append(("بينتوريست (بن صورة — احتياط)",) + P.to_pinterest(p, pin_media))
@@ -90,10 +97,10 @@ def main():
             for name, ok, note in results:
                 f.write(f"- {'✅' if ok else ('⚪' if ok is None else '❌')} {name}: {note}\n")
     # حفظ حالة اليوم (لمنع تكرار الفيديو)
-    stt["video"] = today_s
+    stt[slot_key] = today_s
     try:
         json.dump(stt, open(STATE, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
-        print(f"💾 حُفظت الحالة: video={today_s}")
+        print(f"💾 حُفظت الحالة: {slot_key}={today_s}")
     except Exception as e:
         print("⚠️ تعذّر حفظ الحالة:", str(e)[:80])
 
