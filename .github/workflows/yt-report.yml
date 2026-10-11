@@ -1,0 +1,22 @@
+name: 📊 تقرير يوتيوب الأسبوعي
+
+on:
+  schedule:
+    - cron: '0 18 * * 0'   # الأحد 19:00 بتوقيت المغرب
+  workflow_dispatch:
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 📊 بناء التقرير وإرساله إلى تلغرام
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python3 auto-poster/yt_report.py
