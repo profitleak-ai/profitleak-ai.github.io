@@ -1,0 +1,73 @@
+name: ▶️ شورتس إضافية (صباح + مساء)
+
+on:
+  schedule:
+    - cron: '0 9 * * *'    # 10:00 المغرب — الشورت الأول
+    - cron: '0 17 * * *'   # 18:00 المغرب — الشورت الثالث (الثاني هو فيديو 13:00)
+  workflow_dispatch:
+    inputs:
+      offset:
+        description: 'الإزاحة (10 = حصة الصباح، 20 = حصة المساء)'
+        required: false
+        default: '10'
+      template:
+        description: 'القالب (فارغ = تلقائي)'
+        required: false
+        default: ''
+        type: choice
+        options: ['', midnight, royal, emerald, sunset]
+      force:
+        description: 'أعد النشر حتى لو نُشر اليوم'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  short:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: تثبيت الحزم
+        run: pip install --quiet Pillow imageio-ffmpeg fonttools edge-tts gradio_client
+      - name: تحديد الحصة
+        id: slot
+        run: |
+          if [ -n "${{ github.event.inputs.offset }}" ]; then echo "offset=${{ github.event.inputs.offset }}" >> $GITHUB_OUTPUT;
+          elif [ "$(date -u +%H)" -lt 12 ]; then echo "offset=10" >> $GITHUB_OUTPUT;
+          else echo "offset=20" >> $GITHUB_OUTPUT; fi
+      - name: 🎞️ توليد الشورت ونشره (يوتيوب + تلغرام)
+        env:
+          SITE: https://profitleakaii.qd.je
+          SLOT: morning
+          NTFY_TOPIC: profitleak-alerts-34d2c8377c
+          SHORT_OFFSET: ${{ steps.slot.outputs.offset }}
+          VIDEO_TEMPLATE: ${{ github.event.inputs.template }}
+          FORCE_VIDEO: ${{ github.event.inputs.force }}
+          SKIP_PINTEREST: 'true'
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT: ${{ secrets.TELEGRAM_CHAT }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python3 auto-poster/publish_video.py
+      - name: حفظ الحالة
+        run: |
+          git config user.name  "ProfitLeak Auto-Poster"
+          git config user.email "autoposter@profitleakaii.qd.je"
+          git pull --rebase --autostash origin main || true
+          if ! git diff --quiet auto-poster/state.json 2>/dev/null; then
+            git add auto-poster/state.json
+            git commit -m "auto-poster: short +${{ steps.slot.outputs.offset }} $(date -u +%F)"
+            git push
+          else
+            echo "لا جديد لحفظه"
+          fi
