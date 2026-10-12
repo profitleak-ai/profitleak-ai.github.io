@@ -51,6 +51,7 @@ jobs:
         env:
           SITE: https://profitleakaii.qd.je
           SLOT: morning
+          SHORT_SLOT: '1'
           NTFY_TOPIC: profitleak-alerts-34d2c8377c
           INDEX: ${{ github.event.inputs.index }}
           VIDEO_TEMPLATE: ${{ github.event.inputs.template }}
