@@ -6,10 +6,10 @@ on:
     - cron: '0 17 * * *'   # 18:00 المغرب — الشورت الثالث (الثاني هو فيديو 13:00)
   workflow_dispatch:
     inputs:
-      offset:
-        description: 'الإزاحة (10 = حصة الصباح، 20 = حصة المساء)'
+      slot:
+        description: 'الحصة (0 = 10:00 عربي، 2 = 18:00 عربي)'
         required: false
-        default: '10'
+        default: '0'
       template:
         description: 'القالب (فارغ = تلقائي)'
         required: false
@@ -37,15 +37,15 @@ jobs:
       - name: تحديد الحصة
         id: slot
         run: |
-          if [ -n "${{ github.event.inputs.offset }}" ]; then echo "offset=${{ github.event.inputs.offset }}" >> $GITHUB_OUTPUT;
-          elif [ "$(date -u +%H)" -lt 12 ]; then echo "offset=10" >> $GITHUB_OUTPUT;
-          else echo "offset=20" >> $GITHUB_OUTPUT; fi
+          if [ -n "${{ github.event.inputs.slot }}" ]; then echo "slot=${{ github.event.inputs.slot }}" >> $GITHUB_OUTPUT;
+          elif [ "$(date -u +%H)" -lt 12 ]; then echo "slot=0" >> $GITHUB_OUTPUT;
+          else echo "slot=2" >> $GITHUB_OUTPUT; fi
       - name: 🎞️ توليد الشورت ونشره (يوتيوب + تلغرام)
         env:
           SITE: https://profitleakaii.qd.je
           SLOT: morning
           NTFY_TOPIC: profitleak-alerts-34d2c8377c
-          SHORT_OFFSET: ${{ steps.slot.outputs.offset }}
+          SHORT_SLOT: ${{ steps.slot.outputs.slot }}
           VIDEO_TEMPLATE: ${{ github.event.inputs.template }}
           FORCE_VIDEO: ${{ github.event.inputs.force }}
           SKIP_PINTEREST: 'true'
@@ -66,7 +66,7 @@ jobs:
           git pull --rebase --autostash origin main || true
           if ! git diff --quiet auto-poster/state.json 2>/dev/null; then
             git add auto-poster/state.json
-            git commit -m "auto-poster: short +${{ steps.slot.outputs.offset }} $(date -u +%F)"
+            git commit -m "auto-poster: short slot ${{ steps.slot.outputs.slot }} $(date -u +%F)"
             git push
           else
             echo "لا جديد لحفظه"
