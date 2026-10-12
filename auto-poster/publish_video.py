@@ -38,12 +38,23 @@ def main():
     cal = P.load()
     posts = cal["posts"]
     today = datetime.date.today()
-    idx = int(os.environ.get("INDEX") or P.pick_index(posts, today))
-    # شورت إضافي: إزاحة ثابتة حتى تكون فيديوهات اليوم الثلاثة مختلفة (0 / +10 / +20)
-    offset = int(os.environ.get("SHORT_OFFSET") or 0)
-    idx = (idx + offset) % len(posts)
+    # جدول الشورتس: 3 حصص يوميًا (0=10:00 عربي · 1=13:00 إنجليزي · 2=18:00 عربي)
+    # يغطي كل المنشورات العربية (20) والإنجليزية (10) خلال 10 أيام دون تكرار داخل الدورة
+    slot = os.environ.get("SHORT_SLOT", "").strip()
+    if os.environ.get("INDEX"):
+        idx = int(os.environ["INDEX"]) % len(posts); slot_key = "video"
+    elif slot in ("0", "1", "2"):
+        slot = int(slot)
+        d = max((today - datetime.date(2026, 10, 12)).days, 0)
+        ar = [i for i, x in enumerate(posts) if x.get("lang", "ar") != "en"]
+        en = [i for i, x in enumerate(posts) if x.get("lang") == "en"] or ar
+        idx = en[d % len(en)] if slot == 1 else ar[(2 * d + (0 if slot == 0 else 1)) % len(ar)]
+        slot_key = "video" if slot == 1 else f"video_s{slot}"
+    else:
+        offset = int(os.environ.get("SHORT_OFFSET") or 0)
+        idx = (P.pick_index(posts, today) + offset) % len(posts)
+        slot_key = "video" if offset == 0 else f"video_{offset}"
     p = posts[idx]
-    slot_key = "video" if offset == 0 else f"video_{offset}"
 
     # ── حماية من التكرار: فيديو واحد يوميًا ──
     STATE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "state.json")
