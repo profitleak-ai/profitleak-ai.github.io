@@ -26,6 +26,10 @@ on:
         default: false
         type: boolean
 
+concurrency:
+  group: poster-state
+  cancel-in-progress: false
+
 jobs:
   short:
     runs-on: ubuntu-latest
@@ -66,13 +70,4 @@ jobs:
         run: python3 auto-poster/publish_video.py
       - name: حفظ الحالة
         run: |
-          git config user.name  "ProfitLeak Auto-Poster"
-          git config user.email "autoposter@profitleakaii.qd.je"
-          git pull --rebase --autostash origin main || true
-          if ! git diff --quiet auto-poster/state.json 2>/dev/null; then
-            git add auto-poster/state.json
-            git commit -m "auto-poster: short slot ${{ steps.slot.outputs.slot }} $(date -u +%F)"
-            git push
-          else
-            echo "لا جديد لحفظه"
-          fi
+          bash auto-poster/save_state.sh
