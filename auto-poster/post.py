@@ -487,8 +487,13 @@ def main():
             for name, ok, note in results:
                 f.write(f"- {'✅' if ok else ('⚪' if ok is None else '❌')} {name}: {note}\n")
     try:
-        json.dump({"last": key, "post_id": p["id"], "at": datetime.datetime.utcnow().isoformat() + "Z"},
-                  open(STATE, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+        _st = {}
+        try:
+            _st = json.load(open(STATE, encoding="utf-8")) if os.path.exists(STATE) else {}
+        except Exception:
+            _st = {}
+        _st.update({"last": key, "post_id": p["id"], "at": datetime.datetime.utcnow().isoformat() + "Z"})
+        json.dump(_st, open(STATE, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
     except Exception as e:
         print("تحذير:", e)
     return 0
