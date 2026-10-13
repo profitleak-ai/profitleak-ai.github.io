@@ -60,8 +60,8 @@
    "views": 87,
    "likes": 0,
    "comments": 0,
-   "vpd": 135.28,
-   "score": 135.28
+   "vpd": 135.15,
+   "score": 135.15
   },
   {
    "video_id": "baacNOsHa0Q",
@@ -73,8 +73,8 @@
    "views": 43,
    "likes": 0,
    "comments": 0,
-   "vpd": 50.12,
-   "score": 50.12
+   "vpd": 50.08,
+   "score": 50.08
   },
   {
    "video_id": "ceprNJVoAF0",
@@ -86,15 +86,15 @@
    "views": 376,
    "likes": 8,
    "comments": 0,
-   "vpd": 384.69,
-   "score": 425.62
+   "vpd": 384.45,
+   "score": 425.35
   }
  ],
  "posts": {
   "2": {
-   "score": 67.64,
+   "score": 67.58,
    "n": 2,
-   "best": 135.28
+   "best": 135.15
   },
   "29": {
    "score": 2.86,
@@ -102,19 +102,19 @@
    "best": 2.86
   },
   "21": {
-   "score": 50.12,
+   "score": 50.08,
    "n": 1,
-   "best": 50.12
+   "best": 50.08
   },
   "1": {
-   "score": 425.62,
+   "score": 425.35,
    "n": 1,
-   "best": 425.62
+   "best": 425.35
   }
  },
  "styles": {
   "تحذير": {
-   "score": 122.78,
+   "score": 122.69,
    "n": 5
   }
  },
@@ -148,10 +148,10 @@
   ]
  },
  "hooks": {
-  "في كل عملية بيع… دولار يضيع": 67.64,
+  "في كل عملية بيع… دولار يضيع": 67.58,
   "A clean report in one click": 2.86,
-  "Stop! Your best-seller may be losing money": 50.12,
-  "توقّف! أنت تخسر دون أن تدري": 425.62
+  "Stop! Your best-seller may be losing money": 50.08,
+  "توقّف! أنت تخسر دون أن تدري": 425.35
  },
- "updated": "2026-10-13T08:44:48.966248+00:00"
+ "updated": "2026-10-13T08:45:42.651093+00:00"
 }
