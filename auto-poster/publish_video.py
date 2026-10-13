@@ -29,6 +29,38 @@ def notify(p, ok_list):
         return False
 
 
+def _plan_slot(posts, today, slot):
+    """يقرأ خطة اليوم من محرّك التعلّم (yt_perf.json)؛ يبنيها إن لم تكن موجودة"""
+    try:
+        import yt_learn
+        perf = yt_learn.load_perf()
+        if perf.get("plan", {}).get("date") != today.isoformat():
+            perf = yt_learn.analyze(posts)
+            yt_learn.plan_today(posts, perf, today)
+            yt_learn.save_perf(perf)
+        for ps in perf.get("plan", {}).get("slots", []):
+            if ps["slot"] == slot:
+                return ps
+    except Exception as e:
+        print("⚪ خطة التعلّم غير متاحة:", str(e)[:120])
+    return None
+
+
+def _record_upload(p, note, template):
+    """يسجّل الرفع في yt_perf.json ليُقاس أداؤه لاحقًا"""
+    try:
+        import re, yt_learn
+        m = re.search(r"shorts/([\w-]+)", note or "")
+        if not m:
+            return
+        perf = yt_learn.load_perf()
+        perf.setdefault("uploads", []).append(dict(video_id=m.group(1), post_id=p["id"], hook=(p.get("video") or {}).get("hook", ""),
+                                                   template=template or "", date=datetime.date.today().isoformat(), source="auto"))
+        yt_learn.save_perf(perf)
+    except Exception as e:
+        print("⚪ تسجيل الرفع:", str(e)[:100])
+
+
 def envflag(k):
     """يقرأ متغيّرًا منطقيًا بأمان: "false"/""/"0" كلها = معطّل"""
     return os.environ.get(k, "").strip().lower() in ("1", "true", "yes", "on")
@@ -43,6 +75,15 @@ def main():
     slot = os.environ.get("SHORT_SLOT", "").strip()
     if os.environ.get("INDEX"):
         idx = int(os.environ["INDEX"]) % len(posts); slot_key = "video"
+    elif slot in ("0", "1", "2") and _plan_slot(posts, today, int(slot)):
+        slot = int(slot)
+        ps = _plan_slot(posts, today, slot)
+        idx = ps["index"] % len(posts)
+        posts[idx].setdefault("video", {})["hook"] = ps["hook"]          # الخطّاف المختار من محرّك التعلّم
+        if ps.get("template") and not os.environ.get("VIDEO_TEMPLATE"):
+            os.environ["VIDEO_TEMPLATE"] = ps["template"]
+        slot_key = "video" if slot == 1 else f"video_s{slot}"
+        print(f"🧠 خطة التعلّم: الحصة {slot} → #{posts[idx]['id']} · «{ps['hook']}» · {ps.get('template')} — {ps.get('reason','')}")
     elif slot in ("0", "1", "2"):
         slot = int(slot)
         d = max((today - datetime.date(2026, 10, 12)).days, 0)
@@ -84,7 +125,10 @@ def main():
     else:
         try:
             import youtube as YT
-            results.append(("يوتيوب شورتس",) + YT.upload(p, path))
+            yt_ok, yt_note = YT.upload(p, path)
+            results.append(("يوتيوب شورتس", yt_ok, yt_note))
+            if yt_ok:
+                _record_upload(p, yt_note, os.environ.get("VIDEO_TEMPLATE", ""))
         except Exception as e:
             results.append(("يوتيوب شورتس", False, f"خطأ: {str(e)[:150]}"))
     if envflag("SKIP_PINTEREST") or not os.environ.get("PINTEREST_TOKEN"):
