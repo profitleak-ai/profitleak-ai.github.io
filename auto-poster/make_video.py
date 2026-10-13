@@ -482,7 +482,7 @@ def mux(video, audio, out, vdur, adur):
     target = adur + 1.6
     k = max(1.0, target / vdur)
     cmd = [FFMPEG, "-y", "-i", video, "-i", audio, "-filter_complex",
-           f"[0:v]setpts={k:.4f}*PTS,fps={FPS}[v];[1:a]adelay=900|900,apad=pad_dur=1.5[a]",
+           f"[0:v]setpts={k:.4f}*PTS,fps={FPS}[v];[1:a]adelay=900|900,apad=pad_dur=1.5,loudnorm=I=-14:TP=-1.5:LRA=11[a]",
            "-map", "[v]", "-map", "[a]", "-c:v", "libx264", "-preset", "veryfast", "-crf", "24",
            "-c:a", "aac", "-b:a", "128k", "-pix_fmt", "yuv420p", "-movflags", "+faststart", "-shortest", out]
     r = subprocess.run(cmd, capture_output=True)
