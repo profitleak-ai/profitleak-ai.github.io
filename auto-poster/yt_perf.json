@@ -1,0 +1,157 @@
+{
+ "uploads": [
+  {
+   "video_id": "jvBqK2HLm4M",
+   "post_id": 2,
+   "hook": "في كل عملية بيع… دولار يضيع",
+   "template": "royal",
+   "date": "2026-10-11",
+   "source": "auto",
+   "views": 0,
+   "likes": 0,
+   "comments": 0,
+   "vpd": 0.0,
+   "score": 0.0
+  },
+  {
+   "video_id": "zaKNWDrf9Yc",
+   "post_id": 29,
+   "hook": "A clean report in one click",
+   "template": "emerald",
+   "date": "2026-10-11",
+   "source": "auto",
+   "views": 5,
+   "likes": 0,
+   "comments": 0,
+   "vpd": 2.86,
+   "score": 2.86
+  },
+  {
+   "video_id": "cebeUEsiT-4",
+   "post_id": 3,
+   "hook": "ثلاثة أشهر من الخسارة بسبب رقم واحد",
+   "template": "",
+   "date": "2026-10-13",
+   "source": "auto"
+  },
+  {
+   "video_id": "zWu5VC04Gcg",
+   "post_id": 22,
+   "hook": "$29 in… how much actually stays?",
+   "template": "",
+   "date": "2026-10-13",
+   "source": "auto"
+  },
+  {
+   "video_id": "yNJ2w58gz-Y",
+   "post_id": 4,
+   "hook": "تبيع عبر واتساب؟ هذه لك",
+   "template": "",
+   "date": "2026-10-13",
+   "source": "auto"
+  },
+  {
+   "video_id": "tgn8DxydE70",
+   "post_id": 2,
+   "hook": "في كل عملية بيع… دولار يضيع",
+   "template": "",
+   "date": "2026-10-12",
+   "source": "matched",
+   "views": 87,
+   "likes": 0,
+   "comments": 0,
+   "vpd": 135.28,
+   "score": 135.28
+  },
+  {
+   "video_id": "baacNOsHa0Q",
+   "post_id": 21,
+   "hook": "Stop! Your best-seller may be losing money",
+   "template": "",
+   "date": "2026-10-12",
+   "source": "matched",
+   "views": 43,
+   "likes": 0,
+   "comments": 0,
+   "vpd": 50.12,
+   "score": 50.12
+  },
+  {
+   "video_id": "ceprNJVoAF0",
+   "post_id": 1,
+   "hook": "توقّف! أنت تخسر دون أن تدري",
+   "template": "",
+   "date": "2026-10-12",
+   "source": "matched",
+   "views": 376,
+   "likes": 8,
+   "comments": 0,
+   "vpd": 384.69,
+   "score": 425.62
+  }
+ ],
+ "posts": {
+  "2": {
+   "score": 67.64,
+   "n": 2,
+   "best": 135.28
+  },
+  "29": {
+   "score": 2.86,
+   "n": 1,
+   "best": 2.86
+  },
+  "21": {
+   "score": 50.12,
+   "n": 1,
+   "best": 50.12
+  },
+  "1": {
+   "score": 425.62,
+   "n": 1,
+   "best": 425.62
+  }
+ },
+ "styles": {
+  "تحذير": {
+   "score": 122.78,
+   "n": 5
+  }
+ },
+ "plan": {
+  "date": "2026-10-13",
+  "slots": [
+   {
+    "slot": 0,
+    "index": 4,
+    "post_id": 5,
+    "hook": "رقم واحد يأكل أرباحك بصمت",
+    "template": "emerald",
+    "reason": "استكشاف — لم يُقَس بعد"
+   },
+   {
+    "slot": 1,
+    "index": 22,
+    "post_id": 23,
+    "hook": "400 units sold. Almost zero profit",
+    "template": "midnight",
+    "reason": "استكشاف — لم يُقَس بعد"
+   },
+   {
+    "slot": 2,
+    "index": 5,
+    "post_id": 6,
+    "hook": "خمس تكاليف تسرقك بصمت",
+    "template": "sunset",
+    "reason": "استكشاف — لم يُقَس بعد"
+   }
+  ]
+ },
+ "hooks": {
+  "في كل عملية بيع… دولار يضيع": 67.64,
+  "A clean report in one click": 2.86,
+  "Stop! Your best-seller may be losing money": 50.12,
+  "توقّف! أنت تخسر دون أن تدري": 425.62
+ },
+ "updated": "2026-10-13T08:44:48.966248+00:00"
+}
