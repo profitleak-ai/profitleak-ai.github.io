@@ -16,6 +16,10 @@ on:
         default: ''
         type: choice
         options: ['', midnight, royal, emerald, sunset]
+      publish_at:
+        description: 'نشر مجدول على يوتيوب (UTC، مثل 2026-10-13T12:00:00Z) — فارغ = فوري'
+        required: false
+        default: ''
       force:
         description: 'أعد النشر حتى لو نُشر اليوم'
         required: false
@@ -58,6 +62,7 @@ jobs:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_PUBLISH_AT: ${{ github.event.inputs.publish_at }}
         run: python3 auto-poster/publish_video.py
       - name: حفظ الحالة
         run: |
