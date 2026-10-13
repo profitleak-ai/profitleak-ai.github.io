@@ -1,0 +1,30 @@
+name: 🧠 تعلّم من الأداء (خطة اليوم)
+
+on:
+  schedule:
+    - cron: '30 7 * * *'   # 08:30 المغرب — قبل أول شورت
+  workflow_dispatch:
+
+concurrency:
+  group: poster-state
+  cancel-in-progress: false
+
+jobs:
+  learn:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 🧠 تحليل الأداء وبناء خطة اليوم
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python3 auto-poster/yt_learn.py
+      - name: حفظ الخطة
+        run: bash auto-poster/save_state.sh
