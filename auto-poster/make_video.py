@@ -456,25 +456,77 @@ def narration_text(p):
     return f"{title}. {body.replace(chr(10), '. ')}. {p['cta']}."
 
 
+def _dur(path):
+    pr = subprocess.run([FFMPEG, "-i", path], capture_output=True, text=True)
+    import re
+    m = re.search(r"Duration: (\d+):(\d+):([\d.]+)", pr.stderr)
+    return (int(m[1]) * 3600 + int(m[2]) * 60 + float(m[3])) if m else 0
+
+
+def _tts_edge(txt, voice, out):
+    for attempt in range(2):
+        r = subprocess.run([sys.executable, "-m", "edge_tts", "--voice", voice, "--rate=+0%",
+                            "--text", txt, "--write-media", out], capture_output=True, timeout=120)
+        if r.returncode == 0 and os.path.exists(out) and os.path.getsize(out) > 2000:
+            return True
+    return False
+
+
+def _tts_gtts(txt, lang, out):
+    """Google Translate TTS (مجاني) — فصحى واضحة؛ احتياط عند تعطّل Edge"""
+    try:
+        from gtts import gTTS
+        gTTS(txt, lang=("ar" if lang == "ar" else "en"), slow=False).save(out)
+        return os.path.exists(out) and os.path.getsize(out) > 2000
+    except Exception as e:
+        print("⚪ gTTS:", str(e)[:100]); return False
+
+
+def _tts_piper(txt, lang, out):
+    """Piper (مفتوح المصدر، يعمل محليًا بلا إنترنت) — الاحتياط الأخير"""
+    try:
+        base = "https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/"
+        name = "ar/ar_JO/kareem/medium/ar_JO-kareem-medium" if lang == "ar" else "en/en_US/lessac/medium/en_US-lessac-medium"
+        d = os.path.join(OUT, "piper"); os.makedirs(d, exist_ok=True)
+        model = os.path.join(d, os.path.basename(name) + ".onnx")
+        for ext in (".onnx", ".onnx.json"):
+            dst = model if ext == ".onnx" else model + ".json"
+            if not os.path.exists(dst):
+                urllib_req = __import__("urllib.request").request
+                urllib_req.urlretrieve(base + name + ext, dst)
+        wav = out + ".wav"
+        r = subprocess.run([sys.executable, "-m", "piper", "-m", model, "-f", wav], input=txt.encode("utf-8"), capture_output=True, timeout=300)
+        if r.returncode != 0:
+            return False
+        subprocess.run([FFMPEG, "-y", "-loglevel", "error", "-i", wav, "-b:a", "128k", out], capture_output=True)
+        return os.path.exists(out) and os.path.getsize(out) > 2000
+    except Exception as e:
+        print("⚪ Piper:", str(e)[:100]); return False
+
+
 def make_voice(p, out_mp3):
-    """يولّد التعليق الصوتي؛ يعيد (المسار, المدة بالثواني) أو (None, 0) عند الفشل"""
+    """يولّد التعليق الصوتي عبر سلسلة: Edge → gTTS → Piper؛ يعيد (المسار, المدة) أو يرفع خطأ (لا فيديو صامت)"""
     if os.environ.get("NO_VOICE"):
         return None, 0
     lang, g, voice = pick_voice(p)
     txt = narration_text(p)
-    for attempt in range(3):
-        r = subprocess.run([sys.executable, "-m", "edge_tts", "--voice", voice, "--rate=+0%",
-                            "--text", txt, "--write-media", out_mp3],
-                           capture_output=True, timeout=120)
-        if r.returncode == 0 and os.path.exists(out_mp3) and os.path.getsize(out_mp3) > 2000:
-            pr = subprocess.run([FFMPEG, "-i", out_mp3], capture_output=True, text=True)
-            import re
-            m = re.search(r"Duration: (\d+):(\d+):([\d.]+)", pr.stderr)
-            dur = (int(m[1]) * 3600 + int(m[2]) * 60 + float(m[3])) if m else 0
-            print(f"🎙️ الصوت: {voice} ({'نسائي' if g == 'f' else 'رجالي'} · {lang}) · {dur:.1f}s")
-            return out_mp3, dur
-    print("⚠️ تعذّر توليد الصوت — فيديو صامت")
-    return None, 0
+    chain = [("Edge " + voice, lambda: _tts_edge(txt, voice, out_mp3)),
+             ("Google TTS", lambda: _tts_gtts(txt, lang, out_mp3)),
+             ("Piper", lambda: _tts_piper(txt, lang, out_mp3))]
+    for name, fn in chain:
+        try:
+            if fn():
+                dur = _dur(out_mp3)
+                if dur > 3:
+                    print(f"🎙️ الصوت: {name} ({'نسائي' if g == 'f' else 'رجالي'} · {lang}) · {dur:.1f}s")
+                    return out_mp3, dur
+        except Exception as e:
+            print(f"⚪ {name}:", str(e)[:100])
+        print(f"⚪ {name} غير متاح — المحرك التالي")
+    if os.environ.get("ALLOW_SILENT"):
+        print("⚠️ تعذّر توليد الصوت — فيديو صامت")
+        return None, 0
+    raise RuntimeError("تعذّر توليد الصوت بكل المحركات — لن يُنشر فيديو صامت")
 
 
 def mux(video, audio, out, vdur, adur):
