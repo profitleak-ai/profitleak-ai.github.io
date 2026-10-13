@@ -61,9 +61,14 @@ def upload(p, path, privacy=None):
         return None, note
     title, desc, tags, lang = metadata(p)
     privacy = privacy or os.environ.get("YT_PRIVACY", "public")
+    status = {"privacyStatus": privacy, "selfDeclaredMadeForKids": False}
+    publish_at = os.environ.get("YT_PUBLISH_AT", "").strip()   # ISO-8601 UTC مثل 2026-10-13T12:00:00Z → نشر مجدول
+    if publish_at:
+        status["privacyStatus"] = "private"
+        status["publishAt"] = publish_at
     meta = {"snippet": {"title": title, "description": desc, "tags": tags, "categoryId": "27",
                         "defaultLanguage": lang, "defaultAudioLanguage": lang},
-            "status": {"privacyStatus": privacy, "selfDeclaredMadeForKids": False}}
+            "status": status}
     size = os.path.getsize(path)
     # 1) بدء الرفع القابل للاستئناف
     init = urllib.request.Request(
@@ -96,7 +101,9 @@ def upload(p, path, privacy=None):
     vid = res.get("id")
     st = res.get("status", {})
     note = f"https://youtube.com/shorts/{vid}"
-    if st.get("uploadStatus") == "rejected" or st.get("privacyStatus") != privacy:
+    if publish_at:
+        note += f" (مجدول للنشر {publish_at})"
+    elif st.get("uploadStatus") == "rejected" or st.get("privacyStatus") != privacy:
         note += f" ({st.get('privacyStatus')}/{st.get('uploadStatus')}{(' — ' + st.get('rejectionReason')) if st.get('rejectionReason') else ''})"
     return True, note
 
