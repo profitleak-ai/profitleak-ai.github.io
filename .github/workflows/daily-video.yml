@@ -53,7 +53,7 @@ jobs:
           python-version: '3.11'
 
       - name: تثبيت الحزم
-        run: pip install --quiet Pillow imageio-ffmpeg fonttools edge-tts gradio_client
+        run: pip install --quiet Pillow imageio-ffmpeg fonttools edge-tts gTTS piper-tts gradio_client
 
       - name: 🎞️ توليد الفيديو ونشره
         env:
