@@ -20,11 +20,11 @@
    "template": "emerald",
    "date": "2026-10-11",
    "source": "auto",
-   "views": 5,
+   "views": 6,
    "likes": 0,
    "comments": 0,
-   "vpd": 2.86,
-   "score": 2.86
+   "vpd": 2.05,
+   "score": 2.05
   },
   {
    "video_id": "cebeUEsiT-4",
@@ -57,11 +57,11 @@
    "template": "",
    "date": "2026-10-12",
    "source": "matched",
-   "views": 87,
+   "views": 91,
    "likes": 0,
    "comments": 0,
-   "vpd": 135.15,
-   "score": 135.15
+   "vpd": 50.02,
+   "score": 50.02
   },
   {
    "video_id": "baacNOsHa0Q",
@@ -70,11 +70,11 @@
    "template": "",
    "date": "2026-10-12",
    "source": "matched",
-   "views": 43,
+   "views": 48,
    "likes": 0,
    "comments": 0,
-   "vpd": 50.08,
-   "score": 50.08
+   "vpd": 23.6,
+   "score": 23.6
   },
   {
    "video_id": "ceprNJVoAF0",
@@ -83,11 +83,11 @@
    "template": "",
    "date": "2026-10-12",
    "source": "matched",
-   "views": 376,
+   "views": 380,
    "likes": 8,
    "comments": 0,
-   "vpd": 384.45,
-   "score": 425.35
+   "vpd": 176.47,
+   "score": 195.04
   },
   {
    "video_id": "UFe-JOe43Ls",
@@ -95,7 +95,12 @@
    "hook": "ثلاثة أشهر من الخسارة بسبب رقم واحد",
    "template": "",
    "date": "2026-10-13",
-   "source": "auto"
+   "source": "auto",
+   "views": 4,
+   "likes": 0,
+   "comments": 0,
+   "vpd": 3.49,
+   "score": 3.49
   },
   {
    "video_id": "t81PJLHEfVo",
@@ -103,7 +108,12 @@
    "hook": "تبيع عبر واتساب؟ هذه لك",
    "template": "",
    "date": "2026-10-13",
-   "source": "auto"
+   "source": "auto",
+   "views": 0,
+   "likes": 0,
+   "comments": 0,
+   "vpd": 0.0,
+   "score": 0.0
   },
   {
    "video_id": "Qi8jXJQ7o18",
@@ -111,46 +121,70 @@
    "hook": "$29 in… how much actually stays?",
    "template": "",
    "date": "2026-10-13",
-   "source": "auto"
+   "source": "auto",
+   "views": 8,
+   "likes": 0,
+   "comments": 0,
+   "vpd": 11.49,
+   "score": 11.49
   }
  ],
  "posts": {
   "2": {
-   "score": 67.58,
+   "score": 25.01,
    "n": 2,
-   "best": 135.15
+   "best": 50.02
   },
   "29": {
-   "score": 2.86,
+   "score": 2.05,
    "n": 1,
-   "best": 2.86
+   "best": 2.05
   },
   "21": {
-   "score": 50.08,
+   "score": 23.6,
    "n": 1,
-   "best": 50.08
+   "best": 23.6
   },
   "1": {
-   "score": 425.35,
+   "score": 195.04,
    "n": 1,
-   "best": 425.35
+   "best": 195.04
+  },
+  "3": {
+   "score": 3.49,
+   "n": 1,
+   "best": 3.49
+  },
+  "4": {
+   "score": 0.0,
+   "n": 1,
+   "best": 0.0
+  },
+  "22": {
+   "score": 11.49,
+   "n": 1,
+   "best": 11.49
   }
  },
  "styles": {
   "تحذير": {
-   "score": 122.69,
-   "n": 5
+   "score": 45.7,
+   "n": 6
+  },
+  "سؤال": {
+   "score": 5.74,
+   "n": 2
   }
  },
  "plan": {
-  "date": "2026-10-13",
+  "date": "2026-10-14",
   "slots": [
    {
     "slot": 0,
     "index": 4,
     "post_id": 5,
     "hook": "رقم واحد يأكل أرباحك بصمت",
-    "template": "emerald",
+    "template": "sunset",
     "reason": "استكشاف — لم يُقَس بعد"
    },
    {
@@ -158,7 +192,7 @@
     "index": 22,
     "post_id": 23,
     "hook": "400 units sold. Almost zero profit",
-    "template": "midnight",
+    "template": "royal",
     "reason": "استكشاف — لم يُقَس بعد"
    },
    {
@@ -166,16 +200,19 @@
     "index": 5,
     "post_id": 6,
     "hook": "خمس تكاليف تسرقك بصمت",
-    "template": "sunset",
+    "template": "midnight",
     "reason": "استكشاف — لم يُقَس بعد"
    }
   ]
  },
  "hooks": {
-  "في كل عملية بيع… دولار يضيع": 67.58,
-  "A clean report in one click": 2.86,
-  "Stop! Your best-seller may be losing money": 50.08,
-  "توقّف! أنت تخسر دون أن تدري": 425.35
+  "في كل عملية بيع… دولار يضيع": 25.01,
+  "A clean report in one click": 2.05,
+  "Stop! Your best-seller may be losing money": 23.6,
+  "توقّف! أنت تخسر دون أن تدري": 195.04,
+  "ثلاثة أشهر من الخسارة بسبب رقم واحد": 3.49,
+  "تبيع عبر واتساب؟ هذه لك": 0.0,
+  "$29 in… how much actually stays?": 11.49
  },
- "updated": "2026-10-13T08:45:42.651093+00:00"
+ "updated": "2026-10-14T12:58:14.700561+00:00"
 }
