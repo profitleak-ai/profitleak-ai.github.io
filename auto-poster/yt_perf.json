@@ -11,7 +11,8 @@
    "likes": 0,
    "comments": 0,
    "vpd": 0.0,
-   "score": 0.0
+   "score": 0.0,
+   "commented": "2026-10-15"
   },
   {
    "video_id": "zaKNWDrf9Yc",
@@ -24,7 +25,8 @@
    "likes": 0,
    "comments": 0,
    "vpd": 1.53,
-   "score": 1.53
+   "score": 1.53,
+   "commented": "2026-10-15"
   },
   {
    "video_id": "cebeUEsiT-4",
@@ -32,7 +34,8 @@
    "hook": "ثلاثة أشهر من الخسارة بسبب رقم واحد",
    "template": "",
    "date": "2026-10-13",
-   "source": "auto"
+   "source": "auto",
+   "commented": "missing"
   },
   {
    "video_id": "zWu5VC04Gcg",
@@ -40,7 +43,8 @@
    "hook": "$29 in… how much actually stays?",
    "template": "",
    "date": "2026-10-13",
-   "source": "auto"
+   "source": "auto",
+   "commented": "missing"
   },
   {
    "video_id": "yNJ2w58gz-Y",
@@ -48,7 +52,8 @@
    "hook": "تبيع عبر واتساب؟ هذه لك",
    "template": "",
    "date": "2026-10-13",
-   "source": "auto"
+   "source": "auto",
+   "commented": "missing"
   },
   {
    "video_id": "tgn8DxydE70",
@@ -61,7 +66,8 @@
    "likes": 0,
    "comments": 0,
    "vpd": 32.38,
-   "score": 32.38
+   "score": 32.38,
+   "commented": "2026-10-15"
   },
   {
    "video_id": "baacNOsHa0Q",
@@ -74,7 +80,8 @@
    "likes": 0,
    "comments": 0,
    "vpd": 15.87,
-   "score": 15.87
+   "score": 15.87,
+   "commented": "2026-10-15"
   },
   {
    "video_id": "ceprNJVoAF0",
@@ -87,7 +94,8 @@
    "likes": 8,
    "comments": 0,
    "vpd": 120.84,
-   "score": 133.56
+   "score": 133.56,
+   "commented": "2026-10-15"
   },
   {
    "video_id": "UFe-JOe43Ls",
@@ -100,7 +108,8 @@
    "likes": 0,
    "comments": 0,
    "vpd": 1.4,
-   "score": 1.4
+   "score": 1.4,
+   "commented": "2026-10-15"
   },
   {
    "video_id": "t81PJLHEfVo",
@@ -113,7 +122,8 @@
    "likes": 0,
    "comments": 0,
    "vpd": 0.0,
-   "score": 0.0
+   "score": 0.0,
+   "commented": "2026-10-15"
   },
   {
    "video_id": "Qi8jXJQ7o18",
@@ -126,7 +136,8 @@
    "likes": 0,
    "comments": 0,
    "vpd": 5.93,
-   "score": 5.93
+   "score": 5.93,
+   "commented": "2026-10-15"
   },
   {
    "video_id": "uAAoRBfZrI8",
@@ -139,7 +150,8 @@
    "likes": 0,
    "comments": 0,
    "vpd": 2.15,
-   "score": 2.15
+   "score": 2.15,
+   "commented": "2026-10-15"
   },
   {
    "video_id": "J-IkzqgoTbg",
@@ -152,7 +164,8 @@
    "likes": 0,
    "comments": 0,
    "vpd": 3.47,
-   "score": 3.47
+   "score": 3.47,
+   "commented": "2026-10-15"
   },
   {
    "video_id": "PRWfH6i1nPA",
@@ -160,7 +173,8 @@
    "hook": "المرتجعات تأكل ربع ربحك",
    "template": "emerald",
    "date": "2026-10-15",
-   "source": "auto"
+   "source": "auto",
+   "commented": "2026-10-15"
   },
   {
    "video_id": "r3JM251HkCo",
@@ -177,7 +191,8 @@
    "hook": "Your accountant will love this",
    "template": "royal",
    "date": "2026-10-15",
-   "source": "auto"
+   "source": "auto",
+   "commented": "2026-10-15"
   },
   {
    "video_id": "IGsabVS5f80",
