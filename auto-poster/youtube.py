@@ -34,7 +34,10 @@ def metadata(p):
     V = p.get("video") or {}
     ar = p.get("lang", "ar") == "ar"
     import post as P
-    title = (V.get("title") or P.strip_md(p["title"])).strip()
+    base = (V.get("title") or P.strip_md(p["title"])).strip()
+    hook = (V.get("hook") or "").strip().rstrip("!؟?…").strip()
+    # العنوان = الخطّاف (أقوى جذبًا في خلاصة الشورتس) + العنوان الأصلي إن اتسع
+    title = base if not hook or len(hook) > 70 else (f"{hook} | {base}" if len(hook) + len(base) < 85 else hook)
     title = (title[:92] + " #Shorts") if len(title) > 92 else (title + " #Shorts")
     points = [x for x in V.get("points", []) if x]
     link = P.link("youtube") if hasattr(P, "link") else f"{SITE}/?ref=youtube"
@@ -101,11 +104,81 @@ def upload(p, path, privacy=None):
     vid = res.get("id")
     st = res.get("status", {})
     note = f"https://youtube.com/shorts/{vid}"
+    try:
+        extras = []
+        if first_comment(tok, vid, p, lang):
+            extras.append("تعليق مثبّت")
+        if add_to_playlist(tok, vid, lang):
+            extras.append("قائمة تشغيل")
+        if extras:
+            note += " · " + " + ".join(extras)
+    except Exception as e:
+        print("⚪ إضافات يوتيوب:", str(e)[:100])
     if publish_at:
         note += f" (مجدول للنشر {publish_at})"
     elif st.get("uploadStatus") == "rejected" or st.get("privacyStatus") != privacy:
         note += f" ({st.get('privacyStatus')}/{st.get('uploadStatus')}{(' — ' + st.get('rejectionReason')) if st.get('rejectionReason') else ''})"
     return True, note
+
+
+def _post(tok, url, body):
+    req = urllib.request.Request(url, data=json.dumps(body).encode("utf-8"), method="POST",
+                                 headers={"Authorization": f"Bearer {tok}", "Content-Type": "application/json; charset=UTF-8"})
+    return json.load(urllib.request.urlopen(req, timeout=60, context=ctx))
+
+
+def first_comment(tok, vid, p, lang):
+    """تعليق أول من القناة فيه الرابط (وصف الشورتس مخفي في الخلاصة، التعليق أوضح للنقر)"""
+    import post as P
+    link = P.link("yt-comment")
+    V = p.get("video") or {}
+    if lang == "ar":
+        txt = (f"👈 {V.get('cta') or 'احسب ربحك الحقيقي'} مجانًا ودون تسجيل:\n{link}\n\n"
+               f"ما أكبر تكلفة تنسى حسابها؟ اكتب لنا في التعليقات 👇")
+    else:
+        txt = (f"👉 {V.get('cta') or 'Calculate your real profit'} — free, no signup:\n{link}\n\n"
+               f"Which cost do you usually forget? Tell us below 👇")
+    try:
+        _post(tok, "https://www.googleapis.com/youtube/v3/commentThreads?part=snippet",
+              {"snippet": {"videoId": vid, "topLevelComment": {"snippet": {"textOriginal": txt}}}})
+        return True
+    except urllib.error.HTTPError as e:
+        print("⚪ تعليق:", e.code, e.read().decode("utf-8", "ignore")[:120]); return False
+
+
+_PL_CACHE = {}
+
+
+def add_to_playlist(tok, vid, lang):
+    """يضيف الشورت إلى قائمة تشغيل اللغة (تُنشأ مرة واحدة) — يساعد على المشاهدة المتسلسلة"""
+    title = "ProfitLeak AI — الربح الحقيقي (بالعربية)" if lang == "ar" else "ProfitLeak AI — Real Profit (English)"
+    pid = _PL_CACHE.get(title)
+    if not pid:
+        r = urllib.request.urlopen(urllib.request.Request(
+            "https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true&maxResults=50",
+            headers={"Authorization": f"Bearer {tok}"}), timeout=30, context=ctx)
+        for it in json.load(r).get("items", []):
+            if it["snippet"]["title"] == title:
+                pid = it["id"]
+        if not pid:
+            desc = ("شورتس يومية لبائعي التجارة الإلكترونية: كيف تحسب ربحك الحقيقي بعد الإعلان والتوصيل والمرتجعات. "
+                    "الأداة مجانية: https://profitleakaii.qd.je" if lang == "ar" else
+                    "Daily Shorts for e-commerce sellers: your real profit after ads, shipping and returns. Free tool: https://profitleakaii.qd.je")
+            pid = _post(tok, "https://www.googleapis.com/youtube/v3/playlists?part=snippet,status",
+                        {"snippet": {"title": title, "description": desc, "defaultLanguage": lang},
+                         "status": {"privacyStatus": "public"}})["id"]
+        _PL_CACHE[title] = pid
+    import time
+    for attempt in range(4):   # يوتيوب يعيد 409 أحيانًا مباشرة بعد الرفع — إعادة محاولة
+        try:
+            _post(tok, "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet",
+                  {"snippet": {"playlistId": pid, "resourceId": {"kind": "youtube#video", "videoId": vid}}})
+            return True
+        except urllib.error.HTTPError as e:
+            if e.code != 409 or attempt == 3:
+                print("⚪ قائمة التشغيل:", e.code); return False
+            time.sleep(3 * (attempt + 1))
+    return False
 
 
 def channel_info():
