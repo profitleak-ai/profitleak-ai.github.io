@@ -1,0 +1,43 @@
+name: ⏰ موزّع الشورتس (3 يوميًا — مع تعويض التأخير)
+
+on:
+  schedule:
+    - cron: '7,37 9-23 * * *'   # كل نصف ساعة من 10:00 إلى 00:00 بتوقيت المغرب — ينشر أي حصة مستحقة لم تُنشر
+  workflow_dispatch:
+
+concurrency:
+  group: poster-state
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: تثبيت الحزم
+        run: pip install --quiet Pillow imageio-ffmpeg fonttools edge-tts gTTS piper-tts gradio_client
+      - name: 🎞️ نشر الحصص المستحقة
+        env:
+          SITE: https://profitleakaii.qd.je
+          SLOT: morning
+          SLOT_AUTO: 'true'
+          SKIP_PINTEREST: 'true'
+          NTFY_TOPIC: profitleak-alerts-34d2c8377c
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT: ${{ secrets.TELEGRAM_CHAT }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python3 auto-poster/publish_video.py
+      - name: حفظ الحالة
+        if: always()
+        run: bash auto-poster/save_state.sh
