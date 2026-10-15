@@ -41,9 +41,14 @@ def fetch_videos(tok):
 def match_post(title, posts):
     t = re.sub(r"\s*#Shorts$", "", title).strip()
     for p in posts:
-        vt = ((p.get("video") or {}).get("title") or "").strip()
-        if vt and (vt == t or vt[:40] == t[:40]):
+        V = p.get("video") or {}
+        vt = (V.get("title") or "").strip()
+        if vt and (vt == t or vt[:40] == t[:40] or vt in t):
             return p
+        for h in (V.get("hooks") or [V.get("hook", "")]):
+            h = (h or "").rstrip("!؟?…").strip()
+            if h and t.startswith(h[:30]):
+                return p
     return None
 
 
