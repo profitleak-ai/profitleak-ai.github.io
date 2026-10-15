@@ -1,8 +1,6 @@
 name: 🎬 الفيديو اليومي
 
 on:
-  schedule:
-    - cron: '0 12 * * *'   # 13:00 بتوقيت المغرب (بعد منشور الصور بنصف ساعة)
   workflow_dispatch:
     inputs:
       index:
