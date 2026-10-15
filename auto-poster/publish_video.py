@@ -166,5 +166,40 @@ def main():
     return 0
 
 
+SLOT_UTC_HOURS = {0: 9, 1: 12, 2: 17}     # 10:00 · 13:00 · 18:00 بتوقيت المغرب
+
+
+def due_slots():
+    """الحصص التي حان وقتها اليوم ولم تُنشر بعد (تعويض تلقائي لأي تأخير في جدولة GitHub)"""
+    STATE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "state.json")
+    try:
+        stt = json.load(open(STATE, encoding="utf-8"))
+    except Exception:
+        stt = {}
+    now = datetime.datetime.now(datetime.timezone.utc)
+    today_s = now.date().isoformat()
+    out = []
+    for slot, h in SLOT_UTC_HOURS.items():
+        key = "video" if slot == 1 else f"video_s{slot}"
+        if now.hour >= h and stt.get(key) != today_s:
+            out.append(slot)
+    return out
+
+
 if __name__ == "__main__":
+    if envflag("SLOT_AUTO"):
+        due = due_slots()
+        if not due:
+            print("✅ لا حصص مستحقة الآن — كل فيديوهات اليوم حتى هذه الساعة منشورة")
+            sys.exit(0)
+        print(f"⏰ الحصص المستحقة: {due}")
+        rc = 0
+        for sl in due:
+            os.environ["SHORT_SLOT"] = str(sl)
+            os.environ.pop("VIDEO_TEMPLATE", None)
+            try:
+                rc |= (main() or 0)
+            except Exception as e:
+                print(f"❌ الحصة {sl} فشلت:", str(e)[:200]); rc = 1
+        sys.exit(rc)
     sys.exit(main())
