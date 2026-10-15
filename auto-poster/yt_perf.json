@@ -23,8 +23,8 @@
    "views": 6,
    "likes": 0,
    "comments": 0,
-   "vpd": 2.05,
-   "score": 2.05
+   "vpd": 1.53,
+   "score": 1.53
   },
   {
    "video_id": "cebeUEsiT-4",
@@ -60,8 +60,8 @@
    "views": 91,
    "likes": 0,
    "comments": 0,
-   "vpd": 50.02,
-   "score": 50.02
+   "vpd": 32.38,
+   "score": 32.38
   },
   {
    "video_id": "baacNOsHa0Q",
@@ -73,8 +73,8 @@
    "views": 48,
    "likes": 0,
    "comments": 0,
-   "vpd": 23.6,
-   "score": 23.6
+   "vpd": 15.87,
+   "score": 15.87
   },
   {
    "video_id": "ceprNJVoAF0",
@@ -86,8 +86,8 @@
    "views": 380,
    "likes": 8,
    "comments": 0,
-   "vpd": 176.47,
-   "score": 195.04
+   "vpd": 120.84,
+   "score": 133.56
   },
   {
    "video_id": "UFe-JOe43Ls",
@@ -96,11 +96,11 @@
    "template": "",
    "date": "2026-10-13",
    "source": "auto",
-   "views": 4,
+   "views": 3,
    "likes": 0,
    "comments": 0,
-   "vpd": 3.49,
-   "score": 3.49
+   "vpd": 1.4,
+   "score": 1.4
   },
   {
    "video_id": "t81PJLHEfVo",
@@ -122,11 +122,11 @@
    "template": "",
    "date": "2026-10-13",
    "source": "auto",
-   "views": 8,
+   "views": 10,
    "likes": 0,
    "comments": 0,
-   "vpd": 11.49,
-   "score": 11.49
+   "vpd": 5.93,
+   "score": 5.93
   },
   {
    "video_id": "uAAoRBfZrI8",
@@ -134,7 +134,12 @@
    "hook": "خمس تكاليف تسرقك بصمت",
    "template": "midnight",
    "date": "2026-10-14",
-   "source": "auto"
+   "source": "auto",
+   "views": 2,
+   "likes": 0,
+   "comments": 0,
+   "vpd": 2.15,
+   "score": 2.15
   },
   {
    "video_id": "J-IkzqgoTbg",
@@ -142,34 +147,39 @@
    "hook": "400 units sold. Almost zero profit",
    "template": "royal",
    "date": "2026-10-14",
-   "source": "auto"
+   "source": "auto",
+   "views": 3,
+   "likes": 0,
+   "comments": 0,
+   "vpd": 3.47,
+   "score": 3.47
   }
  ],
  "posts": {
   "2": {
-   "score": 25.01,
+   "score": 16.19,
    "n": 2,
-   "best": 50.02
+   "best": 32.38
   },
   "29": {
-   "score": 2.05,
+   "score": 1.53,
    "n": 1,
-   "best": 2.05
+   "best": 1.53
   },
   "21": {
-   "score": 23.6,
+   "score": 15.87,
    "n": 1,
-   "best": 23.6
+   "best": 15.87
   },
   "1": {
-   "score": 195.04,
+   "score": 133.56,
    "n": 1,
-   "best": 195.04
+   "best": 133.56
   },
   "3": {
-   "score": 3.49,
+   "score": 1.4,
    "n": 1,
-   "best": 3.49
+   "best": 1.4
   },
   "4": {
    "score": 0.0,
@@ -177,58 +187,74 @@
    "best": 0.0
   },
   "22": {
-   "score": 11.49,
+   "score": 5.93,
    "n": 1,
-   "best": 11.49
+   "best": 5.93
+  },
+  "6": {
+   "score": 2.15,
+   "n": 1,
+   "best": 2.15
+  },
+  "23": {
+   "score": 3.47,
+   "n": 1,
+   "best": 3.47
   }
  },
  "styles": {
   "تحذير": {
-   "score": 45.7,
-   "n": 6
+   "score": 26.7,
+   "n": 7
   },
   "سؤال": {
-   "score": 5.74,
+   "score": 2.96,
    "n": 2
+  },
+  "رقم": {
+   "score": 3.47,
+   "n": 1
   }
  },
  "plan": {
-  "date": "2026-10-14",
+  "date": "2026-10-15",
   "slots": [
    {
     "slot": 0,
     "index": 4,
     "post_id": 5,
     "hook": "رقم واحد يأكل أرباحك بصمت",
-    "template": "sunset",
+    "template": "midnight",
     "reason": "استكشاف — لم يُقَس بعد"
    },
    {
     "slot": 1,
-    "index": 22,
-    "post_id": 23,
-    "hook": "400 units sold. Almost zero profit",
+    "index": 28,
+    "post_id": 29,
+    "hook": "Your accountant will love this",
     "template": "royal",
-    "reason": "استكشاف — لم يُقَس بعد"
+    "reason": "رابح — إعادة بخطّاف/قالب جديد"
    },
    {
     "slot": 2,
-    "index": 5,
-    "post_id": 6,
-    "hook": "خمس تكاليف تسرقك بصمت",
-    "template": "midnight",
+    "index": 6,
+    "post_id": 7,
+    "hook": "المرتجعات تأكل ربع ربحك",
+    "template": "emerald",
     "reason": "استكشاف — لم يُقَس بعد"
    }
   ]
  },
  "hooks": {
-  "في كل عملية بيع… دولار يضيع": 25.01,
-  "A clean report in one click": 2.05,
-  "Stop! Your best-seller may be losing money": 23.6,
-  "توقّف! أنت تخسر دون أن تدري": 195.04,
-  "ثلاثة أشهر من الخسارة بسبب رقم واحد": 3.49,
+  "في كل عملية بيع… دولار يضيع": 16.19,
+  "A clean report in one click": 1.53,
+  "Stop! Your best-seller may be losing money": 15.87,
+  "توقّف! أنت تخسر دون أن تدري": 133.56,
+  "ثلاثة أشهر من الخسارة بسبب رقم واحد": 1.4,
   "تبيع عبر واتساب؟ هذه لك": 0.0,
-  "$29 in… how much actually stays?": 11.49
+  "$29 in… how much actually stays?": 5.93,
+  "خمس تكاليف تسرقك بصمت": 2.15,
+  "400 units sold. Almost zero profit": 3.47
  },
- "updated": "2026-10-14T12:58:14.700561+00:00"
+ "updated": "2026-10-15T12:45:37.063102+00:00"
 }
