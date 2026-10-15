@@ -55,7 +55,7 @@ def _record_upload(p, note, template):
             return
         perf = yt_learn.load_perf()
         perf.setdefault("uploads", []).append(dict(video_id=m.group(1), post_id=p["id"], hook=(p.get("video") or {}).get("hook", ""),
-                                                   template=template or "", date=datetime.date.today().isoformat(), source="auto"))
+                                                   template=template or "", date=(os.environ.get("YT_PUBLISH_AT", "")[:10] or datetime.date.today().isoformat()), source="auto"))
         yt_learn.save_perf(perf)
     except Exception as e:
         print("⚪ تسجيل الرفع:", str(e)[:100])
@@ -75,6 +75,8 @@ def main():
     slot = os.environ.get("SHORT_SLOT", "").strip()
     if os.environ.get("INDEX"):
         idx = int(os.environ["INDEX"]) % len(posts); slot_key = "video"
+        if os.environ.get("HOOK", "").strip():
+            posts[idx].setdefault("video", {})["hook"] = os.environ["HOOK"].strip()
     elif slot in ("0", "1", "2") and _plan_slot(posts, today, int(slot)):
         slot = int(slot)
         ps = _plan_slot(posts, today, slot)
@@ -178,6 +180,9 @@ def due_slots():
         stt = {}
     now = datetime.datetime.now(datetime.timezone.utc)
     today_s = now.date().isoformat()
+    if stt.get("prescheduled_until", "") >= today_s:
+        print(f"📅 اليوم مغطّى بفيديوهات مجدولة مسبقًا (حتى {stt['prescheduled_until']}) — لا نشر إضافي")
+        return []
     out = []
     for slot, h in SLOT_UTC_HOURS.items():
         key = "video" if slot == 1 else f"video_s{slot}"
