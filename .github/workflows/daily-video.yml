@@ -12,6 +12,10 @@ on:
         default: ''
         type: choice
         options: ['', midnight, royal, emerald, sunset]
+      hook:
+        description: 'خطّاف مخصص (اختياري)'
+        required: false
+        default: ''
       publish_at:
         description: 'نشر مجدول على يوتيوب (UTC، مثل 2026-10-13T12:00:00Z) — فارغ = فوري'
         required: false
@@ -76,6 +80,7 @@ jobs:
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
           YT_PUBLISH_AT: ${{ github.event.inputs.publish_at }}
+          HOOK: ${{ github.event.inputs.hook }}
           SKIP_YOUTUBE: ${{ github.event.inputs.skip_youtube }}
         run: python3 auto-poster/publish_video.py
 
