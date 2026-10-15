@@ -189,6 +189,14 @@ def due_slots():
 if __name__ == "__main__":
     if envflag("SLOT_AUTO"):
         due = due_slots()
+        _now = datetime.datetime.now(datetime.timezone.utc)
+        if _now.hour >= 22 and due:
+            # تنبيه نهاية اليوم: ما زالت حصص ناقصة رغم محاولات التعويض
+            try:
+                import yt_report
+                yt_report.send_telegram(f"⚠️ تنبيه: نُشر اليوم {3 - len(due)} من 3 شورتس فقط — الحصص الناقصة {due}. سأحاول الآن مرة أخيرة.")
+            except Exception:
+                pass
         if not due:
             print("✅ لا حصص مستحقة الآن — كل فيديوهات اليوم حتى هذه الساعة منشورة")
             sys.exit(0)
