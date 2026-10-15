@@ -131,6 +131,11 @@ def main():
             results.append(("يوتيوب شورتس", yt_ok, yt_note))
             if yt_ok:
                 _record_upload(p, yt_note, os.environ.get("VIDEO_TEMPLATE", ""))
+                if "تعليق" in (yt_note or ""):
+                    try:
+                        import yt_learn; perf = yt_learn.load_perf(); perf["uploads"][-1]["commented"] = datetime.date.today().isoformat(); yt_learn.save_perf(perf)
+                    except Exception:
+                        pass
         except Exception as e:
             results.append(("يوتيوب شورتس", False, f"خطأ: {str(e)[:150]}"))
     if envflag("SKIP_PINTEREST") or not os.environ.get("PINTEREST_TOKEN"):
@@ -191,8 +196,39 @@ def due_slots():
     return out
 
 
+def comment_when_live():
+    """للفيديوهات المجدولة: يضيف التعليق الأول بالرابط فور أن تصبح عامة (لا يمكن التعليق وهي خاصة)"""
+    try:
+        import yt_learn, youtube as YT
+        perf = yt_learn.load_perf()
+        pend = [u for u in perf.get("uploads", []) if not u.get("commented") and not str(u.get("video_id", "")).startswith("planned")]
+        if not pend:
+            return
+        tok, _ = YT.access_token()
+        if not tok:
+            return
+        stats, _ = yt_learn.fetch_stats([u["video_id"] for u in pend])
+        posts = {p["id"]: p for p in P.load()["posts"]}
+        for u in pend:
+            st = stats.get(u["video_id"])
+            if not st:
+                u["commented"] = "missing"; continue
+            if st.get("privacy") != "public":
+                continue
+            p = posts.get(u["post_id"])
+            if p and YT.first_comment(tok, u["video_id"], p, "en" if p.get("lang") == "en" else "ar"):
+                u["commented"] = datetime.date.today().isoformat()
+                print(f"💬 تعليق الرابط أُضيف: {u['video_id']} (#{u['post_id']})")
+            else:
+                u["commented"] = "failed"
+        yt_learn.save_perf(perf)
+    except Exception as e:
+        print("⚪ تعليقات الفيديوهات المجدولة:", str(e)[:120])
+
+
 if __name__ == "__main__":
     if envflag("SLOT_AUTO"):
+        comment_when_live()
         due = due_slots()
         _now = datetime.datetime.now(datetime.timezone.utc)
         if _now.hour >= 22 and due:
