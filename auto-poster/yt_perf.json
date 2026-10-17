@@ -276,7 +276,8 @@
    "likes": 0,
    "comments": 0,
    "vpd": 0.0,
-   "score": 0.0
+   "score": 0.0,
+   "commented": "2026-10-17"
   },
   {
    "video_id": "kDe-CUtU49c",
@@ -284,7 +285,8 @@
    "hook": "$29 sale. $4 profit. Here's why",
    "template": "midnight",
    "date": "2026-10-17",
-   "source": "auto"
+   "source": "auto",
+   "commented": "2026-10-17"
   },
   {
    "video_id": "p5IUGnQQejg",
