@@ -7,11 +7,11 @@
    "template": "royal",
    "date": "2026-10-11",
    "source": "auto",
-   "views": 0,
+   "views": 1,
    "likes": 0,
    "comments": 1,
-   "vpd": 0.0,
-   "score": 0.0,
+   "vpd": 0.14,
+   "score": 1.59,
    "commented": "2026-10-15"
   },
   {
@@ -24,8 +24,8 @@
    "views": 7,
    "likes": 0,
    "comments": 1,
-   "vpd": 1.19,
-   "score": 2.9,
+   "vpd": 1.02,
+   "score": 2.47,
    "commented": "2026-10-15"
   },
   {
@@ -65,8 +65,8 @@
    "views": 92,
    "likes": 0,
    "comments": 1,
-   "vpd": 19.3,
-   "score": 21.4,
+   "vpd": 15.9,
+   "score": 17.63,
    "commented": "2026-10-15"
   },
   {
@@ -79,8 +79,8 @@
    "views": 48,
    "likes": 0,
    "comments": 1,
-   "vpd": 9.64,
-   "score": 11.64,
+   "vpd": 8.0,
+   "score": 9.67,
    "commented": "2026-10-15"
   },
   {
@@ -93,8 +93,8 @@
    "views": 382,
    "likes": 8,
    "comments": 1,
-   "vpd": 74.89,
-   "score": 84.69,
+   "vpd": 62.43,
+   "score": 70.6,
    "commented": "2026-10-15"
   },
   {
@@ -107,8 +107,8 @@
    "views": 3,
    "likes": 0,
    "comments": 1,
-   "vpd": 0.73,
-   "score": 3.17,
+   "vpd": 0.59,
+   "score": 2.54,
    "commented": "2026-10-15"
   },
   {
@@ -135,8 +135,8 @@
    "views": 10,
    "likes": 0,
    "comments": 1,
-   "vpd": 2.74,
-   "score": 5.49,
+   "vpd": 2.15,
+   "score": 4.29,
    "commented": "2026-10-15"
   },
   {
@@ -146,11 +146,11 @@
    "template": "midnight",
    "date": "2026-10-14",
    "source": "auto",
-   "views": 2,
+   "views": 1,
    "likes": 0,
    "comments": 1,
-   "vpd": 0.69,
-   "score": 4.16,
+   "vpd": 0.26,
+   "score": 2.82,
    "commented": "2026-10-15"
   },
   {
@@ -163,8 +163,8 @@
    "views": 4,
    "likes": 0,
    "comments": 1,
-   "vpd": 1.42,
-   "score": 4.96,
+   "vpd": 1.04,
+   "score": 3.65,
    "commented": "2026-10-15"
   },
   {
@@ -178,8 +178,8 @@
    "views": 12,
    "likes": 0,
    "comments": 1,
-   "vpd": 6.3,
-   "score": 11.56
+   "vpd": 4.11,
+   "score": 7.53
   },
   {
    "video_id": "r3JM251HkCo",
@@ -203,11 +203,11 @@
    "date": "2026-10-15",
    "source": "auto",
    "commented": "2026-10-15",
-   "views": 18,
+   "views": 20,
    "likes": 0,
    "comments": 1,
-   "vpd": 9.5,
-   "score": 14.78
+   "vpd": 6.87,
+   "score": 10.3
   },
   {
    "video_id": "IGsabVS5f80",
@@ -219,8 +219,8 @@
    "views": 1,
    "likes": 0,
    "comments": 1,
-   "vpd": 0.9,
-   "score": 9.89,
+   "vpd": 0.47,
+   "score": 5.16,
    "commented": "2026-10-16"
   },
   {
@@ -262,8 +262,8 @@
    "views": 14,
    "likes": 0,
    "comments": 1,
-   "vpd": 21.39,
-   "score": 36.67
+   "vpd": 8.37,
+   "score": 14.35
   },
   {
    "video_id": "Fq83cL95xAk",
@@ -272,11 +272,11 @@
    "template": "royal",
    "date": "2026-10-17",
    "source": "auto",
-   "views": 0,
+   "views": 4,
    "likes": 0,
-   "comments": 0,
-   "vpd": 0.0,
-   "score": 0.0,
+   "comments": 1,
+   "vpd": 3.54,
+   "score": 12.38,
    "commented": "2026-10-17"
   },
   {
@@ -286,7 +286,12 @@
    "template": "midnight",
    "date": "2026-10-17",
    "source": "auto",
-   "commented": "2026-10-17"
+   "commented": "2026-10-17",
+   "views": 13,
+   "likes": 0,
+   "comments": 1,
+   "vpd": 12.93,
+   "score": 22.87
   },
   {
    "video_id": "p5IUGnQQejg",
@@ -295,7 +300,12 @@
    "template": "emerald",
    "date": "2026-10-17",
    "source": "auto",
-   "commented": "2026-10-17"
+   "commented": "2026-10-17",
+   "views": 9,
+   "likes": 0,
+   "comments": 1,
+   "vpd": 11.29,
+   "score": 23.83
   },
   {
    "video_id": "9ZnnFX_iONU",
@@ -303,7 +313,12 @@
    "hook": "السرقة الصامتة لأرباحك",
    "template": "royal",
    "date": "2026-10-18",
-   "source": "auto"
+   "source": "auto",
+   "views": 0,
+   "likes": 0,
+   "comments": 0,
+   "vpd": 0.0,
+   "score": 0.0
   },
   {
    "video_id": "cRi43qZ3znc",
@@ -311,7 +326,12 @@
    "hook": "400 orders. Zero profit. True story",
    "template": "emerald",
    "date": "2026-10-18",
-   "source": "auto"
+   "source": "auto",
+   "views": 0,
+   "likes": 0,
+   "comments": 0,
+   "vpd": 0.0,
+   "score": 0.0
   },
   {
    "video_id": "egbTzMVMsic",
@@ -324,29 +344,29 @@
  ],
  "posts": {
   "2": {
-   "score": 7.13,
+   "score": 10.54,
    "n": 3,
-   "best": 21.4
+   "best": 17.63
   },
   "29": {
-   "score": 8.84,
+   "score": 6.39,
    "n": 2,
-   "best": 14.78
+   "best": 10.3
   },
   "21": {
-   "score": 5.82,
+   "score": 4.83,
    "n": 2,
-   "best": 11.64
+   "best": 9.67
   },
   "1": {
-   "score": 47.29,
+   "score": 37.88,
    "n": 2,
-   "best": 84.69
+   "best": 70.6
   },
   "3": {
-   "score": 3.17,
+   "score": 2.54,
    "n": 1,
-   "best": 3.17
+   "best": 2.54
   },
   "4": {
    "score": 0.0,
@@ -354,24 +374,24 @@
    "best": 0.0
   },
   "22": {
-   "score": 5.49,
-   "n": 1,
-   "best": 5.49
+   "score": 13.58,
+   "n": 2,
+   "best": 22.87
   },
   "6": {
-   "score": 4.16,
-   "n": 1,
-   "best": 4.16
+   "score": 1.41,
+   "n": 2,
+   "best": 2.82
   },
   "23": {
-   "score": 4.96,
-   "n": 1,
-   "best": 4.96
+   "score": 1.82,
+   "n": 2,
+   "best": 3.65
   },
   "7": {
-   "score": 11.56,
+   "score": 7.53,
    "n": 1,
-   "best": 11.56
+   "best": 7.53
   },
   "5": {
    "score": 0.0,
@@ -384,34 +404,39 @@
    "best": 0.0
   },
   "24": {
-   "score": 36.67,
+   "score": 14.35,
    "n": 1,
-   "best": 36.67
+   "best": 14.35
+  },
+  "9": {
+   "score": 23.83,
+   "n": 1,
+   "best": 23.83
   }
  },
  "styles": {
   "تحذير": {
-   "score": 14.69,
-   "n": 13
+   "score": 11.72,
+   "n": 15
   },
   "سؤال": {
-   "score": 3.84,
+   "score": 2.36,
    "n": 4
   },
   "رقم": {
-   "score": 4.96,
-   "n": 1
+   "score": 8.84,
+   "n": 3
   }
  },
  "plan": {
-  "date": "2026-10-17",
+  "date": "2026-10-18",
   "slots": [
    {
     "slot": 0,
     "index": 2,
     "post_id": 3,
     "hook": "قصة خسارة حقيقية… في ٣٠ ثانية",
-    "template": "royal",
+    "template": "emerald",
     "reason": "رابح — إعادة بخطّاف/قالب جديد"
    },
    {
@@ -419,7 +444,7 @@
     "index": 24,
     "post_id": 25,
     "hook": "40% of your costs vanish — where?",
-    "template": "emerald",
+    "template": "sunset",
     "reason": "استكشاف — لم يُقَس بعد"
    },
    {
@@ -427,29 +452,33 @@
     "index": 10,
     "post_id": 11,
     "hook": "الخطأ الذي يقع فيه ٩٠٪ من البائعين",
-    "template": "midnight",
+    "template": "royal",
     "reason": "استكشاف — لم يُقَس بعد"
    }
   ]
  },
  "hooks": {
-  "في كل عملية بيع… دولار يضيع": 10.7,
-  "A clean report in one click": 2.9,
-  "Stop! Your best-seller may be losing money": 11.64,
-  "توقّف! أنت تخسر دون أن تدري": 84.69,
-  "ثلاثة أشهر من الخسارة بسبب رقم واحد": 3.17,
+  "في كل عملية بيع… دولار يضيع": 9.61,
+  "A clean report in one click": 2.47,
+  "Stop! Your best-seller may be losing money": 9.67,
+  "توقّف! أنت تخسر دون أن تدري": 70.6,
+  "ثلاثة أشهر من الخسارة بسبب رقم واحد": 2.54,
   "تبيع عبر واتساب؟ هذه لك": 0.0,
-  "$29 in… how much actually stays?": 5.49,
-  "خمس تكاليف تسرقك بصمت": 4.16,
-  "400 units sold. Almost zero profit": 4.96,
-  "المرتجعات تأكل ربع ربحك": 11.56,
+  "$29 in… how much actually stays?": 4.29,
+  "خمس تكاليف تسرقك بصمت": 2.82,
+  "400 units sold. Almost zero profit": 3.65,
+  "المرتجعات تأكل ربع ربحك": 7.53,
   "رقم واحد يأكل أرباحك بصمت": 0.0,
-  "Your accountant will love this": 14.78,
-  "هل تعرف أين ذهب ربحك هذا الشهر؟": 9.89,
+  "Your accountant will love this": 10.3,
+  "هل تعرف أين ذهب ربحك هذا الشهر؟": 5.16,
   "Your best-seller is lying to you": 0.0,
   "كم وحدة قبل أن تربح دولارًا واحدًا؟": 0.0,
-  "Every WhatsApp order logs itself": 36.67,
-  "الحساب الذي يخفيه عنك متجرك": 0.0
+  "Every WhatsApp order logs itself": 14.35,
+  "الحساب الذي يخفيه عنك متجرك": 12.38,
+  "$29 sale. $4 profit. Here's why": 22.87,
+  "كل أسئلتك… في فيديو واحد": 23.83,
+  "السرقة الصامتة لأرباحك": 0.0,
+  "400 orders. Zero profit. True story": 0.0
  },
- "updated": "2026-10-17T11:42:30.028448+00:00"
+ "updated": "2026-10-18T12:08:12.748448+00:00"
 }
