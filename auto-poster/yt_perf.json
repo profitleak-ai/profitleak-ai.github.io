@@ -341,7 +341,8 @@
    "hook": "ثلاث دقائق قد تغيّر متجرك",
    "template": "midnight",
    "date": "2026-10-18",
-   "source": "auto"
+   "source": "auto",
+   "commented": "2026-10-18"
   }
  ],
  "posts": {
