@@ -348,6 +348,24 @@
    "comments": 1,
    "vpd": 2.2,
    "score": 13.19
+  },
+  {
+   "video_id": "QfjTWp78zrk",
+   "post_id": 7,
+   "hook": "١٢ مرتجعًا من كل ١٠٠ طلب = كارثة",
+   "template": "sunset",
+   "date": "2026-10-19",
+   "source": "auto",
+   "commented": "2026-10-19"
+  },
+  {
+   "video_id": "E9V6D2IfIks",
+   "post_id": 29,
+   "hook": "One click. Clean report",
+   "template": "emerald",
+   "date": "2026-10-19",
+   "source": "auto",
+   "commented": "2026-10-19"
   }
  ],
  "posts": {
