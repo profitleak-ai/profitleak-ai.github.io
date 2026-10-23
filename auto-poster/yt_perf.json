@@ -642,6 +642,24 @@
    "comments": 1,
    "vpd": 6.69,
    "score": 20.07
+  },
+  {
+   "video_id": "CsXzkxzwS5Y",
+   "post_id": 7,
+   "hook": "هل تحسب المرتجعات؟ أغلبهم لا",
+   "template": "midnight",
+   "date": "2026-10-23",
+   "source": "auto",
+   "commented": "2026-10-23"
+  },
+  {
+   "video_id": "9eJKjyOONr4",
+   "post_id": 29,
+   "hook": "Your accountant will love this",
+   "template": "sunset",
+   "date": "2026-10-23",
+   "source": "auto",
+   "commented": "2026-10-23"
   }
  ],
  "posts": {
