@@ -684,6 +684,24 @@
    "comments": 1,
    "vpd": 0.0,
    "score": 0.0
+  },
+  {
+   "video_id": "kEuTo_b01pE",
+   "post_id": 1,
+   "hook": "توقّف! أنت تخسر دون أن تدري",
+   "template": "midnight",
+   "date": "2026-10-24",
+   "source": "auto",
+   "commented": "2026-10-24"
+  },
+  {
+   "video_id": "t6uYAOmVlTo",
+   "post_id": 24,
+   "hook": "COD on WhatsApp? Automate it",
+   "template": "emerald",
+   "date": "2026-10-24",
+   "source": "auto",
+   "commented": "2026-10-24"
   }
  ],
  "posts": {
