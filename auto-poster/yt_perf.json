@@ -726,6 +726,24 @@
    "comments": 1,
    "vpd": 5.58,
    "score": 19.53
+  },
+  {
+   "video_id": "hVhRoRVmLwE",
+   "post_id": 9,
+   "hook": "هل يلزم التسجيل؟ لا. هل بياناتي آمنة؟ نعم",
+   "template": "midnight",
+   "date": "2026-10-25",
+   "source": "auto",
+   "commented": "2026-10-25"
+  },
+  {
+   "video_id": "slgexI_7aTo",
+   "post_id": 22,
+   "hook": "Where does your $29 actually go?",
+   "template": "royal",
+   "date": "2026-10-25",
+   "source": "auto",
+   "commented": "2026-10-25"
   }
  ],
  "posts": {
