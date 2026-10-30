@@ -936,6 +936,24 @@
    "comments": 1,
    "vpd": 0.0,
    "score": 0.0
+  },
+  {
+   "video_id": "xdoBjaMpguc",
+   "post_id": 15,
+   "hook": "$29 أم $99؟ سيصدمك الجواب",
+   "template": "sunset",
+   "date": "2026-10-30",
+   "source": "auto",
+   "commented": "2026-10-30"
+  },
+  {
+   "video_id": "wE-oV-31TTE",
+   "post_id": 26,
+   "hook": "When do you actually start earning?",
+   "template": "emerald",
+   "date": "2026-10-30",
+   "source": "auto",
+   "commented": "2026-10-30"
   }
  ],
  "posts": {
