@@ -978,6 +978,24 @@
    "comments": 1,
    "vpd": 0.0,
    "score": 0.0
+  },
+  {
+   "video_id": "H5Uw91FNNmU",
+   "post_id": 2,
+   "hook": "في كل عملية بيع… دولار يضيع",
+   "template": "emerald",
+   "date": "2026-10-31",
+   "source": "auto",
+   "commented": "2026-10-31"
+  },
+  {
+   "video_id": "6kLTKaYh9Ao",
+   "post_id": 23,
+   "hook": "I was busy, not profitable",
+   "template": "midnight",
+   "date": "2026-10-31",
+   "source": "auto",
+   "commented": "2026-10-31"
   }
  ],
  "posts": {
