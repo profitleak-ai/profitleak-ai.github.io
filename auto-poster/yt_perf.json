@@ -1020,6 +1020,24 @@
    "comments": 1,
    "vpd": 0.0,
    "score": 0.0
+  },
+  {
+   "video_id": "SOSKIkxB9c8",
+   "post_id": 1,
+   "hook": "توقّف! أنت تخسر دون أن تدري",
+   "template": "emerald",
+   "date": "2026-11-01",
+   "source": "auto",
+   "commented": "2026-11-01"
+  },
+  {
+   "video_id": "wr__VDX8AcE",
+   "post_id": 21,
+   "hook": "Stop! Your best-seller may be losing money",
+   "template": "royal",
+   "date": "2026-11-01",
+   "source": "auto",
+   "commented": "2026-11-01"
   }
  ],
  "posts": {
