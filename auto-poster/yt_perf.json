@@ -1188,6 +1188,33 @@
    "comments": 1,
    "vpd": 51.22,
    "score": 61.89
+  },
+  {
+   "video_id": "NR-v2O1pr84",
+   "post_id": 1,
+   "hook": "توقّف! أنت تخسر دون أن تدري",
+   "template": "sunset",
+   "date": "2026-11-05",
+   "source": "auto",
+   "commented": "2026-11-05"
+  },
+  {
+   "video_id": "9YoucFNY7Ko",
+   "post_id": 21,
+   "hook": "Stop! Your best-seller may be losing money",
+   "template": "emerald",
+   "date": "2026-11-05",
+   "source": "auto",
+   "commented": "2026-11-05"
+  },
+  {
+   "video_id": "2DAxoRut7dU",
+   "post_id": 11,
+   "hook": "تحسب الإعلان وتنسى التوصيل؟",
+   "template": "royal",
+   "date": "2026-11-05",
+   "source": "auto",
+   "commented": "2026-11-05"
   }
  ],
  "posts": {
