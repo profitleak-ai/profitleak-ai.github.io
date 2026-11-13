@@ -1524,6 +1524,33 @@
    "comments": 1,
    "vpd": 0.0,
    "score": 0.0
+  },
+  {
+   "video_id": "0fA1tuurjjk",
+   "post_id": 1,
+   "hook": "توقّف! أنت تخسر دون أن تدري",
+   "template": "royal",
+   "date": "2026-11-13",
+   "source": "auto",
+   "commented": "2026-11-13"
+  },
+  {
+   "video_id": "aTLWNlM4H3k",
+   "post_id": 21,
+   "hook": "Stop! Your best-seller may be losing money",
+   "template": "midnight",
+   "date": "2026-11-13",
+   "source": "auto",
+   "commented": "2026-11-13"
+  },
+  {
+   "video_id": "Vbs2vDo4pKc",
+   "post_id": 8,
+   "hook": "خفّض السعر $5… وشاهد ما يحدث",
+   "template": "emerald",
+   "date": "2026-11-13",
+   "source": "auto",
+   "commented": "2026-11-13"
   }
  ],
  "posts": {
