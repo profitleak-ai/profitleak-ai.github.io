@@ -1608,6 +1608,24 @@
    "comments": 1,
    "vpd": 52.72,
    "score": 65.9
+  },
+  {
+   "video_id": "ZLu1H0iAvNM",
+   "post_id": 2,
+   "hook": "في كل عملية بيع… دولار يضيع",
+   "template": "midnight",
+   "date": "2026-11-15",
+   "source": "auto",
+   "commented": "2026-11-15"
+  },
+  {
+   "video_id": "xMzLuVCv7VY",
+   "post_id": 22,
+   "hook": "$29 in… how much actually stays?",
+   "template": "sunset",
+   "date": "2026-11-15",
+   "source": "auto",
+   "commented": "2026-11-15"
   }
  ],
  "posts": {
