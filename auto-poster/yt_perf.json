@@ -1734,6 +1734,33 @@
    "comments": 1,
    "vpd": 2.17,
    "score": 13.02
+  },
+  {
+   "video_id": "0qs2cs4eGl0",
+   "post_id": 20,
+   "hook": "خلاصة الأسبوع في ١٥ ثانية",
+   "template": "midnight",
+   "date": "2026-11-18",
+   "source": "auto",
+   "commented": "2026-11-18"
+  },
+  {
+   "video_id": "CQRYgCLn93E",
+   "post_id": 24,
+   "hook": "Selling on WhatsApp? Watch this",
+   "template": "midnight",
+   "date": "2026-11-18",
+   "source": "auto",
+   "commented": "2026-11-18"
+  },
+  {
+   "video_id": "tdYQx2d4RQg",
+   "post_id": 16,
+   "hook": "بائعي الدفع عند الاستلام… انتبهوا",
+   "template": "sunset",
+   "date": "2026-11-18",
+   "source": "auto",
+   "commented": "2026-11-18"
   }
  ],
  "posts": {
