@@ -1421,11 +1421,11 @@
    "date": "2026-11-10",
    "source": "auto",
    "commented": "2026-11-10",
-   "views": 3,
+   "views": 4,
    "likes": 0,
    "comments": 1,
-   "vpd": 0.43,
-   "score": 1.86
+   "vpd": 0.57,
+   "score": 2.0
   },
   {
    "video_id": "KP_73DvpNV4",
@@ -1453,7 +1453,7 @@
    "likes": 0,
    "comments": 1,
    "vpd": 1.29,
-   "score": 2.72
+   "score": 2.71
   },
   {
    "video_id": "pEmBWY0Zw44",
@@ -1481,7 +1481,7 @@
    "likes": 0,
    "comments": 1,
    "vpd": 0.14,
-   "score": 1.58
+   "score": 1.57
   },
   {
    "video_id": "KqrnwQykaQA",
@@ -1494,8 +1494,8 @@
    "views": 2,
    "likes": 0,
    "comments": 1,
-   "vpd": 0.34,
-   "score": 2.01
+   "vpd": 0.29,
+   "score": 1.72
   },
   {
    "video_id": "L0ppAQphrWA",
@@ -1533,11 +1533,11 @@
    "date": "2026-11-13",
    "source": "auto",
    "commented": "2026-11-13",
-   "views": 2,
+   "views": 3,
    "likes": 0,
    "comments": 1,
-   "vpd": 0.4,
-   "score": 2.41
+   "vpd": 0.5,
+   "score": 2.17
   },
   {
    "video_id": "aTLWNlM4H3k",
@@ -1578,8 +1578,8 @@
    "views": 3,
    "likes": 0,
    "comments": 1,
-   "vpd": 0.74,
-   "score": 3.22
+   "vpd": 0.6,
+   "score": 2.58
   },
   {
    "video_id": "iYT-mnCc42w",
@@ -1592,8 +1592,8 @@
    "views": 5,
    "likes": 0,
    "comments": 1,
-   "vpd": 1.24,
-   "score": 3.72
+   "vpd": 0.99,
+   "score": 2.98
   },
   {
    "video_id": "5IbSPaUnq0E",
@@ -1606,8 +1606,8 @@
    "views": 38,
    "likes": 0,
    "comments": 1,
-   "vpd": 9.92,
-   "score": 12.53
+   "vpd": 7.86,
+   "score": 9.93
   },
   {
    "video_id": "ZLu1H0iAvNM",
@@ -1620,8 +1620,8 @@
    "views": 1,
    "likes": 0,
    "comments": 1,
-   "vpd": 0.33,
-   "score": 3.65
+   "vpd": 0.25,
+   "score": 2.74
   },
   {
    "video_id": "xMzLuVCv7VY",
@@ -1732,8 +1732,8 @@
    "views": 2,
    "likes": 0,
    "comments": 1,
-   "vpd": 2.17,
-   "score": 13.02
+   "vpd": 1.04,
+   "score": 6.24
   },
   {
    "video_id": "0qs2cs4eGl0",
@@ -1742,7 +1742,12 @@
    "template": "midnight",
    "date": "2026-11-18",
    "source": "auto",
-   "commented": "2026-11-18"
+   "commented": "2026-11-18",
+   "views": 20,
+   "likes": 0,
+   "comments": 1,
+   "vpd": 21.14,
+   "score": 31.71
   },
   {
    "video_id": "CQRYgCLn93E",
@@ -1751,7 +1756,12 @@
    "template": "midnight",
    "date": "2026-11-18",
    "source": "auto",
-   "commented": "2026-11-18"
+   "commented": "2026-11-18",
+   "views": 0,
+   "likes": 0,
+   "comments": 1,
+   "vpd": 0.0,
+   "score": 0.0
   },
   {
    "video_id": "tdYQx2d4RQg",
@@ -1760,12 +1770,17 @@
    "template": "sunset",
    "date": "2026-11-18",
    "source": "auto",
-   "commented": "2026-11-18"
+   "commented": "2026-11-18",
+   "views": 0,
+   "likes": 0,
+   "comments": 1,
+   "vpd": 0.0,
+   "score": 0.0
   }
  ],
  "posts": {
   "2": {
-   "score": 3.71,
+   "score": 3.61,
    "n": 9,
    "best": 14.57
   },
@@ -1780,7 +1795,7 @@
    "best": 8.29
   },
   "1": {
-   "score": 7.14,
+   "score": 7.12,
    "n": 10,
    "best": 61.71
   },
@@ -1825,9 +1840,9 @@
    "best": 1.57
   },
   "24": {
-   "score": 2.25,
-   "n": 7,
-   "best": 3.72
+   "score": 1.89,
+   "n": 8,
+   "best": 3.43
   },
   "9": {
    "score": 2.5,
@@ -1850,9 +1865,9 @@
    "best": 2.0
   },
   "13": {
-   "score": 5.43,
+   "score": 3.17,
    "n": 3,
-   "best": 13.02
+   "best": 6.24
   },
   "25": {
    "score": 1.33,
@@ -1885,8 +1900,8 @@
    "best": 1.86
   },
   "16": {
-   "score": 2.64,
-   "n": 2,
+   "score": 1.76,
+   "n": 3,
    "best": 2.71
   },
   "30": {
@@ -1895,7 +1910,7 @@
    "best": 2.43
   },
   "17": {
-   "score": 4.86,
+   "score": 4.8,
    "n": 5,
    "best": 11.57
   },
@@ -1905,28 +1920,28 @@
    "best": 0.0
   },
   "19": {
-   "score": 3.55,
+   "score": 3.34,
    "n": 3,
    "best": 4.57
   },
   "20": {
-   "score": 6.13,
-   "n": 3,
-   "best": 12.53
+   "score": 11.87,
+   "n": 4,
+   "best": 31.71
   }
  },
  "styles": {
   "تحذير": {
-   "score": 3.51,
-   "n": 57
+   "score": 3.3,
+   "n": 58
   },
   "سؤال": {
-   "score": 1.87,
-   "n": 35
+   "score": 1.78,
+   "n": 36
   },
   "رقم": {
-   "score": 2.11,
-   "n": 27
+   "score": 3.08,
+   "n": 28
   },
   "قصة": {
    "score": 1.52,
@@ -1934,39 +1949,39 @@
   }
  },
  "plan": {
-  "date": "2026-11-18",
+  "date": "2026-11-19",
   "slots": [
    {
     "slot": 0,
-    "index": 19,
-    "post_id": 20,
-    "hook": "خلاصة الأسبوع في ١٥ ثانية",
-    "template": "midnight",
+    "index": 1,
+    "post_id": 2,
+    "hook": "في كل عملية بيع… دولار يضيع",
+    "template": "royal",
     "reason": "رابح — إعادة بخطّاف/قالب جديد"
    },
    {
     "slot": 1,
-    "index": 23,
-    "post_id": 24,
-    "hook": "Selling on WhatsApp? Watch this",
+    "index": 28,
+    "post_id": 29,
+    "hook": "Your accountant will love this",
     "template": "midnight",
     "reason": "رابح — إعادة بخطّاف/قالب جديد"
    },
    {
     "slot": 2,
-    "index": 15,
-    "post_id": 16,
-    "hook": "بائعي الدفع عند الاستلام… انتبهوا",
-    "template": "sunset",
+    "index": 14,
+    "post_id": 15,
+    "hook": "٢٩ أم ٩٩ دولارًا؟ الجواب سيفاجئك",
+    "template": "royal",
     "reason": "رابح — إعادة بخطّاف/قالب جديد"
    }
   ]
  },
  "hooks": {
-  "في كل عملية بيع… دولار يضيع": 4.13,
+  "في كل عملية بيع… دولار يضيع": 4.0,
   "A clean report in one click": 1.21,
   "Stop! Your best-seller may be losing money": 2.36,
-  "توقّف! أنت تخسر دون أن تدري": 8.43,
+  "توقّف! أنت تخسر دون أن تدري": 8.4,
   "ثلاثة أشهر من الخسارة بسبب رقم واحد": 1.86,
   "تبيع عبر واتساب؟ هذه لك": 0.0,
   "$29 in… how much actually stays?": 1.43,
@@ -1989,7 +2004,7 @@
   "One click. Clean report": 2.0,
   "الخطأ الذي يقع فيه ٩٠٪ من البائعين": 2.43,
   "٨٠٪ من البائعين يخسرون وهم يظنون أنهم يربحون": 2.43,
-  "Selling on WhatsApp? Watch this": 2.76,
+  "Selling on WhatsApp? Watch this": 1.92,
   "واحد رابح وثلاثة خاسرون… أيّهم؟": 0.0,
   "٤ أسئلة يسألها الجميع": 2.21,
   "Selling a lot ≠ earning a lot": 1.21,
@@ -2035,18 +2050,19 @@
   "أيّ منتجاتك يخسر؟ لا تعرف؟": 1.86,
   "Returns: the 25% you forgot": 0.0,
   "لا تزد ميزانية الإعلان قبل هذا": 0.0,
-  "السعر الأدنى الآمن… احسبه الآن": 6.79,
+  "السعر الأدنى الآمن… احسبه الآن": 6.65,
   "تبيع كثيرًا… ولا يبقى شيء؟": 4.57,
   "كنت أربح $15 فاكتشفت أنها $3": 1.86,
   "The silent 40% leak": 0.0,
-  "الدفع عند الاستلام؟ وفّر ساعة يوميًا": 1.58,
+  "الدفع عند الاستلام؟ وفّر ساعة يوميًا": 1.57,
   "أين تذهب ٤٠٪ من أرباحك؟": 0.0,
   "خفّض السعر $5… وشاهد ما يحدث": 0.0,
-  "تبيع كل يوم ولا يبقى شيء؟ هذا السبب": 3.22,
-  "خلاصة الأسبوع في ١٥ ثانية": 12.53,
+  "تبيع كل يوم ولا يبقى شيء؟ هذا السبب": 2.58,
+  "خلاصة الأسبوع في ١٥ ثانية": 20.82,
   "٣ دقائق… وستعرف الحقيقة": 0.0,
   "One winner, three losers. Which?": 0.0,
-  "PDF + Excel بضغطة": 13.02
+  "PDF + Excel بضغطة": 6.24,
+  "بائعي الدفع عند الاستلام… انتبهوا": 0.0
  },
- "updated": "2026-11-18T16:38:46.413930+00:00"
+ "updated": "2026-11-19T16:41:55.791865+00:00"
 }
