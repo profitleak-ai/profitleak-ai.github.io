@@ -1986,6 +1986,33 @@
    "comments": 1,
    "vpd": 0.0,
    "score": 0.0
+  },
+  {
+   "video_id": "RsLjr8rM64E",
+   "post_id": 17,
+   "hook": "السعر الأدنى الآمن… احسبه الآن",
+   "template": "emerald",
+   "date": "2026-11-24",
+   "source": "auto",
+   "commented": "2026-11-24"
+  },
+  {
+   "video_id": "Xa_ZSQigzms",
+   "post_id": 23,
+   "hook": "400 units sold. Almost zero profit",
+   "template": "royal",
+   "date": "2026-11-24",
+   "source": "auto",
+   "commented": "2026-11-24"
+  },
+  {
+   "video_id": "L2eErf-aQ6w",
+   "post_id": 9,
+   "hook": "كل أسئلتك… في فيديو واحد",
+   "template": "midnight",
+   "date": "2026-11-24",
+   "source": "auto",
+   "commented": "2026-11-24"
   }
  ],
  "posts": {
