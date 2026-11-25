@@ -2028,6 +2028,33 @@
    "comments": 1,
    "vpd": 0.0,
    "score": 0.0
+  },
+  {
+   "video_id": "Gk-nlivpaTs",
+   "post_id": 1,
+   "hook": "توقّف! أنت تخسر دون أن تدري",
+   "template": "midnight",
+   "date": "2026-11-25",
+   "source": "auto",
+   "commented": "2026-11-25"
+  },
+  {
+   "video_id": "8zR64zW5exM",
+   "post_id": 22,
+   "hook": "$29 sale. $4 profit. Here's why",
+   "template": "emerald",
+   "date": "2026-11-25",
+   "source": "auto",
+   "commented": "2026-11-25"
+  },
+  {
+   "video_id": "plpG4VcJ9RM",
+   "post_id": 3,
+   "hook": "ثلاثة أشهر من الخسارة بسبب رقم واحد",
+   "template": "emerald",
+   "date": "2026-11-25",
+   "source": "auto",
+   "commented": "2026-11-25"
   }
  ],
  "posts": {
