@@ -2112,6 +2112,33 @@
    "comments": 1,
    "vpd": 0.0,
    "score": 0.0
+  },
+  {
+   "video_id": "SQnRRg6CoTQ",
+   "post_id": 2,
+   "hook": "في كل عملية بيع… دولار يضيع",
+   "template": "sunset",
+   "date": "2026-11-27",
+   "source": "auto",
+   "commented": "2026-11-27"
+  },
+  {
+   "video_id": "Wp_4IDYJKa4",
+   "post_id": 28,
+   "hook": "Which product is losing you money?",
+   "template": "midnight",
+   "date": "2026-11-27",
+   "source": "auto",
+   "commented": "2026-11-27"
+  },
+  {
+   "video_id": "wP1HKLDbgAY",
+   "post_id": 4,
+   "hook": "كل طلب واتساب يسجّل نفسه",
+   "template": "royal",
+   "date": "2026-11-27",
+   "source": "auto",
+   "commented": "2026-11-27"
   }
  ],
  "posts": {
